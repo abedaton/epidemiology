@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.integrate import odeint
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
 class Epidemy:
 	def __init__(self, N, I0, R0, S0, t, params):
@@ -29,6 +29,10 @@ class Epidemy:
 		dFdt = self.gammaD*(1-self.theta)*self.delta1*I + self.gammaDH*self.delta2*H - self.gammaF*F
 		dRdt = self.gammaI*(1-self.theta)*(1-self.delta1)*I + self.gammaIH*(1-self.delta2)*H + self.gammaF*F
 		return dSdt, dEdt, dIdt, dHdt, dFdt, dRdt
+
+	def SEIRS(self, S0, E0, I0, R0, beta, sigma, epsilon, t0, TStop, nbSteps):
+		model = SEIRS(S0, E0, I0, R0, beta, sigma, epsilon, t0, TStop, nbSteps)
+		S, E, I, R = model.solveDifferential()
 
 	def solve(self, model):
 		if model == "SIR":
