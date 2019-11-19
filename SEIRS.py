@@ -2,68 +2,99 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
-# I0 et R0 sont les Infécté de base et les Recovered de base a l'instant t = 0
-#E0 sont les exposés
-S0, E0, I0, R0 =999, 0,  1, 0
+class SEIRS(object):
+    """docstring for SEIRS."""
 
-# N = Population Totale.
-N = S0 + E0 + I0 + R0
+    def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
+                 nbRcvrd0=0, population=1000, infectiousRate=0.3,\
+                 incubationRate=0.1, recoveryRate=0.05, lossImunityRate=0.01, \
+                 timeStart=0, timeStop=1000, nbSteps=1001):
+        """
+        Beta :    from S to E (infectiousRate)
+        Sigma :   from E to I (incubationRate)
+        Gamma :   from I to R (recoveryRate)
+        Epsilon : from R to S (lossImunityRate)
+        """
+        self.S0 = nbSscptbl0
+        self.E0 = nbExpsd0
+        self.I0 = nbInfctd0
+        self.R0 = nbRcvrd0
+        self.S, self.I, self.E, self.R = None, None, None, None
+        self.N = self.S0 + self.E0 + self.I0 + self.R0
+        self.beta = infectiousRate
+        self.sigma = incubationRate
+        self.gamma = recoveryRate
+        self.epsilon = lossImunityRate #rate of returning to S
+        #number of days
+        self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
 
-# beta = virulance (contact rate) et sigma = "recovery rate" (/jours).
-beta, sigma = 0.2, 1./10 
+        self.solved = False
 
-#epsilon=rate which recovered individuals return to the susceptible statue due to loss of immunity.
-epsilon=0.04
+    def differentialEq(self, y, t):
+        S, E, I, R = y
 
-#Recovery rate, sigma = 1/D, is determined by the average duration, D, of infection
-gamma=1/15
+        dSdt = (-(self.beta * S * I) / self.N ) + ( self.epsilon * R )
+        dEdt = ((self.beta * S * I) / self.N ) - ( self.sigma * E )
+        dIdt = (self.sigma * E ) - ( self.gamma * I )
+        dRdt = (self.gamma * I ) - ( self.epsilon * R )
 
-t = np.linspace(0, 1000, 1000)
+        self.solved = True
 
-# Equadif de SIR
-def deriv(y, t, N, beta, sigma,epsilon,gamma):
-    S, E, I, R = y
-    
-    dSdt = (-(beta * S * I) / N ) + ( epsilon * R )
-    dEdt = ((beta * S * I) / N ) - ( sigma * E )
-    dIdt = (sigma * E ) - ( gamma * I )
-    dRdt = (sigma * I ) - ( epsilon * R )
-    
-    return dSdt, dEdt, dIdt, dRdt
+        return dSdt, dEdt, dIdt, dRdt
 
-# vecteur initial
-y0 = S0, E0, I0, R0
+    def solveDifferential(self):
+        # vecteur initial
+        y0 = self.S0, self.E0, self.I0, self.R0
+        ret = odeint(self.differentialEq, y0, self.timeVector)
+        #S E I R = vecteurs de données
+        self.S, self.E, self.I, self.R = ret.T
 
-# On résoud l'equadiff
-ret = odeint(deriv, y0, t, args=(N, beta, sigma, epsilon, gamma))
-S, E, I, R = ret.T
+    def print(self, tStart=0, tStop=100, nbSteps=4):
+        if not self.solved:
+            self.solveDifferential()
+        valueVector = [["(S)usceptible"], ["(E)xposed"], ["(I)nfected"], ["(R)ecovered"]]
+        bigSteps = int(tStop/nbSteps)
+        for i in range(tStart, tStop, bigSteps):
+            valueVector[0].append(round(self.S[i], 2))
+            valueVector[1].append(round(self.I[i], 2))
+            valueVector[2].append(round(self.E[i], 2))
+            valueVector[3].append(round(self.R[i], 2))
+        valueVector[0].append(round(self.S[-1], 2))
+        valueVector[1].append(round(self.I[-1], 2))
+        valueVector[2].append(round(self.E[-1], 2))
+        valueVector[3].append(round(self.R[-1], 2))
+        for list in valueVector:
+            print(f"{list[0]} : ")
+            for i, value in enumerate(list[1:]):
+                print(f"t = {bigSteps*i} | {value}")
 
-fig = plt.figure(facecolor='w')
-ax = fig.add_subplot(111, axisbelow=True)
-ax.plot(t, S/1000, 'b', alpha=0.5, lw=2, label='(S)usceptible')
-i = 0
-while i <= 1.2:
-	ax.hlines(i, -1, 200, color="black", linestyle = "dashed")
-	i += 0.2
+    def plot(self, duration=None, \
+             SColor='b', EColor='y', IColor='r', RColor='g', ):
+        """
+        Susceptible in blue, Exposed in yellow, Infected in red, recovered in
+        green
+        """
+        if duration == None:
+            duration = self.timeVector[-1]
+        if not self.solved:
+            self.solveDifferential()
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        ax.plot(self.timeVector, self.S, 'b', label='(S)usceptible')
+        ax.plot(self.timeVector, self.E, 'y', label='(E)xposed')
+        ax.plot(self.timeVector, self.I, 'r', label='(I)nfected')
+        ax.plot(self.timeVector, self.R, 'g', label='(R)ecovered')
 
-for i in range(20, 200, 20):
-	ax.vlines(i, 0, 20000, color="black", linestyle = "dashed")
+        ax.set_xlabel('Time (in days)')
+        ax.set_ylabel('Populaton (in person)')
 
-ax.plot(t, E/1000, 'y', alpha=0.5, lw=2, label='(E)xposed')
-ax.plot(t, I/1000, 'r', alpha=0.5, lw=2, label='(I)nfected')
-ax.plot(t, R/1000, 'g', alpha=0.5, lw=2, label='(R)ecovered')
-ax.set_xlabel('Time /days')
-ax.set_ylabel('Number')
-ax.set_ylim(0, 1.2)
-ax.set_xlim(0, 200)
-ax.yaxis.set_tick_params(length=0)
-ax.xaxis.set_tick_params(length=0)
-ax.grid(b=True, which='major', c='w', lw=2, ls='-')
-legend = ax.legend()
-legend.get_frame().set_alpha(0.5)
-print("Nombre de personne susceptible au debut =", S[0])
-print("Nombre de personne susceptible a la fin =", S[-1])
-print("Nombre de personne exposées a la fin =", E[-1])
-print("Nombre de personne infectée a la fin =", I[-1])
-print("Nombre de personne retablie a la fin =", R[-1])
-plt.show()
+        ax.set_xlim(0, duration)
+
+        legend = ax.legend()
+
+        plt.show()
+
+if __name__ == '__main__':
+    test = SEIRS()
+    test.print(4)
+    test.plot(300)
