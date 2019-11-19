@@ -24,10 +24,10 @@ def deriv(y, t, N, beta, gamma):
 # vecteur initial
 y0 = S0, I0, R0
 
+
 # On résoud l'equadiff
 ret = odeint(deriv, y0, t, args=(N, beta, gamma))
 S, I, R = ret.T
-
 fig = plt.figure(facecolor='w')
 ax = fig.add_subplot(111, axisbelow=True)
 ax.plot(t, S/1000, 'b', alpha=0.5, lw=2, label='(S)usceptible')
