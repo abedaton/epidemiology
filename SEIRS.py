@@ -50,6 +50,7 @@ class SEIRS(object):
         ret = odeint(self.differentialEq, y0, self.timeVector)
         #S E I R = vecteurs de données
         self.S, self.E, self.I, self.R = ret.T
+        return self.S, self.E, self.I, self.R
 
     def print(self, tStart=0, tStop=100, nbSteps=4):
         if not self.solved:
@@ -100,8 +101,8 @@ class SEIRS(object):
         self.createGraph(duration)
         plt.show()
 
-    def export(self, filename="Images/", duration=None, d=":"):
-        if filename == "Images/":
+    def export(self, filename="Images/SEIRS", duration=None, d=":"):
+        if filename == "Images/SEIRS":
             filename += str(self.S0) + d + str(self.E0) + d + str(self.I0) + \
                         d + str(self.R0) + d +  str(self.beta) + d + \
                         str(self.sigma) + d + str(self.gamma) + d + \
@@ -131,7 +132,7 @@ if __name__ == '__main__':
     printGraph = False
     plotGraph = True
 
-    exportGraph = True
+    exportGraph = False
     importGraphV = False
 
     printSteps = 4
@@ -151,5 +152,5 @@ if __name__ == '__main__':
         test.export()
 
     if importGraphV:
-        test = importGraph('Images/999:0:1:0:0.3:0.1:0.05:0.01:0:1000:1001.png')
+        test = importGraph('Images/SEIRS999:0:1:0:0.3:0.1:0.05:0.01:0:1000:1001.png')
         test.export('test')
