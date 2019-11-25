@@ -87,9 +87,9 @@ class Epidemy:
 
 		# Slider qu'on peut pas moove :)
 
-		#w2 = tkinter.Scale(root, variable = self.beta, digits=2, from_=0, to=1, orient=tkinter.HORIZONTAL, resolution=0.23, length = 300)
-		#w2.set(0.2)
-		#w2.pack()
+		var = tkinter.DoubleVar(root, self.beta)
+		w2 = tkinter.Scale(root, variable = var, orient = tkinter.HORIZONTAL, digits = 3, length = 500, resolution=0.001, from_=0, to=2)
+		w2.pack()
 
 		button = tkinter.Button(master=root, text="Quit", command=_quit)
 		button.pack(side=tkinter.BOTTOM)
