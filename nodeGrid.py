@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 from random import randint
+import sys
 
 class NodeGrid(object):
     """docstring for NodeGrid."""
@@ -10,9 +11,6 @@ class NodeGrid(object):
         self.sizeY = sizeY
         self.baseColor = color
         self.prepareGraph()
-        self.plot()
-        self.startInfection()
-        self.plot()
 
     def prepareGraph(self):
         self.G = nx.grid_2d_graph(self.sizeX, self.sizeY)
@@ -27,6 +25,12 @@ class NodeGrid(object):
     def changeNodeAtColor(self, i, j, color):
         self.colors[i*self.sizeY + j] = color
 
+    def infectStep(self):
+        #a changer pour infecter localement/globalement
+        j = randint(0, self.sizeY-1)
+        i = randint(0, self.sizeX-1)
+        self.changeNodeAtColor(i,j, 'red')
+
     def startInfection(self, I=1):
         for i in range(I):
             j = randint(0, self.sizeY-1)
@@ -39,4 +43,11 @@ class NodeGrid(object):
 
 
 if __name__ == '__main__':
-    NodeGrid()
+    graphe = NodeGrid()
+    graphe.plot()
+    graphe.startInfection()
+    graphe.plot()
+    if len(sys.argv) > 1 and sys.argv[1] == "all":
+        for i in range(10):
+            graphe.infectStep()
+            graphe.plot()
