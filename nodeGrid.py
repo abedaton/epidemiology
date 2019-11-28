@@ -22,10 +22,7 @@ class PixelGrid(object):
         self.cured = set()
 
     def __getitem__(self, key):
-        if isinstance(key, int): #PixelGrid[0]
-            return self.pixels[key]
-        else: #PixelGrid[(0,0)]
-            return self.pixels[key[0]][key[1]]
+        return self.pixels[key[0]][key[1]]
 
     def startInfection(self, I0=1):
         for patientsZero in range(I0):
@@ -34,8 +31,12 @@ class PixelGrid(object):
             self.infect((i,j))
         self.createHeatmap()
 
+    def canBeInfected(self, cell):
+        return cell not in self.infected and\
+               cell not in self.cured
+
     def infect(self, cell):
-        if cell not in self.cured:
+        if self.canBeInfected(cell):
             self.pixels[cell] = 1
             self.infected.add(cell)
 
@@ -44,7 +45,7 @@ class PixelGrid(object):
         self.infected.remove(cell)
         self.cured.add(cell)
 
-    def stepInfection(self, infectNeighbourProb=1, cureProb=0.1):
+    def stepInfection(self, infectNeighbourProb=0.02, cureProb=0.1):
         infected = list(self.infected)
         for i,j in infected:
             for cell in self.neighbors(i,j):
@@ -56,10 +57,6 @@ class PixelGrid(object):
     def createHeatmap(self, cmap='hot'):
         self.figure = plt.gcf()
         self.image = plt.imshow(self.pixels, cmap=cmap)
-
-    def plot(self):
-        self.makeHeatmap()
-        plt.show()
 
     def refreshHeatmap(self, frame):
         self.stepInfection()
@@ -202,5 +199,5 @@ if __name__ == '__main__':
     #test.plot()
     test.startInfection(10)
     #test.plot()
-    ani = animation.FuncAnimation(test.figure, test.refreshHeatmap, frames=100, interval=50)
+    ani = animation.FuncAnimation(test.figure, test.refreshHeatmap, interval=10)
     plt.show()
