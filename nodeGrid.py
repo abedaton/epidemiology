@@ -45,7 +45,7 @@ class PixelGrid(object):
         self.infected.remove(cell)
         self.cured.add(cell)
 
-    def stepInfection(self, infectNeighbourProb=0.02, cureProb=0.1):
+    def stepInfection(self, infectNeighbourProb=0.2, cureProb=0.1):
         infected = list(self.infected)
         for i,j in infected:
             for cell in self.neighbors(i,j):
@@ -59,8 +59,14 @@ class PixelGrid(object):
         self.image = plt.imshow(self.pixels, cmap=cmap)
 
     def refreshHeatmap(self, frame):
+        print(frame)
         self.stepInfection()
         self.image.set_data(self.pixels)
+
+    def animate(self, stepTimeInterval=50, nbSteps=100):
+        ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
+        interval=stepTimeInterval, frames=nbSteps, repeat=False)
+        plt.show()
 
 
     def neighbors(self, icell,j):
@@ -194,10 +200,6 @@ class NodeGrid(object):
         plt.show()
 
 if __name__ == '__main__':
-    #NodeGrid()
     test = PixelGrid(10,30)
-    #test.plot()
-    test.startInfection(10)
-    #test.plot()
-    ani = animation.FuncAnimation(test.figure, test.refreshHeatmap, interval=10)
-    plt.show()
+    test.startInfection()
+    test.animate()
