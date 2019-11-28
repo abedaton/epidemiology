@@ -1,10 +1,16 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import matplotlib as mpl
 import networkx as nx
 import random as rd
 import numpy as np
 from scipy.integrate import odeint
 from all import *
+
+VIRGIN = 0
+INFECTED = 1
+IMMUNE = 2
+DEAD = 3
 
 #local global ?
 #utiliser les modeles ?
@@ -17,7 +23,7 @@ class PixelGrid(object):
         super(PixelGrid, self).__init__()
         self.X = sizeX
         self.Y = sizeY
-        self.pixels = np.zeros((sizeY, sizeX))
+        self.pixels = np.full((sizeY, sizeX), base)
         self.infected = set()
         self.cured = set()
 
@@ -37,45 +43,54 @@ class PixelGrid(object):
 
     def infect(self, cell):
         if self.canBeInfected(cell):
-            self.pixels[cell] = 1
+            self.pixels[cell] = INFECTED
             self.infected.add(cell)
 
-    def cure(self, cell):
-        self.pixels[cell] = 0
+    def immunize(self, cell):
+        self.pixels[cell] = IMMUNE
         self.infected.remove(cell)
         self.cured.add(cell)
 
-    def stepInfection(self, infectNeighbourProb=0.2, cureProb=0.1):
+    def die(self, cell):
+        self.pixels[cell] = DEAD
+        self.infected.remove(cell)
+
+    def stepInfection(self, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05):
         infected = list(self.infected)
-        for i,j in infected:
-            for cell in self.neighbors(i,j):
+        for host in infected:
+            for cell in self.neighbors(host):
                 if luckCheck(infectNeighbourProb):
                     self.infect(cell)
             if luckCheck(cureProb):
-                self.cure((i,j))
+                self.immunize(host)
+            elif luckCheck(dieProb):
+                self.die(host)
 
     def createHeatmap(self, cmap='hot'):
-        self.figure = plt.gcf()
-        self.image = plt.imshow(self.pixels, cmap=cmap)
+        self.figure, ax = plt.subplots()
+        bounds = [VIRGIN, INFECTED, IMMUNE, DEAD]
+        cmap = mpl.colors.ListedColormap(['black', 'red', 'blue', 'orange'])
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+        self.image = plt.imshow(self.pixels, cmap=cmap, norm=norm)
 
     def refreshHeatmap(self, frame):
-        print(frame)
         self.stepInfection()
         self.image.set_data(self.pixels)
 
-    def animate(self, stepTimeInterval=50, nbSteps=100):
+    def animate(self, stepTimeInterval=50, nbSteps=150):
         ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
         interval=stepTimeInterval, frames=nbSteps, repeat=False)
         plt.show()
 
 
-    def neighbors(self, icell,j):
+    def neighbors(self, host):
         res = []
-        for i in (icell-1, icell, icell+1):
+        j = host[1]
+        for i in (host[0]-1, host[0], host[0]+1):
             if 0 <= i <= self.Y-1: #Si i n'est pas out of bound
                 if j > 0: #Si j n'est pas la première case
                     res.append((i, j-1))
-                if i != icell: #On est pas voisin avec soi-même
+                if i != host[0]: #On est pas voisin avec soi-même
                     res.append((i, j))
                 if j < self.X-1: #Si j n'est pas la dernière case
                     res.append((i, j+1))
@@ -203,3 +218,4 @@ if __name__ == '__main__':
     test = PixelGrid(10,30)
     test.startInfection()
     test.animate()
+    print(test.pixels)
