@@ -5,6 +5,10 @@ import numpy as np
 from scipy.integrate import odeint
 from all import *
 
+#local global ?
+#utiliser les modeles ?
+#changer x et y en p
+
 class NodeGrid(object):
     """docstring for NodeGrid."""
 
@@ -35,7 +39,8 @@ class NodeGrid(object):
         pas=5
         for i in range (0,t-1,pas):
         	   #print(self.S[i],self.I[i],self.R[i])
-            self.plot(i,pas)
+            self.spread(i,pas)
+            self.plot()
 
     def prepareGraph(self):
         self.G = nx.grid_2d_graph(self.sizeX, self.sizeY)
@@ -51,7 +56,7 @@ class NodeGrid(object):
     def changeNodeAtColor(self, i, j, color):
         self.colors[i*self.sizeY + j] = color
 
-    def plot(self,t,dt):
+    def spread(self,t,dt):
         #print(t,t-dt)
     	  #to_change=[]
         #delta_e=
@@ -84,7 +89,7 @@ class NodeGrid(object):
                     #to_change.append((i*j,i_victim*j_victim))
                     self.changeNodeAtColor(_new_x,_new_y,'red')
                 else:
-                    print('error 404')
+                    print('error 404, pas de susceptible')
 
         # suceptible jaune
         # infecté rouge
@@ -111,9 +116,10 @@ class NodeGrid(object):
                     #to_change.append((i*j,i_victim*j_victim))
                     self.changeNodeAtColor(_new_x,_new_y,'green')
                 else:
-                    print('erreur 404')
+                    print("erreur 404, pas d'infectés")
         #self.G.add_edges_from(to_change)
-
+        
+    def plot(self):
         nx.draw_networkx(self.G, pos=self.pos, labels=self.labels, node_color=self.colors )
         plt.show()
 
