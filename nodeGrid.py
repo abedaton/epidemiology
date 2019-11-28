@@ -12,6 +12,8 @@ class NodeGrid(object):
         self.sizeX = int((N**0.5)+1)
         self.sizeY = int(N/int(N**0.5))
         
+        self.N=N
+        
         self.scenario=scenario
          
         #self.b_Color = 'grey'
@@ -30,9 +32,10 @@ class NodeGrid(object):
         
         #print(self.S[i],self.I[t],self.R[t])
 
-        for i in range (t-1):
-        	#print(self.S[i],self.I[i],self.R[i])
-            self.plot(i)
+        pas=10
+        for i in range (0,t-1,pas):
+        	   #print(self.S[i],self.I[i],self.R[i])
+            self.plot(i,pas)
 
     def prepareGraph(self):
         self.G = nx.grid_2d_graph(self.sizeX, self.sizeY)
@@ -48,11 +51,17 @@ class NodeGrid(object):
     def changeNodeAtColor(self, i, j, color):
         self.colors[i*self.sizeY + j] = color
 
-    def plot(self,t):
+    def plot(self,t,dt):
+        #print(t,t-dt)
     	#to_change=[]
         #delta_e=
-        delta_i=int(self.I[t])-int(self.R[t-1])
-        delta_r=int(self.I[t])-int(self.R[t-1])
+        #delta_s=int(((self.I[t]-self.R[t-1])/100)*self.N)
+        delta_i=int(((self.I[t]-self.I[t-dt])/100)*self.N)
+        delta_r=int(((self.R[t]-self.R[t-dt])/100)*self.N)
+        
+        
+        #print((int(self.S[t-dt])/100)*self.N, (int(self.I[t])/100)*self.N, (int(self.R[t])/100)*self.N)
+        #print((int(self.S[t])/100)*self.N, (int(self.I[t])/100)*self.N, (int(self.R[t])/100)*self.N)
         
         #Ajout des nouveaux infectés
         if delta_i>0:
@@ -79,7 +88,7 @@ class NodeGrid(object):
         #Ajout des nouveaux recovered
         if delta_r>0 :
             for new_victim in range (delta_r):
-            	if 'red' in self.colors:
+                if 'red' in self.colors:
                     _new_x=randint(0,self.sizeX)
                     _new_y=randint(0,self.sizeY)
                    
@@ -96,7 +105,8 @@ class NodeGrid(object):
  
                     #to_change.append((i*j,i_victim*j_victim))
                     self.changeNodeAtColor(_new_x,_new_y,'green')
-
+                else:
+                    print('erreur 404')
         #self.G.add_edges_from(to_change)
 
         nx.draw_networkx(self.G, pos=self.pos, labels=self.labels, node_color=self.colors )
