@@ -17,7 +17,7 @@ class NodeGrid(object):
         self.scenario=scenario
          
         #self.b_Color = 'grey'
-        #self.s_Color = 'grey'
+        #self.s_Color = 'yellow'
         #self.e_Color = 'blue'
         #self.i_Color = 'red'
         #self.r_Color = 'green'
@@ -32,7 +32,7 @@ class NodeGrid(object):
         
         #print(self.S[i],self.I[t],self.R[t])
 
-        pas=10
+        pas=5
         for i in range (0,t-1,pas):
         	   #print(self.S[i],self.I[i],self.R[i])
             self.plot(i,pas)
@@ -46,14 +46,14 @@ class NodeGrid(object):
         # sur chaque noeud
         self.labels = dict( ((i, j), " ") for i, j in self.G.nodes() )
 
-        self.colors = ['grey' for i in range(len(self.G.nodes()))]
+        self.colors = ['yellow' for i in range(len(self.G.nodes()))]
 
     def changeNodeAtColor(self, i, j, color):
         self.colors[i*self.sizeY + j] = color
 
     def plot(self,t,dt):
         #print(t,t-dt)
-    	#to_change=[]
+    	  #to_change=[]
         #delta_e=
         #delta_s=int(((self.I[t]-self.R[t-1])/100)*self.N)
         delta_i=int(((self.I[t]-self.I[t-dt])/100)*self.N)
@@ -66,13 +66,13 @@ class NodeGrid(object):
         #Ajout des nouveaux infectés
         if delta_i>0:
             for new_victim in range (delta_i):
-            	if 'grey' in self.colors:
+                if 'yellow' in self.colors:
                     _new_x=randint(0,self.sizeX)
                     _new_y=randint(0,self.sizeY)
                 
                     col='red'
 
-                    while col!='grey':
+                    while col!='yellow':
                         _new_x=randint(0,self.sizeX)
                         _new_y=randint(0,self.sizeY)
                         try:
@@ -83,8 +83,13 @@ class NodeGrid(object):
 
                     #to_change.append((i*j,i_victim*j_victim))
                     self.changeNodeAtColor(_new_x,_new_y,'red')
+                else:
+                    print('error 404')
 
-
+        # suceptible jaune
+        # infecté rouge
+        # gueri vert
+        
         #Ajout des nouveaux recovered
         if delta_r>0 :
             for new_victim in range (delta_r):
