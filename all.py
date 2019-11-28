@@ -59,16 +59,17 @@ class Epidemy:
 		legend.get_frame().set_alpha(0.5)
 		plt.show()
 
-# -----------------------------------------------------------------------------------------
+if __name__ == '__main__':
+	# -----------------------------------------------------------------------------------------
 
-SIR = Epidemy(1001, 1, 0, 1000, 1000, {"beta" : 0.2, "gamma" : 1./10})
-S, I, R = SIR.solve("SIR")
-params = {"S" : [S, "(S)usceptible"], "I" : [I, "(I)nfected"], "R" : [R, "(R)ecovered"]}
-SIR.letsPlot(params)
+	SIR = Epidemy(1001, 1, 0, 1000, 1000, {"beta" : 0.2, "gamma" : 1./10})
+	S, I, R = SIR.solve("SIR")
+	params = {"S" : [S, "(S)usceptible"], "I" : [I, "(I)nfected"], "R" : [R, "(R)ecovered"]}
+	SIR.letsPlot(params)
 
-# -----------------------------------------------------------------------------------------
+	# -----------------------------------------------------------------------------------------
 
-SEIHFR = Epidemy(1001, 1, 0, 1000, 1000, {"E0":0, "H0":0, "F0":0, "betaI":0.190, "betaF":0.668, "betaH":0.641, "alpha":1.555, "gammaH":0.285, "gammaDH":0.838, "gammaF":0.726, "gammaI":0.085, "gammaD":0.419, "gammaIH":0.344, "theta":0.197, "delta1":0.750, "delta2": 0.750})
-S, E, I, H, F, R = SEIHFR.solve("SEIHFR")
-params = {"S" : [S, "(S)usceptible"], "I" : [I, "(I)nfected"], "H": [H, "(H)ospitalized"], "F" : [F, '(F)uneralized'], "R" : [R, "(R)ecovered"]}
-SEIHFR.letsPlot(params)
+	SEIHFR = Epidemy(1001, 1, 0, 1000, 1000, {"E0":0, "H0":0, "F0":0, "betaI":0.190, "betaF":0.668, "betaH":0.641, "alpha":1.555, "gammaH":0.285, "gammaDH":0.838, "gammaF":0.726, "gammaI":0.085, "gammaD":0.419, "gammaIH":0.344, "theta":0.197, "delta1":0.750, "delta2": 0.750})
+	S, E, I, H, F, R = SEIHFR.solve("SEIHFR")
+	params = {"S" : [S, "(S)usceptible"], "I" : [I, "(I)nfected"], "H": [H, "(H)ospitalized"], "F" : [F, '(F)uneralized'], "R" : [R, "(R)ecovered"]}
+	SEIHFR.letsPlot(params)
