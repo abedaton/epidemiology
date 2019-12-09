@@ -4,6 +4,7 @@ import matplotlib.animation as animation
 import matplotlib as mpl
 from matplotlib.gridspec import GridSpec
 import numpy as np
+import sys
 
 VIRGIN = 0
 INFECTED = 1
@@ -34,8 +35,8 @@ class PixelGrid(object):
 
     def startInfection(self, I0=1):
         for patientsZero in range(I0):
-            i = rd.randint(0,self.Y-1)
-            j = rd.randint(0,self.X-1)
+            i = rd.randrange(0,self.Y)
+            j = rd.randrange(0,self.X)
             self.infect((i,j))
         self.createGraph()
 
@@ -124,6 +125,9 @@ def luckCheck(lowerThan):
     return rd.uniform(0,1) <= lowerThan
 
 if __name__ == '__main__':
+    seed = rd.randrange(sys.maxsize)
+    rd.seed(seed)
+    print("Seed =", seed)
     test = PixelGrid(30,30)
     test.startInfection()
     test.animate()
