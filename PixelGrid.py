@@ -17,8 +17,9 @@ nbStates = len(statesName)
 class PixelGrid(object):
     """docstring for PixelGrid."""
 
-    def __init__(self, sizeX, sizeY, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
+    def __init__(self, sizeX, sizeY, seed=None, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
         super(PixelGrid, self).__init__()
+        self.seed = seed
         self.X = sizeX
         self.Y = sizeY
         self.pixels = np.full((sizeY, sizeX), base)
@@ -77,7 +78,8 @@ class PixelGrid(object):
         self.figure = plt.figure()
 
         self.createHeatmap(gs)
-        self.createProgressStamp(gs)
+        self.createProgressStamp()
+        self.createParamStamp()
 
 
 
@@ -95,11 +97,18 @@ class PixelGrid(object):
         cbar.ax.set_yticklabels(statesName)
         return cbar
 
-    def createProgressStamp(self, gs):
-        #progressStamp = self.figure.add_subplot(gs[2,:])
-        axtext = self.figure.add_axes([0,0.95,0.1,0.05])
+    def createProgressStamp(self):
+        axtext = self.figure.add_axes([0,0.05,0.1,0.05])
         axtext.axis("off")
         self.timeStep = axtext.text(0.5,0.5, str(0), ha="left", va="top")
+
+    def createParamStamp(self):
+        axtext = self.figure.add_axes([0,0.95,0.1,0.05])
+        axtext.axis("off")
+        param = axtext.text(0.5,0.5, str(0), ha="left", va="top")
+        text = "Seed= " + str(self.seed) + " I=" + str(self.infectNeighbourProb) + " C=" + str(self.cureProb) + " D=" + str(self.dieProb)
+        print(text)
+        param.set_text(text)
 
 
     def refreshHeatmap(self, frame):
@@ -138,7 +147,7 @@ if __name__ == '__main__':
     print("Seed =", param[0])
     for elem in param[1:]:
         print(elem)
-    test = PixelGrid(30,30, *param[1:])
+    test = PixelGrid(30,30, *param)
     test.startInfection()
     test.animate()
     print(test.pixels)
