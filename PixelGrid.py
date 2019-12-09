@@ -124,11 +124,21 @@ class PixelGrid(object):
 def luckCheck(lowerThan):
     return rd.uniform(0,1) <= lowerThan
 
+def parseParametres(argv):
+    seed = float(argv[1]) if len(argv) > 1 else rd.randrange(sys.maxsize)
+    I = float(argv[2]) if len(argv) > 2 else 0.2
+    C = float(argv[3]) if len(argv) > 3 else 0.1
+    D = float(argv[4]) if len(argv) > 4 else 0.05
+    return seed, I, C, D
+
 if __name__ == '__main__':
-    seed = rd.randrange(sys.maxsize)
-    rd.seed(seed)
-    print("Seed =", seed)
-    test = PixelGrid(30,30)
+    param = parseParametres(sys.argv)
+
+    rd.seed(param[0])
+    print("Seed =", param[0])
+    for elem in param[1:]:
+        print(elem)
+    test = PixelGrid(30,30, *param[1:])
     test.startInfection()
     test.animate()
     print(test.pixels)
