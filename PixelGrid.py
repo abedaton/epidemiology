@@ -86,7 +86,7 @@ class PixelGrid(object):
     def createHeatmap(self, gs):
         hm = self.figure.add_subplot(gs[0:3,:])
         hm.set_title("Modélisation d'une infection.")
-        cmap = mpl.colors.ListedColormap(['black', 'red', 'blue', 'orange'])
+        cmap = mpl.colors.ListedColormap(['white', 'red', 'blue', 'black'])
         #création heatmap avec colorbar
         self.image = hm.imshow(self.pixels, cmap=cmap, vmin=0,vmax=nbStates)
         cbar = self.createColorBar(hm)
