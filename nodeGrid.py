@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib as mpl
 import networkx as nx
-import random as rd
+from random import *
 import numpy as np
 from scipy.integrate import odeint
 from all import *
