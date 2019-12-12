@@ -18,7 +18,6 @@ class PixelGrid(object):
     """docstring for PixelGrid."""
 
     def __init__(self, sizeX, sizeY, seed=None, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
-        super(PixelGrid, self).__init__()
         self.seed = seed
         self.X = sizeX
         self.Y = sizeY
