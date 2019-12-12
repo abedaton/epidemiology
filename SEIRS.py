@@ -5,6 +5,24 @@ import matplotlib.pyplot as plt
 
 class SEIRS(object):
     """docstring for SEIRS."""
+    initial = { "S0" : "Suceptible",
+                "E0" : "Exposed",
+                "I0" : "Infected",
+                "R0" : "Recovered"}
+    vars = {"Beta"   : "infectiousRate",
+            "Sigma"  : "incubationRate",
+            "Gamma"  : "recoveryRate",
+            "Epsilon": "lossImunityRate"}
+
+    def get(self, var):
+        try:
+            exec("return self."+var)
+        except expression as identifier:
+            return None
+
+    def set(self, var, val):
+        exec("self."+var+" = "+val)
+
 
     def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
                  nbRcvrd0=0, infectiousRate=0.3, incubationRate=0.1,\
