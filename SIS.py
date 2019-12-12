@@ -47,8 +47,31 @@ class SIS(object):
             self.set(elem[0], ret.T[index])
         return ret.T
 
-    def createGraph(self, duration):
-        pass
+    def createGraph(self, duration=None, Color=['b','y','r','g']):
+        """
+        Susceptible in blue, Exposed in yellow, Infected in red, recovered in green
+        """
+        if duration == None:
+            duration = self.timeVector[-1]
+        if not self.solved:
+            self.solveDifferential()
+
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        for index, elem in enumerate(self.initial.keys()):
+            var = self.get(elem[0])
+            name = self.initial[elem]
+            name = '('+name[0].upper()+')'+name[1:]
+            ax.plot(self.timeVector, var, Color[index], label=name)
+        ax.set_xlabel('Time (in days)')
+        ax.set_ylabel('Populaton (in person)')
+
+        ax.set_xlim(0, duration)
+        legend = ax.legend() #ET?
+
+    def plot(self, duration=None):
+        self.createGraph(duration)
+        plt.show()
 
     def export(self, filename=None, duration=None, d=":"):
         if filename ==None:
