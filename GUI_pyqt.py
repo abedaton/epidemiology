@@ -1,7 +1,7 @@
 import sys
 from SEIRS import *
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -70,8 +70,9 @@ class App(QWidget):
             text = QLabel()
             text.setText(model.vars[i])
 
-            but = QSpinBox()
+            but = QDoubleSpinBox()
             but.setRange(0,1)
+            but.setSingleStep(0.01)
             print(i)
             print(model.get(i))
             but.setValue(model.get(i))
@@ -162,7 +163,7 @@ class PlotCanvas(FigureCanvas):
         data = [random.random() for i in range(25)]
         ax = self.figure.add_subplot(111)
         ax.plot(data, 'r-')
-        ax.set_title(self.model.name) # à regarder
+        ax.set_title(model.name) # à regarder
         self.draw()
 
 
