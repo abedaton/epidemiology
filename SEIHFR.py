@@ -26,7 +26,7 @@ class SEIHFR(SIS):
     def __init__(self, S0=999, E0=0, I0=1, H0=0, F0=0, R0=0,\
                 betaI = 0.190, betaF = 0.668, betaH = 0.641, alpha = 1.555,\
                 gammaH = 0.285, gammaDH = 0.838, gammaF = 0.726, gammaI = 0.085,\
-                delta1 = 0.750, delta2 = 0.750,\
+                gammaD = 0.419, gammaIH = 0.344, theta = 0.197, delta1 = 0.750, delta2 = 0.750,\
                 timeStart=0, timeStop=1000, nbSteps=1001):
         self.S0 = S0
         self.E0 = E0
@@ -62,7 +62,7 @@ class SEIHFR(SIS):
         dRdt = gammaI*(1-theta)*(1-delta1)*I + gammaIH*(1-delta2)*H + gammaF*F
         return dSdt, dEdt, dIdt, dHdt, dFdt, dRdt
 
-
+"""
 S0, E0, I0, H0, F0, R0 =  1000, 0, 1, 0, 0, 0
 N = S0+E0+I0+H0+F0+R0
 # set param for Ebola by cautkin River
@@ -138,4 +138,4 @@ print("Nombre de personne morte mais pas encore enterée t(50) =", F[49])
 print("Nombre de personne retablie ou enterée t(50) =", R[49])
 plt.show()
 
-
+"""
