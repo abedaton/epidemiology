@@ -1,6 +1,3 @@
-#import numpy as np
-#from scipy.integrate import odeint
-#import matplotlib.pyplot as plt
 from SIS import *
 
 class SEIRS(SIS):
@@ -14,15 +11,6 @@ class SEIRS(SIS):
             "sigma"  : "incubationRate",
             "gamma"  : "recoveryRate",
             "epsilon": "lossImunityRate"}
-
-    #def get(self, var):
-    #    try:
-    #        return eval("self."+var)
-    #    except:
-    #        return None
-#
-    #def set(self, var, val):
-    #    eval("self."+var+" = "+val)
 
 
     def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
@@ -120,16 +108,16 @@ class SEIRS(SIS):
         self.createGraph(duration)
         plt.show()
 
-    def export(self, filename="Images/SEIRS", duration=None, d=":"):
-        if filename == "Images/SEIRS":
-            filename += str(self.S0) + d + str(self.E0) + d + str(self.I0) + \
-                        d + str(self.R0) + d +  str(self.beta) + d + \
-                        str(self.sigma) + d + str(self.gamma) + d + \
-                        str(self.epsilon) + d + str(self.timeParam[0]) + d + \
-                        str(self.timeParam[1]) + d + str(self.timeParam[2])
-            filename += ".png"
-        self.createGraph(duration)
-        plt.savefig(filename)
+    #def export(self, filename="Images/SEIRS", duration=None, d=":"):
+    #    if filename == "Images/SEIRS":
+    #        filename += str(self.S0) + d + str(self.E0) + d + str(self.I0) + \
+    #                    d + str(self.R0) + d +  str(self.beta) + d + \
+    #                    str(self.sigma) + d + str(self.gamma) + d + \
+    #                    str(self.epsilon) + d + str(self.timeParam[0]) + d + \
+    #                    str(self.timeParam[1]) + d + str(self.timeParam[2])
+    #        filename += ".png"
+    #    self.createGraph(duration)
+    #    plt.savefig(filename)
 
 def importGraph(filename, d=":"):
     firstSlashIndex = filename.index('/')
