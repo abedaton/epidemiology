@@ -1,5 +1,7 @@
 import sys
-from SEIRS import *
+
+from SIR import SIR
+from SEIRS import SEIRS
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
 from PyQt5.QtGui import QIcon
@@ -51,13 +53,13 @@ class App(QWidget):
             layout_box = QVBoxLayout()
             
             text = QLabel()
-            text.setText(model.initial[i])
+            text.setText(self.model.initial[i])
 
             but = QSpinBox()
             but.setRange(0,1000000)
             print(i)
-            print(model.get(i))
-            but.setValue(model.get(i))
+            print(self.model.get(i))
+            but.setValue(self.model.get(i))
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
@@ -115,7 +117,7 @@ class App(QWidget):
         self.tab1.layout = QVBoxLayout(self)
         
 
-        self.graph = PlotCanvas(self, width=5, height=4)
+        self.graph = PlotCanvas(self, width=5, height=4,self.model)
 
         #self.slider = QSlider(Qt.Horizontal, self)
         #self.slider.setTickPosition(QSlider.TicksBothSides)
@@ -143,12 +145,13 @@ class App(QWidget):
         print("hello")
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
-        self.graph = PlotCanvas(self, width=5, height=4)
+        self.graph = PlotCanvas(self, width=5, height=4,self.model)
 
 
 class PlotCanvas(FigureCanvas):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, parent=None, width=5, height=4, dpi=100,model):
+        self.model = model
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
 
@@ -162,14 +165,40 @@ class PlotCanvas(FigureCanvas):
         self.plot()
 
 
-    def plot(self):
+    def plot(self,Color=['b','y','r','g']):
+        print(self.model.get("S0"))
+        model.solveDifferential()
         data = [random.random() for i in range(25)]
         ax = self.figure.add_subplot(111)
-        ax.plot(data, 'r-')
-        ax.set_title(model.name) # à regarder
+        for index, elem in enumerate(self.model.initial.keys()):
+            var = self.model.get(elem[0])
+            name = self.model.initial[elem]
+            name = '('+name[0].upper()+')'+name[1:]
+            ax.plot(self.model.timeVector,var,"b",label=name)
+        ax.set_title(self.model.name)
+        ax.set_xlabel('Time (in days)')
+        ax.set_ylabel('Populaton (in person)')
         self.draw()
 
 
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     model = SEIRS() 

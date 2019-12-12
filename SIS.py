@@ -43,8 +43,10 @@ class SIS(object):
             list0.append(self.get(elem))
         y0 = tuple(list0)
         ret = odeint(self.differentialEq, y0, self.timeVector)
+
         for index, elem in enumerate(self.initial.keys()):
             self.set(elem[0], ret.T[index])
+
         return ret.T
 
     def createGraph(self, duration=None, Color=['b','y','r','g']):
