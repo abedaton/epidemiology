@@ -9,10 +9,10 @@ class SEIRS(object):
                 "E0" : "Exposed",
                 "I0" : "Infected",
                 "R0" : "Recovered"}
-    vars = {"Beta"   : "infectiousRate",
-            "Sigma"  : "incubationRate",
-            "Gamma"  : "recoveryRate",
-            "Epsilon": "lossImunityRate"}
+    vars = {"beta"   : "infectiousRate",
+            "sigma"  : "incubationRate",
+            "gamma"  : "recoveryRate",
+            "epsilon": "lossImunityRate"}
 
     def get(self, var):
         try:
@@ -21,7 +21,7 @@ class SEIRS(object):
             return None
 
     def set(self, var, val):
-        exec("self."+var+" = "+val)
+        eval("self."+var+" = "+val)
 
 
     def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
