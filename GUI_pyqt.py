@@ -1,5 +1,7 @@
 import sys
-from SEIRS import *
+
+from SIR import SIR
+from SEIRS import SEIRS
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
 from PyQt5.QtGui import QIcon
@@ -36,28 +38,19 @@ class App(QWidget):
         self.population_name.setText("Population totale")
 
         # out of tab
-        self.population = QSpinBox()
-        self.population.setRange(0,1000000)
-        self.population.setValue(1000)
-        self.population.setSingleStep(1000)
-
-        self.layout_pop.addWidget(self.population_name)
-        self.layout_pop.addWidget(self.population)
-
-        self.layout_param_init.addLayout(self.layout_pop)
 
 
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
             
             text = QLabel()
-            text.setText(model.initial[i])
+            text.setText(self.model.initial[i])
 
             but = QSpinBox()
             but.setRange(0,1000000)
             print(i)
-            print(model.get(i))
-            but.setValue(model.get(i))
+            print(self.model.get(i))
+            but.setValue(self.model.get(i))
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
@@ -115,7 +108,7 @@ class App(QWidget):
         self.tab1.layout = QVBoxLayout(self)
         
 
-        self.graph = PlotCanvas(self, width=5, height=4)
+        self.graph = PlotCanvas(self, self.model, width=5, height=4)
 
         #self.slider = QSlider(Qt.Horizontal, self)
         #self.slider.setTickPosition(QSlider.TicksBothSides)
@@ -143,12 +136,13 @@ class App(QWidget):
         print("hello")
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
-        self.graph = PlotCanvas(self, width=5, height=4)
+        self.graph.plot()
 
 
 class PlotCanvas(FigureCanvas):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self,parent=None,model = None, width=5, height=4, dpi=100):
+        self.model = model
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
 
@@ -162,12 +156,28 @@ class PlotCanvas(FigureCanvas):
         self.plot()
 
 
-    def plot(self):
+    def plot(self,Color=['b','y','r','g']):
+        print(self.model.get("S0"))
+        model.solveDifferential()
         data = [random.random() for i in range(25)]
         ax = self.figure.add_subplot(111)
-        ax.plot(data, 'r-')
-        ax.set_title(model.name) # à regarder
+        ax.clear()
+        for index, elem in enumerate(self.model.initial.keys()):
+            var = self.model.get(elem[0])
+            name = self.model.initial[elem]
+            name = '('+name[0].upper()+')'+name[1:]
+            ax.plot(self.model.timeVector,var,Color[index],label=name)
+        ax.set_title(self.model.name)
+        ax.set_xlabel('Time (in days)')
+        ax.set_ylabel('Populaton (in person)')
+
+        ax.set_xlim(0,200)
+        legend = ax.legend()
+        ax.grid(True)
         self.draw()
+
+
+
 
 
 if __name__ == '__main__':

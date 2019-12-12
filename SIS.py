@@ -31,7 +31,6 @@ class SIS(object):
         self.gamma = recoveryRate
         self.timeParam = [timeStart, timeStop, nbSteps]
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
-        self.solved = False
 
     def differentialEq(self, y, t):
         pass
@@ -43,8 +42,10 @@ class SIS(object):
             list0.append(self.get(elem))
         y0 = tuple(list0)
         ret = odeint(self.differentialEq, y0, self.timeVector)
+
         for index, elem in enumerate(self.initial.keys()):
-            self.set(elem[0], ret.T[index])
+            self.set(elem[0], list(ret.T[index]))
+
         return ret.T
 
     def createGraph(self, duration=None, Color=['b','y','r','g']):
@@ -53,8 +54,8 @@ class SIS(object):
         """
         if duration == None:
             duration = self.timeVector[-1]
-        if not self.solved:
-            self.solveDifferential()
+
+        self.solveDifferential()
 
         fig = plt.figure()
         ax = fig.add_subplot()

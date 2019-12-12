@@ -1,5 +1,7 @@
 from SIS import SIS
-
+from scipy.integrate import odeint
+import numpy as np
+import matplotlib.pyplot as plt
 class SIR(SIS):
     """Docstring"""
     name = "SIR"
@@ -21,7 +23,6 @@ class SIR(SIS):
         self.gamma = recoveryRate
         self.timeParam = [timeStart, timeStop, nbSteps]
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
-        self.solved = False
 
     def differentialEq(self, y, t):
         S, I, R = y
