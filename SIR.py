@@ -1,5 +1,7 @@
 from SIS import SIS
-
+from scipy.integrate import odeint
+import numpy as np
+import matplotlib.pyplot as plt
 class SIR(SIS):
     """Docstring"""
     name = "SIR"
@@ -21,14 +23,12 @@ class SIR(SIS):
         self.gamma = recoveryRate
         self.timeParam = [timeStart, timeStop, nbSteps]
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
-        self.solved = False
 
-     def differentialEq(self, y, t):
+    def differentialEq(self, y, t):
         S, I, R = y
         dSdt = -beta * S * I / N
         dIdt = beta * S * I / N - gamma * I
         dRdt = gamma * I
-        self.solved = True
         return dSdt, dIdt, dRdt
 
 I0, R0 =  1, 0
@@ -47,7 +47,7 @@ def deriv(y, t, N, beta, gamma):
     dIdt = beta * S * I / N - gamma * I
     dRdt = gamma * I
     return dSdt, dIdt, dRdt
-
+'''
 # vecteur initial
 y0 = S0, I0, R0
 
@@ -81,6 +81,6 @@ print("Nombre de personne susceptible au debut =", S[0])
 print("Nombre de personne susceptible a la fin =", S[-1])
 print("Nombre de personne infectée a la fin =", I[-1])
 print("Nombre de personne retablie a la fin =", R[-1])
-plt.show()
+plt.show()'''
 
 
