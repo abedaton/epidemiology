@@ -1,11 +1,68 @@
-import numpy as np
-from scipy.integrate import odeint
-import matplotlib.pyplot as plt
+from SIS import SIS
 
-# N = Population Totale.
-# S = suceptible , E = exposed , I = infected , H = hospitalized
-# F = funeralized ,R = removed
-# I0,E0,H0,F0 et R0 sont les états de base a l'instant t = 0
+class SEIHFR(SIS):
+    """docstring for SEIRS."""
+    name = "SEIHFR"
+    initial = { "S0" : "Suceptible",
+                "E0" : "Exposed",
+                "I0" : "Infected",
+                "H0" : "hospitalized",
+                "F0" : "funeralized",
+                "R0" : "Recovered"}
+    vars = { "betaI"   : "virulance I",
+             "betaF"   : "virulance F",
+             "betaH"   : "virulance H",
+             "alpha"   : "incubation period",
+             "gammaH"  : "recovery rate H" ,
+             "gammaDH" : "recovery rate DH" ,
+             "gammaF"  : "recovery rate F" ,
+             "gammaI"  : "recovery rate I" ,
+             "gammaD"  : "recovery rate D" ,
+             "gammaIH" : "recovery rate IH" ,
+             "theta"   : "probability a case is H",
+             "delta1"  : "case fatality rate not H",
+             "delta2"  : "case fatality rate H" }
+
+    def __init__(self, S0=999, E0=0, I0=1, H0=0, F0=0, R0=0,\
+                betaI = 0.190, betaF = 0.668, betaH = 0.641, alpha = 1.555\
+                gammaH = 0.285, gammaDH = 0.838, gammaF = 0.726, gammaI = 0.085,\
+                delta1 = 0.750, delta2 = 0.750,\
+                timeStart=0, timeStop=1000, nbSteps=1001):
+        self.S0 = S0
+        self.E0 = E0
+        self.I0 = I0
+        self.H0 = H0
+        self.F0 = F0
+        self.R0 = R0
+        self.N = S0+E0+I0+H0+F0+R0
+        self.S,self.I,self.E,self.H,self.F,self.R = None, None, None, None, None, None
+        self.betaI = betaI
+        self.betaF = betaF
+        self.betaH = betaH
+        self.alpha = alpha
+        self.gammaH = gammaH
+        self.gammaDH = gammaDH
+        self.gammaF = gammaF
+        self.gammaI = gammaI
+        self.gammaD = gammaD
+        self.gammaIH = gammaIH 
+        self.theta = theta
+        self.delta1 = delta1
+        self.delta2 = delta2
+        self.timeParam = [timeStart, timeStop, nbSteps]
+        self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
+    
+    def deriv(y, t, N, betaI, betaF, betaH, alpha, gammaH, gammaDH, gammaF, gammaI, gammaD, gammaIH, theta, delta1, delta2):
+        S, E, I, H, F, R = y
+        dSdt = -((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N
+        dEdt = (((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N) - alpha*E
+        dIdt = alpha*E-(gammaH*theta + gammaI*(1-theta)*(1-delta1) + gammaD*(1-theta)*delta1)*I
+        dHdt = gammaH*theta*I - (gammaDH*delta2 + gammaIH*(1-delta2))*H
+        dFdt = gammaD*(1-theta)*delta1*I + gammaDH*delta2*H - gammaF*F
+        dRdt = gammaI*(1-theta)*(1-delta1)*I + gammaIH*(1-delta2)*H + gammaF*F
+        return dSdt, dEdt, dIdt, dHdt, dFdt, dRdt
+
+
 S0, E0, I0, H0, F0, R0 =  1000, 0, 1, 0, 0, 0
 N = S0+E0+I0+H0+F0+R0
 # set param for Ebola by cautkin River
@@ -30,18 +87,7 @@ theta = 0.197
 delta1 = 0.750
 delta2 = 0.750
 
-t = np.linspace(0, 1000, 1000)
-
-# Equadif de SEIHFR
-def deriv(y, t, N, betaI, betaF, betaH, alpha, gammaH, gammaDH, gammaF, gammaI, gammaD, gammaIH, theta, delta1, delta2):
-    S, E, I, H, F, R = y
-    dSdt = -((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N
-    dEdt = (((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N) - alpha*E
-    dIdt = alpha*E-(gammaH*theta + gammaI*(1-theta)*(1-delta1) + gammaD*(1-theta)*delta1)*I
-    dHdt = gammaH*theta*I - (gammaDH*delta2 + gammaIH*(1-delta2))*H
-    dFdt = gammaD*(1-theta)*delta1*I + gammaDH*delta2*H - gammaF*F
-    dRdt = gammaI*(1-theta)*(1-delta1)*I + gammaIH*(1-delta2)*H + gammaF*F
-    return dSdt, dEdt, dIdt, dHdt, dFdt, dRdt
+t = np.linspace(0, 1000, 1000
 
 # vecteur initial
 y0 = S0, E0, I0, H0, F0, R0
