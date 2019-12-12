@@ -1,10 +1,11 @@
-import numpy as np
-from scipy.integrate import odeint
-import matplotlib.pyplot as plt
+#import numpy as np
+#from scipy.integrate import odeint
+#import matplotlib.pyplot as plt
 
 
-class SEIRS(object):
+class SEIRS(SIS):
     """docstring for SEIRS."""
+    name = "SEIRS"
     initial = { "S0" : "Suceptible",
                 "E0" : "Exposed",
                 "I0" : "Infected",
@@ -14,14 +15,14 @@ class SEIRS(object):
             "gamma"  : "recoveryRate",
             "epsilon": "lossImunityRate"}
 
-    def get(self, var):
-        try:
-            return eval("self."+var)
-        except:
-            return None
-
-    def set(self, var, val):
-        eval("self."+var+" = "+val)
+    #def get(self, var):
+    #    try:
+    #        return eval("self."+var)
+    #    except:
+    #        return None
+#
+    #def set(self, var, val):
+    #    eval("self."+var+" = "+val)
 
 
     def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
