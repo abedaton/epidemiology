@@ -24,7 +24,7 @@ class SEIHFR(SIS):
              "delta2"  : "case fatality rate H" }
 
     def __init__(self, S0=999, E0=0, I0=1, H0=0, F0=0, R0=0,\
-                betaI = 0.190, betaF = 0.668, betaH = 0.641, alpha = 1.555\
+                betaI = 0.190, betaF = 0.668, betaH = 0.641, alpha = 1.555,\
                 gammaH = 0.285, gammaDH = 0.838, gammaF = 0.726, gammaI = 0.085,\
                 delta1 = 0.750, delta2 = 0.750,\
                 timeStart=0, timeStop=1000, nbSteps=1001):
