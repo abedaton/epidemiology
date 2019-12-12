@@ -30,6 +30,7 @@ class App(QWidget):
         self.layout_but = QVBoxLayout(self)
 
         print(self.model.initial)
+        print(self.model.vars)
         self.box = []
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
@@ -45,24 +46,24 @@ class App(QWidget):
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
-            box.append(text,but)
+            self.box.append((text,but))
             self.layout_param_init.addLayout(layout_box)
 
         for i in self.model.vars.keys():
             layout_box = QVBoxLayout()
             
             text = QLabel()
-            text.setText(model.initial[i])
+            text.setText(model.vars[i])
 
             but = QSpinBox()
             but.setRange(0,1)
             print(i)
-            print(vars.get(i))
-            but.setValue(vars.get(i))
+            print(model.get(i))
+            but.setValue(model.get(i))
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
-            box.append(text,but)
+            self.box.append((text,but))
             self.layout_proba.addLayout(layout_box)
 
         
