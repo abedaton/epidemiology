@@ -6,13 +6,9 @@ class SIS(object):
     """docstring"""
     name = "SIS"
     initial = { "S0" : "Suceptible",
-                "E0" : "Exposed",
-                "I0" : "Infected",
-                "R0" : "Recovered"}
-    vars = {"Beta"   : "infectiousRate",
-            "Sigma"  : "incubationRate",
-            "Gamma"  : "recoveryRate",
-            "Epsilon": "lossImunityRate"}
+                "I0" : "Infected"}
+    vars = {"beta"   : "infectiousRate",
+            "gamma"  : "recoveryRate"}
 
     def get(self, var):
         try:
@@ -28,8 +24,6 @@ class SIS(object):
                  timeStart=0, timeStop=1000, nbSteps=1001):
 
         self.S0 = nbSscptbl0
-        self.set("S0", 1)
-        print(self.get("S0"))
         self.I0 = nbInfctd0
         self.N = self.S0 + self.I0
         self.S, self.I = None, None
@@ -39,16 +33,30 @@ class SIS(object):
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
         self.solved = False
 
+    def differentialEq(self, y, t):
+        pass
+
     def solveDifferential(self):
+        # vecteur initial
+        list0 = []
+        for elem in self.initial.keys():
+            list0.append(self.get(elem))
+        y0 = tuple(list0)
+        ret = odeint(self.differentialEq, y0, self.timeVector)
+        for index, elem in enumerate(self.initial.keys()):
+            self.set(elem[0], ret.T[index])
+        return ret.T
+
+    def createGraph(self, duration):
         pass
 
     def export(self, filename=None, duration=None, d=":"):
         if filename ==None:
             filename = "Images/"+self.name
-        for elem in self.initial.keys:
+        for elem in self.initial.keys():
             filename += self.get(elem)
             filename += d
-        for val in self.vals.keys:
+        for val in self.vars.keys():
            filename += self.get(val)
            filename += d
         filename += str(self.timeParam[0]) + d + str(self.timeParam[1]) + d + str(self.timeParam[2])
@@ -57,4 +65,6 @@ class SIS(object):
         plt.savefig(filename)
 
 if __name__ == "__main__":
-    SIS()
+    model = SIS()
+    model.set("S0", 10)
+    print(model.get("S0"))

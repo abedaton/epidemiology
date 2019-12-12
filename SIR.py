@@ -1,9 +1,36 @@
-import numpy as np
-from scipy.integrate import odeint
-import matplotlib.pyplot as plt
+from SIS import SIS
 
-# N = Population Totale.
-# I0 et R0 sont les Infécté de base et les Recovered de base a l'instant t = 0
+class SIR(SIS):
+    """Docstring"""
+    name = "SIR"
+    initial = { "S0" : "Suceptible",
+                "I0" : "Infected",
+                "R0" : "Recovered"}
+    vars = {"beta"   : "infectiousRate",
+            "gamma"  : "recoveryRate"}
+    
+    def __init__(self, nbSscptbl0=999, nbInfctd0=1, nbRcvrd0=0,\
+                 infectiousRate=0.3, recoveryRate=0.05,\
+                 timeStart=0, timeStop=1000, nbSteps=1001):
+        self.S0 = nbSscptbl0
+        self.I0 = nbInfctd0
+        self.R0 = nbRcvrd0
+        self.N = self.S0 + self.I0 + self.R0
+        self.S, self.I, self.R = None, None, None
+        self.beta = infectiousRate
+        self.gamma = recoveryRate
+        self.timeParam = [timeStart, timeStop, nbSteps]
+        self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
+        self.solved = False
+
+     def differentialEq(self, y, t):
+        S, I, R = y
+        dSdt = -beta * S * I / N
+        dIdt = beta * S * I / N - gamma * I
+        dRdt = gamma * I
+        self.solved = True
+        return dSdt, dIdt, dRdt
+
 I0, R0 =  1, 0
 N = 1000+I0
 # Tous les autres sont donc susceptible 

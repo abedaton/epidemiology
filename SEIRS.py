@@ -1,4 +1,5 @@
-from SIS import *
+from SIS import SIS
+import numpy as np
 
 class SEIRS(SIS):
     """docstring for SEIRS."""
@@ -51,13 +52,13 @@ class SEIRS(SIS):
 
         return dSdt, dEdt, dIdt, dRdt
 
-    def solveDifferential(self):
-        # vecteur initial
-        y0 = self.S0, self.E0, self.I0, self.R0
-        ret = odeint(self.differentialEq, y0, self.timeVector)
-        #S E I R = vecteurs de données
-        self.S, self.E, self.I, self.R = ret.T
-        return self.S, self.E, self.I, self.R
+    #def solveDifferential(self):
+    #    # vecteur initial
+    #    y0 = self.S0, self.E0, self.I0, self.R0
+    #    ret = odeint(self.differentialEq, y0, self.timeVector)
+    #    #S E I R = vecteurs de données
+    #    self.S, self.E, self.I, self.R = ret.T
+    #    return self.S, self.E, self.I, self.R
 
     def print(self, tStart=0, tStop=100, nbSteps=4):
         if not self.solved:
@@ -73,10 +74,10 @@ class SEIRS(SIS):
         valueVector[1].append(round(self.I[-1], 2))
         valueVector[2].append(round(self.E[-1], 2))
         valueVector[3].append(round(self.R[-1], 2))
-        for list in valueVector:
-            print(f"{list[0]} : ")
-            for i, value in enumerate(list[1:]):
-                print(f"t = {bigSteps*i} | {value}")
+        #for list in valueVector:
+        #    print(f"{list[0]} : ")
+        #    for i, value in enumerate(list[1:]):
+        #        print(f"t = {bigSteps*i} | {value}")
 
     def createGraph(self, duration=None, \
              SColor='b', EColor='y', IColor='r', RColor='g'):
