@@ -1,4 +1,5 @@
 import sys
+from SEIRS import *
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel
 from PyQt5.QtGui import QIcon
@@ -22,13 +23,49 @@ class App(QWidget):
         self.height = 400
         self.model = model
 
-        self.box = []
-
         self.layout = QVBoxLayout(self)
         self.layout_param_init = QHBoxLayout(self)
         self.layout_proba = QHBoxLayout(self)
         self.layout_pop = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
+
+        print(self.model.initial)
+        self.box = []
+        for i in self.model.initial.keys():
+            layout_box = QVBoxLayout()
+            
+            text = QLabel()
+            text.setText(model.initial[i])
+
+            but = QSpinBox()
+            but.setRange(0,1000000)
+            print(i)
+            print(model.get(i))
+            but.setValue(model.get(i))
+
+            layout_box.addWidget(text)
+            layout_box.addWidget(but)
+            box.append(text,but)
+            self.layout_param_init.addLayout(layout_box)
+
+        for i in self.model.vars.keys():
+            layout_box = QVBoxLayout()
+            
+            text = QLabel()
+            text.setText(model.initial[i])
+
+            but = QSpinBox()
+            but.setRange(0,1)
+            print(i)
+            print(vars.get(i))
+            but.setValue(vars.get(i))
+
+            layout_box.addWidget(text)
+            layout_box.addWidget(but)
+            box.append(text,but)
+            self.layout_proba.addLayout(layout_box)
+
+        
 
         self.population_name = QLabel()
         self.population_name.setText("Population totale")
@@ -124,6 +161,7 @@ class PlotCanvas(FigureCanvas):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv) 
-    ex = App("SRI") # prend la classe à créer en paramètre
+    app = QApplication(sys.argv)
+    model = SEIRS() 
+    ex = App(model) # prend la classe à créer en paramètre
     sys.exit(app.exec_())
