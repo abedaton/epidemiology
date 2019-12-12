@@ -61,7 +61,7 @@ class App(QWidget):
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
-            self.box.append((text,but))
+            self.box.append((i,but))
             self.layout_param_init.addLayout(layout_box)
 
         for i in self.model.vars.keys():
@@ -79,7 +79,7 @@ class App(QWidget):
 
             layout_box.addWidget(text)
             layout_box.addWidget(but)
-            self.box.append((text,but))
+            self.box.append((i,but))
             self.layout_proba.addLayout(layout_box)
 
         
@@ -88,7 +88,7 @@ class App(QWidget):
 
         self.button = QPushButton('Lancer simulation', self)
         self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
-        self.button.clicked.connect(self.plop)
+        self.button.clicked.connect(self.new_plot)
 
         self.layout_but.addWidget(self.button)
 
@@ -139,8 +139,11 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.show()
-    def plop(self):
+    def new_plot(self):
         print("hello")
+        for i in range (len(self.box)):
+            self.model.set(self.box[i][0],self.box[i][1].value())
+        self.graph = PlotCanvas(self, width=5, height=4)
 
 
 class PlotCanvas(FigureCanvas):
