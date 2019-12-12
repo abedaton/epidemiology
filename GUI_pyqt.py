@@ -32,6 +32,21 @@ class App(QWidget):
         print(self.model.initial)
         print(self.model.vars)
         self.box = []
+        self.population_name = QLabel()
+        self.population_name.setText("Population totale")
+
+        # out of tab
+        self.population = QSpinBox()
+        self.population.setRange(0,1000000)
+        self.population.setValue(1000)
+        self.population.setSingleStep(1000)
+
+        self.layout_pop.addWidget(self.population_name)
+        self.layout_pop.addWidget(self.population)
+
+        self.layout_param_init.addLayout(self.layout_pop)
+
+
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
             
@@ -68,14 +83,7 @@ class App(QWidget):
 
         
 
-        self.population_name = QLabel()
-        self.population_name.setText("Population totale")
-
-        # out of tab
-        self.population = QSpinBox()
-        self.population.setRange(0,1000000)
-        self.population.setValue(1000)
-        self.population.setSingleStep(1000)
+        
 
         self.button = QPushButton('Lancer simulation', self)
         self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
@@ -84,10 +92,7 @@ class App(QWidget):
         self.layout_but.addWidget(self.button)
 
 
-        self.layout_pop.addWidget(self.population_name)
-        self.layout_pop.addWidget(self.population)
-
-        self.layout_param_init.addLayout(self.layout_pop)
+        
         self.layout_param_init.addLayout(self.layout_but)
 
         self.layout.addLayout(self.layout_param_init)
@@ -157,7 +162,7 @@ class PlotCanvas(FigureCanvas):
         data = [random.random() for i in range(25)]
         ax = self.figure.add_subplot(111)
         ax.plot(data, 'r-')
-        ax.set_title(str(Type(model))) # à regarder
+        ax.set_title(self.model.name) # à regarder
         self.draw()
 
 
