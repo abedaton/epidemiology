@@ -16,7 +16,7 @@ class SEIRS(object):
 
     def get(self, var):
         try:
-            exec("return self."+var)
+            return eval("self."+var)
         except:
             return None
 
