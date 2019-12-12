@@ -2,6 +2,7 @@ import sys
 
 from SIR import SIR
 from SEIRS import SEIRS
+from SEIHFR import SEIHFR
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
 from PyQt5.QtGui import QIcon
@@ -12,7 +13,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
-import random
+from Menu import Menu 
 
 class App(QWidget):
 
@@ -83,7 +84,13 @@ class App(QWidget):
         self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
         self.button.clicked.connect(self.new_plot)
 
+        self.button2 = QPushButton('Menu', self)
+        self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
+        self.button2.clicked.connect(self.back_menu)
+
         self.layout_but.addWidget(self.button)
+        self.layout_but.addWidget(self.button2)
+
 
 
         
@@ -137,6 +144,11 @@ class App(QWidget):
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot()
+    def back_menu(self):
+        self.menu = Menu()
+        self.menu.show()
+        self.close()
+
 
 
 class PlotCanvas(FigureCanvas):
@@ -158,8 +170,7 @@ class PlotCanvas(FigureCanvas):
 
     def plot(self,Color=['b','y','r','g']):
         print(self.model.get("S0"))
-        model.solveDifferential()
-        data = [random.random() for i in range(25)]
+        self.model.solveDifferential()
         ax = self.figure.add_subplot(111)
         ax.clear()
         for index, elem in enumerate(self.model.initial.keys()):
