@@ -35,7 +35,6 @@ class SEIRS(SIS):
         self.gamma = recoveryRate
         self.epsilon = lossImunityRate #rate of returning to S
         self.timeParam = [timeStart, timeStop, nbSteps]
-        #number of days
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
 
         self.solved = False
