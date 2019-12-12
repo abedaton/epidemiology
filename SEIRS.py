@@ -35,10 +35,7 @@ class SEIRS(SIS):
         self.gamma = recoveryRate
         self.epsilon = lossImunityRate #rate of returning to S
         self.timeParam = [timeStart, timeStop, nbSteps]
-        #number of days
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
-
-        self.solved = False
 
     def differentialEq(self, y, t):
         S, E, I, R = y
@@ -47,8 +44,6 @@ class SEIRS(SIS):
         dEdt = ((self.beta * S * I) / self.N ) - ( self.sigma * E )
         dIdt = (self.sigma * E ) - ( self.gamma * I )
         dRdt = (self.gamma * I ) - ( self.epsilon * R )
-
-        self.solved = True
 
         return dSdt, dEdt, dIdt, dRdt
 
@@ -61,8 +56,7 @@ class SEIRS(SIS):
     #    return self.S, self.E, self.I, self.R
 
     def print(self, tStart=0, tStop=100, nbSteps=4):
-        if not self.solved:
-            self.solveDifferential()
+        self.solveDifferential()
         valueVector = [["(S)usceptible"], ["(E)xposed"], ["(I)nfected"], ["(R)ecovered"]]
         bigSteps = int(tStop/nbSteps)
         for i in range(tStart, tStop, bigSteps):
@@ -87,8 +81,7 @@ class SEIRS(SIS):
         """
         if duration == None:
             duration = self.timeVector[-1]
-        if not self.solved:
-            self.solveDifferential()
+        self.solveDifferential()
 
         fig = plt.figure()
         ax = fig.add_subplot()
