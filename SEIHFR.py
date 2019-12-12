@@ -52,14 +52,14 @@ class SEIHFR(SIS):
         self.timeParam = [timeStart, timeStop, nbSteps]
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
     
-    def deriv(y, t, N, betaI, betaF, betaH, alpha, gammaH, gammaDH, gammaF, gammaI, gammaD, gammaIH, theta, delta1, delta2):
+    def deriv(self, y, t):
         S, E, I, H, F, R = y
-        dSdt = -((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N
-        dEdt = (((betaI*S*I) + (betaH*S*H) + (betaF*S*F))/ N) - alpha*E
-        dIdt = alpha*E-(gammaH*theta + gammaI*(1-theta)*(1-delta1) + gammaD*(1-theta)*delta1)*I
-        dHdt = gammaH*theta*I - (gammaDH*delta2 + gammaIH*(1-delta2))*H
-        dFdt = gammaD*(1-theta)*delta1*I + gammaDH*delta2*H - gammaF*F
-        dRdt = gammaI*(1-theta)*(1-delta1)*I + gammaIH*(1-delta2)*H + gammaF*F
+        dSdt = -((self.betaI*S*I) + (self.betaH*S*H) + (self.betaF*S*F))/ self.N
+        dEdt = (((self.betaI*S*I) + (self.betaH*S*H) + (self.betaF*S*F))/ self.N) - self.alpha*E
+        dIdt = self.alpha*E-(self.gammaH*self.theta + self.gammaI*(1-self.theta)*(1-self.delta1) + self.gammaD*(1-self.theta)*self.delta1)*I
+        dHdt = self.gammaH*self.theta*I - (self.gammaDH*self.delta2 + self.gammaIH*(1-self.delta2))*H
+        dFdt = self.gammaD*(1-self.theta)*self.delta1*I + self.gammaDH*self.delta2*H - self.gammaF*F
+        dRdt = self.gammaI*(1-self.theta)*(1-self.delta1)*I + self.gammaIH*(1-self.delta2)*H + self.gammaF*F
         return dSdt, dEdt, dIdt, dHdt, dFdt, dRdt
 
 """
