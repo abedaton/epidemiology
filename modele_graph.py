@@ -50,6 +50,25 @@ class modele(object):
 
 
 	def spread(self):
+		#Wild 1
+		#Virulent 2
+		
+		#Deces
+		for i in range (len(self.mat)):
+			for j in range (len(self.mat[0])):
+				#Wild
+				if self.mat[i][j]==1:
+					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.aw)
+					if temp:
+						self.mat[i][j]=3
+
+				#Virulent
+				if self.mat[i][j]==2:
+					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
+					if temp:
+						self.mat[i][j]=3
+			#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
+	
 		#Mutation
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
@@ -101,8 +120,7 @@ class modele(object):
 										k=k+1
 										ite=0
 								self.mat[new_i][new_j]=1
-						#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.)
-						#Faire un truc avc la virulence ?
+
 					
 
 		#Global
@@ -125,14 +143,6 @@ class modele(object):
 							new_j=random.randint(0,self.L-1)
 							self.mat[new_i][new_j]=1
 
-
-						#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.aw)
-						#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
-						#Faire un truc avc la virulence ?
-
-
-
-
 	def heatmap(self):
 		self.fig, ax_lst = plt.subplots(1,1)
 		heatmap = ax_lst.pcolor(self.mat)
@@ -148,5 +158,4 @@ class modele(object):
 			self.fig.canvas.blit(ax_lst.bbox)
 			self.fig.canvas.flush_events()
 
-if __name__=='main':
-	x=modele()
+x=modele()
