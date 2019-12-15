@@ -1,4 +1,5 @@
 from SIS import SIS
+import numpy as np
 
 class SEIHFR(SIS):
     """docstring for SEIRS."""

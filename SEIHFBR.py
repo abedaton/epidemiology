@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-
+'''
 # N = Population Totale.
 # S = suceptible , E = exposed , I = infected , H = hospitalized
 # F = funeralized ,R = removed
@@ -89,5 +89,8 @@ print("Nombre de personne totalle calcul =" ,round(B[-1]+ S[-1]+ R[-1],0))
 print("Nombre de personne totalle calcul total =" ,B[-1]+ S[-1]+E[-1]+I[-1]+H[-1] + F[-1]+ R[-1],0)
 print("Nombre de personne totalle réelle =" ,N)
 plt.show()
+'''
+class SEIHFBR:
+    pass
 
 

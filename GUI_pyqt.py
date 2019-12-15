@@ -3,6 +3,7 @@ import sys
 from SIR import SIR
 from SEIRS import SEIRS
 from SEIHFR import SEIHFR
+from SEIHFBR import SEIHFBR
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
 from PyQt5.QtGui import QIcon

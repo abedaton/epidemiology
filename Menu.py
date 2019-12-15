@@ -45,7 +45,7 @@ class Menu(QWidget):
         
         self.show()
     def choose_model(self):
-        from GUI_pyqt import App,SIR,SEIRS,SEIHFR
+        from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
             model = SIR()
