@@ -169,7 +169,7 @@ class PlotCanvas(FigureCanvas):
         self.plot()
 
 
-    def plot(self,Color=['b','y','r','g']):
+    def plot(self,Color=['b','y','r','g','m',"c","k"]):
         print(self.model.get("S0"))
         self.model.solveDifferential()
         ax = self.figure.add_subplot(111)
