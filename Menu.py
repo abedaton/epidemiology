@@ -53,8 +53,7 @@ class Menu(QWidget):
         elif (model_name == "SEIHFR"):
             model = SEIHFR()
         elif (model_name == "SEIHFBR"):
-            pass
-            #model = SEIHFBR()
+            model = SEIHFBR()
         self.app2 = App(model)
         self.app2.show()
         self.close()
