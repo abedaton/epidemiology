@@ -2,8 +2,8 @@ from SIS import SIS
 import numpy as np
 
 class SEIHFBR(SIS):
-    """docstring for SEIHFR."""
-    name = "SEIHFR"
+    """docstring for SEIHFBR."""
+    name = "SEIHFBR"
     initial = { "S0" : "Suceptible",
                 "E0" : "Exposed",
                 "I0" : "Infected",
