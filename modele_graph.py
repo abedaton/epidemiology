@@ -52,7 +52,7 @@ class modele(object):
 	def spread(self):
 		#Wild 1
 		#Virulent 2
-		
+
 		#Deces
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
@@ -68,7 +68,7 @@ class modele(object):
 					if temp:
 						self.mat[i][j]=3
 			#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
-	
+
 		#Mutation
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
@@ -121,7 +121,7 @@ class modele(object):
 										ite=0
 								self.mat[new_i][new_j]=1
 
-					
+
 
 		#Global
 		if self.gl:
@@ -158,4 +158,5 @@ class modele(object):
 			self.fig.canvas.blit(ax_lst.bbox)
 			self.fig.canvas.flush_events()
 
-x=modele()
+if __name__ == '__main__':
+	x=modele()
