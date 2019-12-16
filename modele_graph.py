@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 
 
 class modele(object):
-	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=2,aw=1,R0w=2,bm=7.2,am=4,R0m=1.8,gl=False,loc=True):
+	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=2,aw=1,R0w=2,bm=7.2,am=4,R0m=1.8,gl=False,loc=True, showMe=False):
 		self.mat=[[0 for i in range (L)] for j in range (H)]
 
 		self.n=n
@@ -37,8 +37,8 @@ class modele(object):
 			if j0>int(H/2)+int(lc/2):
 				j0=int(H/2)-int(lc/2)
 				i0=i0+1
-
-		self.heatmap()
+		if showMe:
+			self.heatmap()
 
 	def gen_bool_from_a_certian_probability_out_of_100(self,prob):
 		res=False
@@ -159,4 +159,4 @@ class modele(object):
 			self.fig.canvas.flush_events()
 
 if __name__ == '__main__':
-	x=modele()
+	x=modele(showMe=True)
