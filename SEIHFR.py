@@ -1,7 +1,8 @@
 from SIS import SIS
+import numpy as np
 
 class SEIHFR(SIS):
-    """docstring for SEIRS."""
+    """docstring for SEIHFR."""
     name = "SEIHFR"
     initial = { "S0" : "Suceptible",
                 "E0" : "Exposed",
@@ -52,7 +53,7 @@ class SEIHFR(SIS):
         self.timeParam = [timeStart, timeStop, nbSteps]
         self.timeVector = np.linspace(timeStart, timeStop, nbSteps)
     
-    def deriv(self, y, t):
+    def differentialEq(self, y, t):
         S, E, I, H, F, R = y
         dSdt = -((self.betaI*S*I) + (self.betaH*S*H) + (self.betaF*S*F))/ self.N
         dEdt = (((self.betaI*S*I) + (self.betaH*S*H) + (self.betaF*S*F))/ self.N) - self.alpha*E

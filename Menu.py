@@ -21,8 +21,7 @@ class Menu(QWidget):
         self.combo.addItem("SIR",)
         self.combo.addItem("SEIHFR")
         self.combo.addItem("SEIHFBR")
-        self.combo.addItem("SIER")
-        self.combo.addItem("SIERS")
+        self.combo.addItem("SEIRS")
         
         self.button = QPushButton("GO",self)
         self.button.clicked.connect(self.choose_model)
@@ -45,7 +44,7 @@ class Menu(QWidget):
         
         self.show()
     def choose_model(self):
-        from GUI_pyqt import App,SIR,SEIRS,SEIHFR
+        from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
             model = SIR()
@@ -54,13 +53,7 @@ class Menu(QWidget):
         elif (model_name == "SEIHFR"):
             model = SEIHFR()
         elif (model_name == "SEIHFBR"):
-            pass
-            #model = SEIHFBR()
-        elif (model_name == "SIER"):
-            pass
-            #model = SIER()
-        else:
-            model = SEIRS()
+            model = SEIHFBR()
         self.app2 = App(model)
         self.app2.show()
         self.close()
