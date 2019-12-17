@@ -32,23 +32,22 @@ class App(QWidget):
         self.layout_proba = QHBoxLayout(self)
         self.layout_pop = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
-        #self.layout_time = QVBoxLayout(self)
+        self.layout_time = QVBoxLayout(self)
 
         print(self.model.initial)
         print(self.model.vars)
         self.box = []
-        #self.population_name = QLabel()
-        self.population_name.setText("Population totale")
 
         # out of tab
 
         ##set time
-        #text = QLabel()
-        #text.setText(self.model.initial[i])
-        #self.time = QSpinBox()
-        #self.time.setRange(10,10000)
-        #self.layout_time.addWidget(text)
-        #self.layout_time.addWidget(self.time)
+        text = QLabel()
+        text.setText("limite de temps")
+        self.time = QSpinBox()
+        self.time.setRange(10,1000)
+        self.time.setValue(100)
+        self.layout_time.addWidget(text)
+        self.layout_time.addWidget(self.time)
 
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
@@ -102,9 +101,9 @@ class App(QWidget):
 
 
 
-        
+        self.layout_param_init.addLayout(self.layout_time)
         self.layout_param_init.addLayout(self.layout_but)
-        #self.layout_param_init.addLayout(self.layout_time)
+        
         
 
         self.layout.addLayout(self.layout_param_init)
@@ -127,13 +126,9 @@ class App(QWidget):
         
 
         self.graph = PlotCanvas(self, self.model, width=5, height=4)
+        self.graph.plot(self.time)
 
-        #self.slider = QSlider(Qt.Horizontal, self)
-        #self.slider.setTickPosition(QSlider.TicksBothSides)
-        #self.slider.setTickInterval(10)
-        #self.slider.setSingleStep(1)
-
-        #self.tab1.layout.addWidget(self.slider)
+        
         self.tab1.layout.addWidget(self.graph)
 
         
@@ -151,10 +146,9 @@ class App(QWidget):
 
         self.show()
     def new_plot(self):
-        print("hello")
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
-        self.graph.plot()
+        self.graph.plot(self.time)
     def back_menu(self):
         self.menu = Menu()
         self.menu.show()
@@ -176,10 +170,9 @@ class PlotCanvas(FigureCanvas):
                 QSizePolicy.Expanding,
                 QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
-        self.plot()
 
 
-    def plot(self,Color=['b','y','r','g','m',"c","k"]):
+    def plot(self,time,Color=['b','y','r','g','m',"c","k"]):
         print(self.model.get("S0"))
         self.model.solveDifferential()
         ax = self.figure.add_subplot(111)
@@ -193,7 +186,7 @@ class PlotCanvas(FigureCanvas):
         ax.set_xlabel('Time (in days)')
         ax.set_ylabel('Populaton (in person)')
 
-        ax.set_xlim(0,100)
+        ax.set_xlim(0,time.value())
         legend = ax.legend()
         ax.grid(True)
         self.draw()
