@@ -20,7 +20,7 @@ class PixelGrid(object):
     """docstring for PixelGrid."""
 
     def __init__(self, sizeX, sizeY, seed=None, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
-        if len(sys.argv) > 1 : 
+        if len(sys.argv) > 1 :
             loca='1' in str(sys.argv[1])
             globa='1' in str(sys.argv[2])
             self.modele = modele(loc=loca,gl=globa)
@@ -115,7 +115,7 @@ class PixelGrid(object):
         self.timeStep.set_text(str("t=") + str(frame))
         self.image.set_data(self.modele.mat)
 
-    def animate(self, stepTimeInterval=50, nbSteps=100):
+    def animate(self, stepTimeInterval=50, nbSteps=150):
         ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
         interval=stepTimeInterval, frames=nbSteps, repeat=False)
         plt.show()
