@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import time
 import matplotlib.animation as animation
+from copy import copy, deepcopy
 
 
 class modele(object):
@@ -25,7 +26,11 @@ class modele(object):
 		self.R0m=R0m
 		self.gl=gl
 		self.loc=loc
-
+		self.giveupafter=10
+		self.minimum_lenght_of_a_square_to_fit_all_n_in_it=0
+		while ((self.minimum_lenght_of_a_square_to_fit_all_n_in_it/2)**2)<n:
+			self.minimum_lenght_of_a_square_to_fit_all_n_in_it=self.minimum_lenght_of_a_square_to_fit_all_n_in_it+1
+		print(self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
 		lc=int(I0**0.5)
 
 		i0=int(H/2)-int(lc/2)
@@ -47,13 +52,7 @@ class modele(object):
 			res=True
 		return res
 
-
-
-	def spread(self):
-		#Wild 1
-		#Virulent 2
-
-		#Deces
+	def kill_people(self):
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
 				#Wild
@@ -69,7 +68,7 @@ class modele(object):
 						self.mat[i][j]=3
 			#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
 
-		#Mutation
+	def mute_strains(self):
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
 				if self.mat[i][j]==2:
@@ -77,86 +76,93 @@ class modele(object):
 					if temp:
 						self.mat[i][j]=1
 
-				if self.mat[i][j]==1:
+				elif self.mat[i][j]==1:
 					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.mwm)
 					if temp:
 						self.mat[i][j]=2
 
-		#Local
-		if self.loc:
-			for i in range (len(self.mat)):
-				for j in range (len(self.mat[0])):
-					#Virulent
-					if self.mat[i][j]==2:
-						for gens in range (self.n):
-							temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bm)
-							if temp:
-								new_i=j
-								new_j=i
-								ite=0
-								k=1
-								while self.mat[new_i][new_j]==2:
-									ite=ite+1
-									new_i=max(0,min((len(self.mat))-1,(i+random.randint(-k,k))))
-									new_j=max(0,min((len(self.mat[0]))-1,j+random.randint(-k,k)))
-									if ite==25:
-										k=k+1
-										ite=0
-								self.mat[new_i][new_j]=2
-					#Wild
-					if self.mat[i][j]==1:
-						for gens in range (self.n):
-							temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bw)
-							if temp:
-								new_i=j-1
-								new_j=i-1
-								ite=0
-								k=1
-								while self.mat[new_i][new_j]==1:
-									ite=ite+1
-									new_i=max(0,min((len(self.mat))-1,i+random.randint(-k,k)))
-									new_j=max(0,min((len(self.mat[0]))-1,j+random.randint(-k,k)))
-									if ite==25:
-										k=k+1
-										ite=0
-								self.mat[new_i][new_j]=1
-
-
-
-		#Global
-		if self.gl:
-			for i in range (len(self.mat)):
-				for j in range (len(self.mat[0])):
-					#Virulent
-					if self.mat[i][j]==2:
+	def gn_pos(self,i,j):
+		#new_i=random.randint(i-self.minimum_lenght_of_a_square_to_fit_all_n_in_it,i+self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
+		#new_j=random.randint(j-self.minimum_lenght_of_a_square_to_fit_all_n_in_it,j+self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
+		new_i=i+random.randint(-1,1)
+		new_j=j+random.randint(-1,1)
+		return (new_i,new_j)
+		
+	def spread_loc(self):
+		ancienne=deepcopy(self.mat)
+		for i in range (len(self.mat)):
+			for j in range (len(self.mat[0])):
+				#Virulent
+				if self.mat[i][j]==2:
+					for gens in range (self.n):
 						temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bm)
 						if temp:
-							new_i=random.randint(0,self.H-1)
-							new_j=random.randint(0,self.L-1)
-							self.mat[new_i][new_j]=2
-
-					#Wild
-					if self.mat[i][j]==1:
+							compteur=0
+							while compteur<self.giveupafter:
+								#tempi=i+random.randint(-1,1)
+								#tempj=j+random.randint(-1,1)
+								tempi,tempj=self.gn_pos(i,j)
+								try:
+									if ancienne[tempi][tempj]==0:
+										self.mat[tempi][tempj]=2
+								except:
+									compteur=self.giveupafter+1
+									
+								compteur=compteur+1
+			
+				#Wild
+				elif self.mat[i][j]==1:
+					for gens in range (self.n):
 						temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bw)
 						if temp:
+							compteur=0
+							while compteur<self.giveupafter:
+								tempi=i+random.randint(-1,1)
+								tempj=j+random.randint(-1,1)
+								try:
+									if ancienne[tempi][tempj]==0:
+										self.mat[tempi][tempj]=1
+								except:
+									compteur=self.giveupafter+1
+									
+								compteur=compteur+1
+		#self.mat=deepcopy(ancienne)
+	def spread_gl(self):
+		ancienne=deepcopy(self.mat)
+		for i in range (len(self.mat)):
+			for j in range (len(self.mat[0])):
+				#Virulent
+				if self.mat[i][j]==2:
+					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bm)
+					if temp: 
+						new_i=random.randint(0,self.H-1)
+						new_j=random.randint(0,self.L-1)
+						while ancienne[new_i][new_j]!=0:
 							new_i=random.randint(0,self.H-1)
 							new_j=random.randint(0,self.L-1)
-							self.mat[new_i][new_j]=1
+						self.mat[new_i][new_j]=2
+						
+				#Wild
+				elif self.mat[i][j]==1:
+					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bw)
+					if temp:
+						new_i=random.randint(0,self.H-1)
+						new_j=random.randint(0,self.L-1)
+						while ancienne[new_i][new_j]!=0:
+							new_i=random.randint(0,self.H-1)
+							new_j=random.randint(0,self.L-1)
+						self.mat[new_i][new_j]=1
 
-	def heatmap(self):
-		self.fig, ax_lst = plt.subplots(1,1)
-		heatmap = ax_lst.pcolor(self.mat)
-		self.fig.canvas.draw()
-		self.fig.show()
-
-		while True:
-			self.spread()
-
-			heatmap = ax_lst.pcolor(self.mat)
-			ax_lst.draw_artist(ax_lst.patch)
-			ax_lst.draw_artist(heatmap)
-			self.fig.canvas.blit(ax_lst.bbox)
-			self.fig.canvas.flush_events()
-
+	def spread(self):
+		self.kill_people()
+		
+		self.mute_strains()
+				
+		if self.loc:
+			self.spread_loc()
+		
+		if self.gl:
+			self.spread_gl()
+		
 if __name__ == '__main__':
 	x=modele(showMe=True)
