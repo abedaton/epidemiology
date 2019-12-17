@@ -20,7 +20,12 @@ class PixelGrid(object):
     """docstring for PixelGrid."""
 
     def __init__(self, sizeX, sizeY, seed=None, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
-        self.modele = modele(loc=True,gl=False)
+        if len(sys.argv) > 1 : 
+            loca='1' in str(sys.argv[1])
+            globa='1' in str(sys.argv[2])
+            self.modele = modele(loc=loca,gl=globa)
+        else:
+            self.modele=modele()
         self.seed = seed
         self.X = sizeX
         self.Y = sizeY
