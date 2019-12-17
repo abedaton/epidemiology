@@ -37,8 +37,6 @@ class App(QWidget):
         print(self.model.initial)
         print(self.model.vars)
         self.box = []
-        #self.population_name = QLabel()
-        self.population_name.setText("Population totale")
 
         # out of tab
 
