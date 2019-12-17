@@ -8,7 +8,7 @@ from copy import copy, deepcopy
 
 
 class modele(object):
-	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=2,aw=1,R0w=2,bm=7.2,am=4,R0m=1.8,gl=False,loc=True, showMe=False):
+	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False):
 		self.mat=[[0 for i in range (L)] for j in range (H)]
 
 		self.n=n
@@ -56,16 +56,12 @@ class modele(object):
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
 				#Wild
-				if self.mat[i][j]==1:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.aw)
-					if temp:
-						self.mat[i][j]=3
+				if self.mat[i][j]==1 and self.gen_bool_from_a_certian_probability_out_of_100(self.aw):
+					self.mat[i][j]=3
 
 				#Virulent
-				if self.mat[i][j]==2:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
-					if temp:
-						self.mat[i][j]=3
+				if self.mat[i][j]==2 and self.gen_bool_from_a_certian_probability_out_of_100(self.am):
+					self.mat[i][j]=3
 			#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
 
 	def mute_strains(self):
