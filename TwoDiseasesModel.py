@@ -3,10 +3,10 @@ class TwoDiseasesModel(object):
 
     def __init__(self, parametres):
         #H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=2,aw=1,R0w=2,bm=7.2,am=4,R0m=1.8,gl=False,loc=True
-        defaultParam = {'nbRow' = 50, 'nbCol' = 20,'n' = 6, 'I0' = 37, 'mwm' = 1\
-                        , 'mmw' = 1, 'mww' = 1, 'mmm' = 1, 'bw2' = 2, 'aw1' = 1,\
-                         'R0w' = 2, 'bm' = 7.2, 'am' = 4, 'R0m' = 1.8,\
-                         'gl' = False, 'local' = True}
+        defaultParam = {'nbRow' : 50, 'nbCol' : 20,'n' : 6, 'I0' : 37, 'mwm' : 1\
+                        , 'mmw' : 1, 'mww' : 1, 'mmm' : 1, 'bw2' : 2, 'aw1' : 1,\
+                         'R0w' : 2, 'bm' : 7.2, 'am' : 4, 'R0m' : 1.8,\
+                         'gl' : False, 'local' : True}
         self.param = parametres
 
         for par in requiredParam:
