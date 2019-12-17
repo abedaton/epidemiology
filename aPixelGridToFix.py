@@ -12,7 +12,7 @@ VIRGIN = 0
 INFECTED = 1
 IMMUNE = 2
 DEAD = 3
-statesName = ['Susceptible', 'Infected', 'Recovered', 'Dead']
+statesName = ['Susceptible', 'Wild_infected', 'Virulent_infected', 'Dead']
 nbStates = len(statesName)
 
 
@@ -20,7 +20,7 @@ class PixelGrid(object):
     """docstring for PixelGrid."""
 
     def __init__(self, sizeX, sizeY, seed=None, infectNeighbourProb=0.2, cureProb=0.1, dieProb=0.05, base = 0):
-        self.modele = modele()
+        self.modele = modele(loc=True,gl=False)
         self.seed = seed
         self.X = sizeX
         self.Y = sizeY
