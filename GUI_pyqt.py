@@ -32,15 +32,23 @@ class App(QWidget):
         self.layout_proba = QHBoxLayout(self)
         self.layout_pop = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
+        #self.layout_time = QVBoxLayout(self)
 
         print(self.model.initial)
         print(self.model.vars)
         self.box = []
-        self.population_name = QLabel()
+        #self.population_name = QLabel()
         self.population_name.setText("Population totale")
 
         # out of tab
 
+        ##set time
+        #text = QLabel()
+        #text.setText(self.model.initial[i])
+        #self.time = QSpinBox()
+        #self.time.setRange(10,10000)
+        #self.layout_time.addWidget(text)
+        #self.layout_time.addWidget(self.time)
 
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
@@ -96,6 +104,8 @@ class App(QWidget):
 
         
         self.layout_param_init.addLayout(self.layout_but)
+        #self.layout_param_init.addLayout(self.layout_time)
+        
 
         self.layout.addLayout(self.layout_param_init)
         
@@ -183,7 +193,7 @@ class PlotCanvas(FigureCanvas):
         ax.set_xlabel('Time (in days)')
         ax.set_ylabel('Populaton (in person)')
 
-        ax.set_xlim(0,200)
+        ax.set_xlim(0,100)
         legend = ax.legend()
         ax.grid(True)
         self.draw()

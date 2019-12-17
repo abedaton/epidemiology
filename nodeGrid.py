@@ -5,7 +5,7 @@ import networkx as nx
 from random import *
 import numpy as np
 from scipy.integrate import odeint
-from all import *
+#from all import *
 
 
 
