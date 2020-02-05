@@ -14,7 +14,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
-from Menu import Menu 
+
 
 class App(QWidget):
 
@@ -51,7 +51,7 @@ class App(QWidget):
 
         for i in self.model.initial.keys():
             layout_box = QVBoxLayout()
-            
+
             text = QLabel()
             text.setText(self.model.initial[i])
 
@@ -68,7 +68,7 @@ class App(QWidget):
 
         for i in self.model.vars.keys():
             layout_box = QVBoxLayout()
-            
+
             text = QLabel()
             text.setText(model.vars[i])
 
@@ -84,9 +84,9 @@ class App(QWidget):
             self.box.append((i,but))
             self.layout_proba.addLayout(layout_box)
 
-        
 
-        
+
+
 
         self.button = QPushButton('Lancer simulation', self)
         self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
@@ -103,42 +103,42 @@ class App(QWidget):
 
         self.layout_param_init.addLayout(self.layout_time)
         self.layout_param_init.addLayout(self.layout_but)
-        
-        
+
+
 
         self.layout.addLayout(self.layout_param_init)
-        
+
         self.layout.addLayout(self.layout_proba)
-        
+
 
         # Initialize tab screen
         self.tabs = QTabWidget()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tabs.resize(300,200)
-        
+
         # Add tabs
         self.tabs.addTab(self.tab1,"Tab 1")
         self.tabs.addTab(self.tab2,"Tab 2")
-        
+
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
-        
+
 
         self.graph = PlotCanvas(self, self.model, width=5, height=4)
         self.graph.plot(self.time)
 
-        
+
         self.tab1.layout.addWidget(self.graph)
 
-        
+
 
         self.tab1.setLayout(self.tab1.layout)
-        
+
         # Add tabs to widget
-        
+
         self.layout.addWidget(self.tabs)
-        
+
         self.setLayout(self.layout)
 
         self.setWindowTitle(self.title)
@@ -197,6 +197,6 @@ class PlotCanvas(FigureCanvas):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    model = SEIRS() 
+    model = SEIRS()
     ex = App(model) # prend la classe à créer en paramètre
     sys.exit(app.exec_())
