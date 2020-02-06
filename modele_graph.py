@@ -8,7 +8,7 @@ from copy import copy, deepcopy
 
 
 class modele(object):
-	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False):
+	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False,T=100):
 		self.mat=[[0 for i in range (L)] for j in range (H)]
 
 		self.n=n
@@ -27,10 +27,12 @@ class modele(object):
 		self.gl=gl
 		self.loc=loc
 		self.giveupafter=10
-		self.minimum_lenght_of_a_square_to_fit_all_n_in_it=0
-		while ((self.minimum_lenght_of_a_square_to_fit_all_n_in_it/2)**2)<n:
-			self.minimum_lenght_of_a_square_to_fit_all_n_in_it=self.minimum_lenght_of_a_square_to_fit_all_n_in_it+1
-		print(self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
+		self.square_min=0
+
+		while ((self.square_min)**2)<n:
+			self.square_min=self.square_min+1
+		print(self.square_min)
+
 		lc=int(I0**0.5)
 
 		i0=int(H/2)-int(lc/2)
@@ -43,9 +45,12 @@ class modele(object):
 				j0=int(H/2)-int(lc/2)
 				i0=i0+1
 		if showMe:
-			self.heatmap()
+			for t in range (T):
+				self.heatmap()
+				self.spread()
+				time.sleep(1)
 
-	def gen_bool_from_a_certian_probability_out_of_100(self,prob):
+	def gen_bool(self,prob):
 		res=False
 		temp=random.randint(0,10000)/100
 		if temp<prob:
@@ -55,48 +60,45 @@ class modele(object):
 	def kill_people(self):
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
+				
 				#Wild
-				if self.mat[i][j]==1 and self.gen_bool_from_a_certian_probability_out_of_100(self.aw):
+				if self.mat[i][j]==1 and self.gen_bool(self.aw):
 					self.mat[i][j]=3
 
 				#Virulent
-				if self.mat[i][j]==2 and self.gen_bool_from_a_certian_probability_out_of_100(self.am):
+				if self.mat[i][j]==2 and self.gen_bool(self.am):
 					self.mat[i][j]=3
-			#temp=self.gen_bool_from_a_certian_probability_out_of_100(self.am)
 
 	def mute_strains(self):
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
 				if self.mat[i][j]==2:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.mmw)
+					temp=self.gen_bool(self.mmw)
 					if temp:
 						self.mat[i][j]=1
 
 				elif self.mat[i][j]==1:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.mwm)
+					temp=self.gen_bool(self.mwm)
 					if temp:
 						self.mat[i][j]=2
 
 	def gn_pos(self,i,j):
-		#new_i=random.randint(i-self.minimum_lenght_of_a_square_to_fit_all_n_in_it,i+self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
-		#new_j=random.randint(j-self.minimum_lenght_of_a_square_to_fit_all_n_in_it,j+self.minimum_lenght_of_a_square_to_fit_all_n_in_it)
-		new_i=i+random.randint(-1,1)
-		new_j=j+random.randint(-1,1)
+		new_i=random.randint(i-self.square_min,i+self.square_min)
+		new_j=random.randint(j-self.square_min,j+self.square_min)
 		return (new_i,new_j)
 		
 	def spread_loc(self):
 		ancienne=deepcopy(self.mat)
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
+
 				#Virulent
 				if self.mat[i][j]==2:
 					for gens in range (self.n):
-						temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bm)
+						temp=self.gen_bool(self.bm)
 						if temp:
 							compteur=0
 							while compteur<self.giveupafter:
-								#tempi=i+random.randint(-1,1)
-								#tempj=j+random.randint(-1,1)
 								tempi,tempj=self.gn_pos(i,j)
 								try:
 									if ancienne[tempi][tempj]==0:
@@ -109,7 +111,7 @@ class modele(object):
 				#Wild
 				elif self.mat[i][j]==1:
 					for gens in range (self.n):
-						temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bw)
+						temp=self.gen_bool(self.bw)
 						if temp:
 							compteur=0
 							while compteur<self.giveupafter:
@@ -122,14 +124,15 @@ class modele(object):
 									compteur=self.giveupafter+1
 									
 								compteur=compteur+1
-		#self.mat=deepcopy(ancienne)
+
 	def spread_gl(self):
 		ancienne=deepcopy(self.mat)
 		for i in range (len(self.mat)):
 			for j in range (len(self.mat[0])):
+
 				#Virulent
 				if self.mat[i][j]==2:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bm)
+					temp=self.gen_bool(self.bm)
 					if temp: 
 						new_i=random.randint(0,self.H-1)
 						new_j=random.randint(0,self.L-1)
@@ -140,7 +143,7 @@ class modele(object):
 						
 				#Wild
 				elif self.mat[i][j]==1:
-					temp=self.gen_bool_from_a_certian_probability_out_of_100(self.bw)
+					temp=self.gen_bool(self.bw)
 					if temp:
 						new_i=random.randint(0,self.H-1)
 						new_j=random.randint(0,self.L-1)
@@ -159,6 +162,26 @@ class modele(object):
 		
 		if self.gl:
 			self.spread_gl()
+	
+	def heatmap(self):
+		res=''
+		for i in range (len(self.mat)):
+			for j in range (len(self.mat[0])):
+				if self.mat[i][j]==0:
+					res=res+'.'
+				elif self.mat[i][j]==1:
+					res=res+'°'
+				elif self.mat[i][j]==2:
+					res=res+'*'
+				elif self.mat[i][j]==3:
+					res=res+'^'
+				else:
+					print('Erreur 404')
+					res=res+'X'
+					
+			res=res+'\n'
+		print(res)
+					
 		
 if __name__ == '__main__':
-	x=modele(showMe=True)
+	x=modele(showMe=True,H=50,L=50,gl=False,loc=True)
