@@ -44,6 +44,7 @@ class PixelGrid(FigureCanvas):
 
     def createHeatmap(self):
         #création graphe vide
+        self.figure.clear()
         self.hm = self.figure.add_subplot()
         self.hm.set_title("Modélisation d'une infection.")
         self.hm.clear()
@@ -91,7 +92,7 @@ class PixelGridWindow(QWidget):
         
 
         self.button = QPushButton('Lancer simulation', self)
-        self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
+        self.button.setToolTip('Relance la simulation')
         self.button.clicked.connect(self.new_plot)
 
         self.button2 = QPushButton('Menu', self)
