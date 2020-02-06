@@ -122,7 +122,7 @@ class App(QWidget):
 
         # Create second tab
         self.tab2.layout = QVBoxLayout(self)
-        self.tableau = tableau([[1,2],[3,4]])
+        self.tableau = tableau(model)
         self.tab2.layout.addWidget(self.tableau.Mat)
         self.tab2.setLayout(self.tab2.layout)
 
@@ -197,10 +197,10 @@ class PlotCanvas(FigureCanvas):
 
 
 class tableau(object):
-    def __init__(self,m=[[]]):
-        self.t=len(m)
-        self.n_states=len(m[0])
-        self.m=m
+    def __init__(self,model):
+        self.get_m(model)
+        self.t=len(self.m[0])
+        self.n_states=len(self.m)
         self.Mat=QWidget()
         Horizontal=QHBoxLayout(self.Mat)
         colonne=QWidget(self.Mat)
@@ -209,11 +209,37 @@ class tableau(object):
         self.temp=self.creer_wid()
         self.actualiser(self.m)
         Qcol.addWidget(self.temp)
+        
+    def get_m(self,model):
+        model.solveDifferential()
+        Color=['b','y','r','g','m',"c","k"]
+
+        #Obtention infos matrice
+        self.names=[]
+        for index, elem in enumerate(model.initial.keys()):
+            name = model.initial[elem]
+            self.names.append(name)
+        t=len(model.timeVector)
+        
+        #Création matrice
+        self.m=[[None for j in range (t)] for i in range (len(self.names))]
+        
+        #Remplissage matrice
+        compteur=0
+        for index, elem in enumerate(model.initial.keys()):
+            var = model.get(elem[0])
+
+            for c in range (len(var)):
+            	self.m[compteur][c]=int(var[c])
+
+            compteur=compteur+1
+
 
     def creer_wid(self):
         temp=QTableWidget()
         temp.setColumnCount(self.t)
         temp.setRowCount(self.n_states)
+        temp.setVerticalHeaderLabels(self.names)
         return temp
 
     def actualiser(self,mat):
