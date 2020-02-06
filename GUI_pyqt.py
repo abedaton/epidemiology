@@ -5,7 +5,7 @@ from SEIRS import SEIRS
 from SEIHFR import SEIHFR
 from SEIHFBR import SEIHFBR
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox,QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -120,6 +120,12 @@ class App(QWidget):
         self.tabs.addTab(self.tab1,"Graphe")
         self.tabs.addTab(self.tab2,"Tableau de valeurs")
 
+        # Create second tab
+        self.tab2.layout = QVBoxLayout(self)
+        self.tableau = tableau([[1,2],[3,4]])
+        self.tab2.layout.addWidget(self.tableau.Mat)
+        self.tab2.setLayout(self.tab2.layout)
+
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
 
@@ -144,15 +150,15 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.showMaximized()
+
     def new_plot(self):
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot(self.time)
+
     def back_menu(self):
         self.menu = Menu()
         self.close()
-
-
 
 class PlotCanvas(FigureCanvas):
 
@@ -190,7 +196,30 @@ class PlotCanvas(FigureCanvas):
         self.draw()
 
 
+class tableau(object):
+    def __init__(self,m=[[]]):
+        self.t=len(m)
+        self.n_states=len(m[0])
+        self.m=m
+        self.Mat=QWidget()
+        Horizontal=QHBoxLayout(self.Mat)
+        colonne=QWidget(self.Mat)
+        Qcol=QVBoxLayout(colonne)
+        Horizontal.addWidget(colonne)
+        self.temp=self.creer_wid()
+        self.actualiser(self.m)
+        Qcol.addWidget(self.temp)
 
+    def creer_wid(self):
+        temp=QTableWidget()
+        temp.setColumnCount(self.t)
+        temp.setRowCount(self.n_states)
+        return temp
+
+    def actualiser(self,mat):
+        for i in range (self.n_states):
+            for j in range (self.t):
+                self.temp.setItem(i,j,QTableWidgetItem(str(mat[i][j])))
 
 
 if __name__ == '__main__':
