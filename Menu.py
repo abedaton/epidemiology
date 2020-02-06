@@ -46,6 +46,7 @@ class Menu(QWidget):
         self.showMaximized()
     def choose_model(self):
         from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
+        from PixelGrid import PixelGridWindow
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
             model = SIR()
@@ -60,7 +61,7 @@ class Menu(QWidget):
             model = SEIHFBR()
             self.app2 = App(model)
         elif (model_name == "Dispersion spatiale"):
-            self.disp = PixelGrindWindow()
+            self.disp = PixelGridWindow()
         self.close()
         
 

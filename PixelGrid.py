@@ -3,10 +3,13 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QPushButton
 import sys
 
+
 from modele_graph import modele
+
+from Menu import Menu
 
 SUSCEPTIBLE = 0
 WILD_INFECTED = 1
@@ -29,9 +32,6 @@ class PixelGrid(FigureCanvas):
         else:
             self.modele=modele()
 
-    def __getitem__(self, key):
-        return self.modele[key[0]][key[1]]
-
     def startInfection(self, I0=1):
         self.createGraph()
 
@@ -42,12 +42,11 @@ class PixelGrid(FigureCanvas):
         self.createHeatmap()
         self.createProgressStamp()
 
-
-
     def createHeatmap(self):
         #création graphe vide
         self.hm = self.figure.add_subplot()
         self.hm.set_title("Modélisation d'une infection.")
+        self.hm.clear()
         #création colormap
         cmap = mpl.colors.ListedColormap(['white', 'red', 'blue', 'black'])
         #création heatmap avec colorbar
@@ -79,27 +78,53 @@ class PixelGrid(FigureCanvas):
         interval=stepTimeInterval, frames=nbSteps, repeat=False)
 
 
-class window(QWidget):
+class PixelGridWindow(QWidget):
     """docstring for window."""
 
     def __init__(self, parent=None):
-        super(window, self).__init__(parent)
+        super(PixelGridWindow, self).__init__(parent)
 
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+        self.title = "Distribution spatiale d'une maladie"
+
+        self.layout = QVBoxLayout(self)
+        self.layout_but = QVBoxLayout(self)
+        
+
+        self.button = QPushButton('Lancer simulation', self)
+        self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
+        self.button.clicked.connect(self.new_plot)
+
+        self.button2 = QPushButton('Menu', self)
+        self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
+        self.button2.clicked.connect(self.back_menu)
+
+        self.layout_but.addWidget(self.button)
+        self.layout_but.addWidget(self.button2)
 
         self.canvas = PixelGrid()
-        self.layout.addWidget(self.canvas)
+        
+        self.layout.addLayout(self.layout_but)
+        self.setLayout(self.layout)
 
         #Infecter des gens
         self.canvas.startInfection()
         #Démarrer le temps (big bang)
         self.canvas.animate()
 
+        self.layout.addWidget(self.canvas)
+        self.show()
+
+
+    def new_plot(self):
+        self.canvas.startInfection()
+        self.canvas.animate()
+    def back_menu(self):
+        self.menu = Menu()
+        self.close()
 
 
 if __name__ == '__main__':
     qapp = QApplication(sys.argv)
-    InfectionWindow = window()
+    InfectionWindow = PixelGridWindow()
     InfectionWindow.show()
     qapp.exec_()
