@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, \
                             QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,\
-                            QDoubleSpinBox,QComboBox,QImage
+                            QDoubleSpinBox,QComboBox
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
@@ -19,8 +19,9 @@ class Menu(QWidget):
         self.combo.addItem("SEIHFR")
         self.combo.addItem("SEIHFBR")
         self.combo.addItem("SEIRS")
+        self.combo.addItem("Dispersion spatiale")
         
-        #fond = QImage("nom_de_image")
+        #fond = 
         #Penser à rajouter une image de fond
 
         self.button = QPushButton("GO",self)
@@ -48,13 +49,18 @@ class Menu(QWidget):
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
             model = SIR()
+            self.app2 = App(model)
         elif (model_name == "SEIRS"):
             model = SEIRS()
+            self.app2 = App(model)
         elif (model_name == "SEIHFR"):
             model = SEIHFR()
+            self.app2 = App(model)
         elif (model_name == "SEIHFBR"):
             model = SEIHFBR()
-        self.app2 = App(model)
+            self.app2 = App(model)
+        elif (model_name == "Dispersion spatiale"):
+            self.disp = PixelGrindWindow()
         self.close()
         
 
