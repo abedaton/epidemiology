@@ -117,8 +117,8 @@ class App(QWidget):
         self.tabs.resize(300,200)
 
         # Add tabs
-        self.tabs.addTab(self.tab1,"Tab 1")
-        self.tabs.addTab(self.tab2,"Tab 2")
+        self.tabs.addTab(self.tab1,"Graphe")
+        self.tabs.addTab(self.tab2,"Tableau de valeurs")
 
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
