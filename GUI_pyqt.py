@@ -12,7 +12,6 @@ from PyQt5.QtCore import Qt
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 
 from Menu import Menu
 
@@ -144,14 +143,13 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        self.show()
+        self.showMaximized()
     def new_plot(self):
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot(self.time)
     def back_menu(self):
         self.menu = Menu()
-        self.menu.show()
         self.close()
 
 
