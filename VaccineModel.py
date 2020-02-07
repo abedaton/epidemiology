@@ -15,7 +15,17 @@ class VaccineModel(object):
 
         self.parametres = parametres
 
-        #Création d'un set de toutes les pos
+        self.createSets()
+        self.applyDefaultParametres()
+
+        self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
+
+    def clear(self):
+        self.counter = 0
+        self.createSets()
+        self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
+
+    def createSets(self):
         self.susceptibles = set()
         for i in range(self.X):
             for j in range(self.Y):
@@ -23,22 +33,19 @@ class VaccineModel(object):
 
         self.vaccinated = set()
         self.infected = set()
-        self.defaultParametres()
-
-        self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
 
 
     def startAnimation(self):
         self.vaccinatePopulation()
-        self.startInfection()
+        self.infectI0Susceptibles()
 
     def changeParam(self, parametres):
         #prend un dictionnaire en parametres et change les valeurs de prob
         self.parametres = parametres
-        self.defaultParametres()
+        self.applyDefaultParametres()
 
 
-    def defaultParametres(self):
+    def applyDefaultParametres(self):
         defaults =\
         {'probVaccine' : 0.5,\
          'probInfect' : 1,\
@@ -77,7 +84,7 @@ class VaccineModel(object):
             return True
         return False
 
-    def startInfection(self):
+    def infectI0Susceptibles(self):
         susceptibles = tuple(self.susceptibles)
         #Infect un susceptible aléatoire
         self.infect(susceptibles[random.randrange(0,len(susceptibles))])

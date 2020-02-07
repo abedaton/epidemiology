@@ -28,7 +28,7 @@ class PixelGridVaccined(FigureCanvas):
 
 
     def startInfection(self, I0=1):
-        self.modele.startInfection()
+        self.modele.startAnimation()
         self.createGraph()
 
     def stepInfection(self):
@@ -89,7 +89,7 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_but = QVBoxLayout(self)
         self.layout_param_init = QHBoxLayout(self)
         self.layout_vaccin = QVBoxLayout(self)
-        
+
 
         self.button = QPushButton('Lancer simulation', self)
         self.button.setToolTip('Relance la simulation')
@@ -117,7 +117,7 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_param_init.addLayout(self.layout_but)
 
         self.canvas = PixelGridVaccined()
-        
+
         self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
 
@@ -128,10 +128,15 @@ class PixelGridWindowVaccined(QWidget):
 
         self.layout.addWidget(self.canvas)
         self.show()
+
     def valueChanged(self,value):
         self.text.setText("Pourcentage de vaccinés : "+ str(value))
+        #effectue le changement de parametres
+        parametres = {'probVaccine' : value}
+        self.canvas.modele.changeParam(parametres)
 
     def new_plot(self):
+        self.canvas.modele.clear() #Reset la matrice
         self.canvas.startInfection()
         self.canvas.animate()
     def back_menu(self):
@@ -142,6 +147,6 @@ class PixelGridWindowVaccined(QWidget):
 
 if __name__ == '__main__':
     qapp = QApplication(sys.argv)
-    InfectionWindow = PixelGridVaccined()
+    InfectionWindow = PixelGridWindowVaccined()
     InfectionWindow.show()
     qapp.exec_()
