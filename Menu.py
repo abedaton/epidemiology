@@ -14,7 +14,7 @@ from PyQt5.QtGui import QBrush, QPixmap, QPalette, QImage
 class Menu(QWidget):
 
     def setBackground(self, aimage, width = None, height = None):
-        image = aimage0.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        image = aimage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
         sImage = image.scaled(QSize(width, height))
         palette = QPalette()
         palette.setBrush(QPalette.Window, QBrush(sImage))
