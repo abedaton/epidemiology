@@ -3,8 +3,10 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
 import sys
+
+from Menu import Menu
 
 from VaccineModel import VaccineModel
 
@@ -15,7 +17,7 @@ statesName = ['Susceptible', 'Infecté', 'Vacciné']
 nbStates = len(statesName)
 
 
-class PixelGrid(FigureCanvas):
+class PixelGridVaccined(FigureCanvas):
     """docstring for PixelGrid."""
 
     def __init__(self, parametres={}):
@@ -39,8 +41,10 @@ class PixelGrid(FigureCanvas):
 
     def createHeatmap(self):
         #création graphe vide
+        self.figure.clear()
         self.hm = self.figure.add_subplot()
         self.hm.set_title("Modélisation d'une infection.")
+        self.hm.clear()
         #création colormap
         cmap = mpl.colors.ListedColormap(['white', 'red', 'blue'])
         #création heatmap avec colorbar
@@ -72,27 +76,54 @@ class PixelGrid(FigureCanvas):
         interval=stepTimeInterval, frames=nbSteps, repeat=False)
 
 
-class window(QWidget):
+class PixelGridWindowVaccined(QWidget):
     """docstring for window."""
 
     def __init__(self, parent=None):
-        super(window, self).__init__(parent)
+        super(PixelGridWindowVaccined, self).__init__(parent)
 
-        self.layout = QVBoxLayout()
+        self.title = "Evolution d'une maladie avec vaccin"
+
+        self.layout = QVBoxLayout(self)
+        self.layout_but = QVBoxLayout(self)
+        
+
+        self.button = QPushButton('Lancer simulation', self)
+        self.button.setToolTip('Relance la simulation')
+        self.button.clicked.connect(self.new_plot)
+
+        self.button2 = QPushButton('Menu', self)
+        self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
+        self.button2.clicked.connect(self.back_menu)
+
+        self.layout_but.addWidget(self.button)
+        self.layout_but.addWidget(self.button2)
+
+        self.canvas = PixelGridVaccined()
+        
+        self.layout.addLayout(self.layout_but)
         self.setLayout(self.layout)
-
-        self.canvas = PixelGrid()
-        self.layout.addWidget(self.canvas)
 
         #Infecter des gens
         self.canvas.startInfection()
         #Démarrer le temps (big bang)
         self.canvas.animate()
 
+        self.layout.addWidget(self.canvas)
+        self.show()
+
+
+    def new_plot(self):
+        self.canvas.startInfection()
+        self.canvas.animate()
+    def back_menu(self):
+        self.menu = Menu()
+        self.close()
+
 
 
 if __name__ == '__main__':
     qapp = QApplication(sys.argv)
-    InfectionWindow = window()
+    InfectionWindow = PixelGridVaccined()
     InfectionWindow.show()
     qapp.exec_()

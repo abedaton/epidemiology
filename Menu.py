@@ -20,6 +20,7 @@ class Menu(QWidget):
         self.combo.addItem("SEIHFBR")
         self.combo.addItem("SEIRS")
         self.combo.addItem("Dispersion spatiale")
+        self.combo.addItem("Effet du vaccin")
         
         #fond = 
         #Penser à rajouter une image de fond
@@ -47,6 +48,8 @@ class Menu(QWidget):
     def choose_model(self):
         from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
         from PixelGrid import PixelGridWindow
+        from VaccineGrid import PixelGridWindowVaccined
+
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
             model = SIR()
@@ -61,7 +64,9 @@ class Menu(QWidget):
             model = SEIHFBR()
             self.app2 = App(model)
         elif (model_name == "Dispersion spatiale"):
-            self.disp = PixelGridWindow()
+            self.app2 = PixelGridWindow()
+        elif (model_name == "Effet du vaccin"):
+            self.app2 = PixelGridWindowVaccined()
         self.close()
         
 
