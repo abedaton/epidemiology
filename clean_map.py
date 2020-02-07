@@ -36,7 +36,7 @@ class Map(FigureCanvas):
         self.x0, self.x1, self.y0, self.y1 = self.ax.get_extent()
 
         plt.show()
-        plt.title("Choose somewhere to start")
+        plt.title("Choose somewhere to start", fontsize=50)
 
         country = self.waitForStart()
 
@@ -78,12 +78,12 @@ class Map(FigureCanvas):
                 result = rg.search((y, x))
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
-                plt.title("Starting in " + str(country))
+                plt.title("Starting in " + str(country), fontsize=50)
                 self.go = True
                 return country
             else:
                 print("Mer")
-                plt.title("Please choose a location on land !")
+                plt.title("Please choose a location on land !", fontsize=50)
 
 
     def waitForStart(self):

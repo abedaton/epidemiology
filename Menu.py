@@ -88,6 +88,7 @@ class Menu(QWidget):
         elif (model_name == "Effet du vaccin"):
             self.app2 = PixelGridWindowVaccined()
         elif (model_name == "Map"):
+            self.close()
             self.app2 = Map("ccrs."+self.comboMap.currentText()+"()")
         self.close()
 
