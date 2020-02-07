@@ -3,17 +3,27 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSize
                             QDoubleSpinBox,QComboBox
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 import sys
 
 from GUI_pyqt import *
+from PyQt5.QtGui import QBrush, QPixmap, QPalette, QImage
+
 
 
 class Menu(QWidget):
+
+    def setBackground(self, aimage, width = None, height = None):
+        image = aimage0.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        sImage = image.scaled(QSize(width, height))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
+
     def __init__(self):
         super().__init__()
-        
-        
+        self.setBackground(QImage("Images/biohazard.jpg"), self.width(), self.height())
         self.combo = QComboBox(self)
         self.combo.addItem("SIR",)
         self.combo.addItem("SEIHFR")
@@ -30,9 +40,10 @@ class Menu(QWidget):
         self.button.clicked.connect(self.choose_model)
         
         hbox = QHBoxLayout()
-        hbox.addStretch(1)
+        #hbox.addStretch(1)
         hbox.addWidget(self.button)
         hbox.addWidget(self.combo)
+        hbox.setAlignment(Qt.AlignCenter)
         
         
         #vbox = QVBoxLayout(self)
