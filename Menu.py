@@ -43,8 +43,6 @@ class Menu(QWidget):
 
         self.combo.currentIndexChanged.connect(lambda: self.showNewCombo() if self.combo.currentIndex() == 6 else self.comboMap.hide() if not self.comboMap.isHidden() else None)
 
-        #fond = 
-        #Penser à rajouter une image de fond
 
         self.button = QPushButton("GO",self)
         self.button.clicked.connect(self.choose_model)
