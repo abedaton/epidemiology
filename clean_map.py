@@ -12,11 +12,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
 class Map(FigureCanvas):
-    def __init__(self):
+    def __init__(self, projectionType=ccrs.PlateCarree()):
         self.figure = Figure()
         super().__init__(self.figure)
         plt.ion()  # mets en mode interactif
-        self.ax = plt.axes(projection=ccrs.PlateCarree())  # dis quel type de map on veut
+        self.ax = plt.axes(projection=eval(projectionType))  # dis quel type de map on veut
         self.ax.stock_img()  # Ajoute l'image au graph
         plt.show()
         self.infect(0.0000001, 1000, "China")
