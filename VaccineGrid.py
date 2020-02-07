@@ -3,7 +3,8 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel
+from PyQt5.QtCore import Qt
 import sys
 
 from Menu import Menu
@@ -86,6 +87,8 @@ class PixelGridWindowVaccined(QWidget):
 
         self.layout = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
+        self.layout_param_init = QHBoxLayout(self)
+        self.layout_vaccin = QVBoxLayout(self)
         
 
         self.button = QPushButton('Lancer simulation', self)
@@ -96,12 +99,26 @@ class PixelGridWindowVaccined(QWidget):
         self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
         self.button2.clicked.connect(self.back_menu)
 
+        self.text = QLabel()
+        self.text.setText("Pourcentage de vaccinés : 50")
+
+        self.vaccin = QSlider(Qt.Horizontal)
+        self.vaccin.setRange(0,100)
+        self.vaccin.setValue(50)
+        self.vaccin.valueChanged.connect(self.valueChanged)
+
         self.layout_but.addWidget(self.button)
         self.layout_but.addWidget(self.button2)
 
+        self.layout_vaccin.addWidget(self.text)
+        self.layout_vaccin.addWidget(self.vaccin)
+
+        self.layout_param_init.addLayout(self.layout_vaccin)
+        self.layout_param_init.addLayout(self.layout_but)
+
         self.canvas = PixelGridVaccined()
         
-        self.layout.addLayout(self.layout_but)
+        self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
 
         #Infecter des gens
@@ -111,7 +128,8 @@ class PixelGridWindowVaccined(QWidget):
 
         self.layout.addWidget(self.canvas)
         self.show()
-
+    def valueChanged(self,value):
+        self.text.setText("Pourcentage de vaccinés : "+ str(value))
 
     def new_plot(self):
         self.canvas.startInfection()
