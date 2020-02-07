@@ -21,6 +21,7 @@ class Menu(QWidget):
         self.combo.addItem("SEIRS")
         self.combo.addItem("Dispersion spatiale")
         self.combo.addItem("Effet du vaccin")
+        self.combo.addItem("Map")
         
         #fond = 
         #Penser à rajouter une image de fond
@@ -49,6 +50,7 @@ class Menu(QWidget):
         from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
         from PixelGrid import PixelGridWindow
         from VaccineGrid import PixelGridWindowVaccined
+        from clean_map import Map
 
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
@@ -67,6 +69,8 @@ class Menu(QWidget):
             self.app2 = PixelGridWindow()
         elif (model_name == "Effet du vaccin"):
             self.app2 = PixelGridWindowVaccined()
+        elif (model_name == "Map"):
+            self.app2 = Map()
         self.close()
         
 
