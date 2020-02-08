@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvas
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 # Geocoding / Map
 import cartopy.crs as ccrs
@@ -91,6 +91,19 @@ class Map(FigureCanvas):
             location = plt.ginput(1, timeout=0)
             country = self.transformToCountry(location[0][0], location[0][1])
         return country
+
+
+class MapWindow(QWidget):
+    def __init__(self, parent=None):
+        super(MapWindow, self).__init__(parent)
+
+        self.title = "Map Game"
+        self.layout = QVBoxLayout(self)
+
+        self.canvas = Map()
+        
+
+
 
 
 
