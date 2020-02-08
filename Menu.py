@@ -68,7 +68,7 @@ class Menu(QWidget):
         from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
         from PixelGrid import PixelGridWindow
         from VaccineGrid import PixelGridWindowVaccined
-        from clean_map import Map
+        from clean_map import MapWindow
 
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
@@ -89,7 +89,7 @@ class Menu(QWidget):
             self.app2 = PixelGridWindowVaccined()
         elif (model_name == "Map"):
             self.close()
-            self.app2 = Map("ccrs."+self.comboMap.currentText()+"()")
+            self.app2 = MapWindow("ccrs."+self.comboMap.currentText()+"()")
         self.close()
 
 

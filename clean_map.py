@@ -19,6 +19,7 @@ import country_converter as coco
 import numpy as np
 import random
 import sys
+from Menu import Menu
 
 
 class Map(FigureCanvas):
@@ -30,7 +31,6 @@ class Map(FigureCanvas):
         self.cc = coco.CountryConverter()
 
         plt.ion()  # mets en mode interactif
-
         self.ax = plt.axes(projection=eval(projectionType))  # dis quel type de map on veut
         self.ax.stock_img()  # Ajoute l'image au graph
         self.x0, self.x1, self.y0, self.y1 = self.ax.get_extent()
@@ -38,10 +38,10 @@ class Map(FigureCanvas):
         plt.show()
         plt.title("Choose somewhere to start", fontsize=50)
 
-        country = self.waitForStart()
+        #country = self.waitForStart()
 
-        self.infect(0.0000001, 1000, coco.convert(names=country, to="ISO3"))
-        plt.waitforbuttonpress(0)
+        #self.infect(0.0000001, 1000, coco.convert(names=country, to="ISO3"))
+        #plt.waitforbuttonpress(0)
 
     def infect(self, timeInterval, num, Thecountry):
         liste = [pyc.get_shape(Thecountry)]
@@ -94,14 +94,42 @@ class Map(FigureCanvas):
 
 
 class MapWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self,argMap, parent=None):
         super(MapWindow, self).__init__(parent)
 
         self.title = "Map Game"
         self.layout = QVBoxLayout(self)
+        self.layout_but = QVBoxLayout(self)
 
-        self.canvas = Map()
-        self.layout.addWidget(self.canvas)
+        self.button = QPushButton('Lancer simulation', self)
+        self.button.setToolTip('Relance la simulation')
+        self.button.clicked.connect(self.new_plot)
+
+        self.button2 = QPushButton('Menu', self)
+        self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
+        self.button2.clicked.connect(self.back_menu)
+
+        self.layout_but.addWidget(self.button)
+        self.layout_but.addWidget(self.button2)
+
+        self.layout.addLayout(self.layout_but)
+        
+        self.setLayout(self.layout)
+
+        self.canvas = Map(argMap)
+        #self.layout.addWidget(self.canvas)
+
+        
+        
+        self.showMaximized()
+    
+    def new_plot(self):
+        self.canvas.modele.clear()
+        self.canvas.startInfection()
+        self.canvas.animate()
+    def back_menu(self):
+        self.menu = Menu()
+        self.close()
 
 
 
