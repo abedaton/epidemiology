@@ -101,7 +101,7 @@ class MapWindow(QWidget):
         self.layout = QVBoxLayout(self)
 
         self.canvas = Map()
-        
+        self.layout.addWidget(self.canvas)
 
 
 
