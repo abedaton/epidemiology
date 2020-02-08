@@ -35,9 +35,8 @@ class Map(FigureCanvas):
         self.ax.stock_img()  # Ajoute l'image au graph
         self.x0, self.x1, self.y0, self.y1 = self.ax.get_extent()
 
-        plt.show()
         plt.title("Choose somewhere to start", fontsize=50)
-
+        self.draw()
         #country = self.waitForStart()
 
         #self.infect(0.0000001, 1000, coco.convert(names=country, to="ISO3"))
@@ -117,16 +116,14 @@ class MapWindow(QWidget):
         self.setLayout(self.layout)
 
         self.canvas = Map(argMap)
-        #self.layout.addWidget(self.canvas)
+        self.layout.addWidget(self.canvas)
 
         
         
         self.showMaximized()
     
     def new_plot(self):
-        self.canvas.modele.clear()
-        self.canvas.startInfection()
-        self.canvas.animate()
+        pass
     def back_menu(self):
         self.menu = Menu()
         self.close()
