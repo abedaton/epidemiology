@@ -4,7 +4,6 @@ from matplotlib.pyplot import ion, axes, title, waitforbuttonpress, scatter, pau
 from matplotlib.figure import Figure
 #from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 # Geocoding / Map
