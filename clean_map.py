@@ -22,6 +22,7 @@ import numpy as np
 import random
 import sys
 from Menu import Menu
+from test import MapDia
 
 
 class Map(FigureCanvas):
@@ -117,7 +118,7 @@ class MapWindow(QWidget):
         
         self.setLayout(self.layout)
 
-        self.canvas = Map(argMap)
+        self.canvas = MapDia()
         self.layout.addWidget(self.canvas)
 
         

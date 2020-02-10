@@ -10,9 +10,9 @@ import cartopy.io.shapereader as shpreader
 
 import random
 
-class Window(QDialog):
+class MapDia(QDialog):
     def __init__(self, parent=None):
-        super(Window, self).__init__(parent)
+        super(MapDia, self).__init__(parent)
 
         # a figure instance to plot on
         #plt.ion()
@@ -26,7 +26,6 @@ class Window(QDialog):
 
         # this is the Navigation widget
         # it takes the Canvas widget and a parent
-        self.toolbar = NavigationToolbar(self.canvas, self)
 
         # Just some button connected to `plot` method
         self.button = QPushButton('Plot')
@@ -34,7 +33,6 @@ class Window(QDialog):
 
         # set the layout
         layout = QVBoxLayout()
-        layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         layout.addWidget(self.button)
         self.setLayout(layout)
@@ -62,7 +60,7 @@ class Window(QDialog):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    main = Window()
+    main = MapDia()
     main.show()
 
     sys.exit(app.exec_())
