@@ -1,10 +1,7 @@
 # GUI
-#import matplotlib.pyplot as plt
-from matplotlib.pyplot import ion, axes, title, waitforbuttonpress, scatter, pause, ginput
-from matplotlib.figure import Figure
-#from matplotlib.backends.backend_qt5agg import FigureCanvas
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
 
 # Geocoding / Map
 import cartopy.crs as ccrs
@@ -21,28 +18,46 @@ import numpy as np
 import random
 import sys
 from Menu import Menu
-from test import MapDia
 
 
-class Map(FigureCanvas):
-    def __init__(self, projectionType="ccrs.PlateCarree()"):
-        self.figure = Figure()
-        super().__init__(self.figure)
+class Map(QDialog):
+    def __init__(self, parent=None):
+        super(Map, self).__init__(parent)
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+
         self.go = False
         self.startCountry = None
         self.cc = coco.CountryConverter()
 
-        ion()  # mets en mode interactif
-        self.ax = axes(projection=eval(projectionType))  # dis quel type de map on veut
-        self.ax.stock_img()  # Ajoute l'image au graph
-        self.x0, self.x1, self.y0, self.y1 = self.ax.get_extent()
+        plt.ion()
+        self.ax = plt.axes(projection=ccrs.PlateCarree())
+        self.ax.stock_img()
 
-        title("Choose somewhere to start", fontsize=50)
-        self.draw()
-        #country = self.waitForStart()
+        self.button = QPushButton("Commencer l'épidemie")
+        self.button.clicked.connect(self.plot)
 
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.canvas)
+        layout.addWidget(self.button)
+        self.setLayout(layout)
+        self.show()
+
+    def launch(self):
+        country = self.waitForStart()
         #self.infect(0.0000001, 1000, coco.convert(names=country, to="ISO3"))
-        #waitforbuttonpress(0)
+
+    def plot(self):
+        data = [random.random() for i in range(10)]
+
+        self.figure.clear()
+
+        ax = self.figure.add_subplot(111)
+
+        ax.plot(data, '*-')
+
+        self.canvas.draw()
 
     def infect(self, timeInterval, num, Thecountry):
         liste = [pyc.get_shape(Thecountry)]
@@ -54,8 +69,8 @@ class Map(FigureCanvas):
                 points = self.findPoints(country)
                 x = points.x
                 y = points.y
-                scatter(x, y, color="red", marker=".", transform=ccrs.Geodetic())
-                pause(timeInterval)
+                plt.scatter(x, y, color="red", marker=".", transform=ccrs.Geodetic())
+                # plt.pause(timeInterval)
 
     def findPoints(self, country):
         minx, miny, maxx, maxy = country.bounds
@@ -79,23 +94,22 @@ class Map(FigureCanvas):
                 result = rg.search((y, x))
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
-                title("Starting in " + str(country), fontsize=50)
+                plt.title("Starting in " + str(country), fontsize=50)
                 self.go = True
                 return country
             else:
                 print("Mer")
-                title("Please choose a location on land !", fontsize=50)
-
+                plt.title("Please choose a location on land !", fontsize=50)
 
     def waitForStart(self):
         while not self.go:
-            location = ginput(1, timeout=0)
+            location = plt.ginput(1, timeout=0)
             country = self.transformToCountry(location[0][0], location[0][1])
         return country
 
 
 class MapWindow(QWidget):
-    def __init__(self,argMap, parent=None):
+    def __init__(self, argMap, parent=None):
         super(MapWindow, self).__init__(parent)
 
         self.title = "Map Game"
@@ -117,7 +131,7 @@ class MapWindow(QWidget):
         
         self.setLayout(self.layout)
 
-        self.canvas = MapDia()
+        self.canvas = Map()
         self.layout.addWidget(self.canvas)
 
         
@@ -127,6 +141,7 @@ class MapWindow(QWidget):
     
     def new_plot(self):
         pass
+
     def back_menu(self):
         self.menu = Menu()
         self.close()
