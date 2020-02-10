@@ -45,6 +45,8 @@ class MapDia(QDialog):
         layout.addWidget(self.button)
         self.setLayout(layout)
         self.show()
+        
+    def launch(self):
         country = self.waitForStart()
 
     def plot(self):

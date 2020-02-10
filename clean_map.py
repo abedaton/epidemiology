@@ -123,6 +123,7 @@ class MapWindow(QWidget):
         
         
         self.showMaximized()
+        self.canvas.launch()
     
     def new_plot(self):
         pass
