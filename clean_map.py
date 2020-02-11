@@ -59,25 +59,19 @@ class Map(QDialog):
 
     def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):
         df = gp.read_file("myShapes.shp") # contient tous les voisins de chaques pays
-        liste = [pyc.get_shape(Thecountry)]
+        liste = [pyc.get_shape(Thecountry)] # liste des pays contaminé
+
+
+
         while self.run  and startNum<endNum:
-            rand = random.randint(0, 100)
-            #if rand <= 5:
-            #    liste += pyc.get_shape("France")
             for country in liste:
                 points = self.findPoints(country)
-                x = points.x
-                y = points.y
-                plt.scatter(x, y, color="red", marker="o", transform=ccrs.Geodetic())
-                print("plotted")
+                plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
                 self.figure.canvas.draw()
                 self.figure.canvas.flush_events()
-
                 #time.sleep(0.1)
 
                 startNum += 1
-
-                #plt.pause(timeInterval)
 
 
     def findPoints(self, country):
