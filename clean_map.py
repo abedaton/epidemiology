@@ -14,7 +14,6 @@ from shapely.prepared import prep
 import reverse_geocoder as rg
 import country_converter as coco
 import geopandas as gp
-import cython
 
 import random
 import time
