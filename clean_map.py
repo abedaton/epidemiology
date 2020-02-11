@@ -57,19 +57,42 @@ class Map(QDialog):
     def plot(self):
         print("pouette")
 
-    def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):
-        df = gp.read_file("myShapes.shp") # contient tous les voisins de chaques pays
-        liste = [pyc.get_shape(Thecountry)] # liste des pays contaminé
+    def updateSusceptible(self, infected_names, susceptibles, country, df):
+        neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0].split(", ")
+        for neighbors in neighborsList:
+            if neighbors not in infected_names:
+                susceptibles.append(neighbors)
+        return list(set(susceptibles))
+
+    def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
+        df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
+        infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+        infected_names = [Thecountry]
+        susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
+
+        while self.run and startNum < endNum:
+            print(susceptibles)
+            count = 0
+            while count < len(susceptibles):
+                sus = susceptibles[count]
+                prob = random.randint(0, 100)
+                if prob >= 90:
+                    infected_names.append(sus)
+                    infected.append(pyc.get_shape(sus))
+                    susceptibles.remove(sus)
+                    susceptibles = self.updateSusceptible(infected_names, susceptibles, sus, df)
+                    print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
+                else:
+                    count += 1
 
 
-
-        while self.run  and startNum<endNum:
-            for country in liste:
+            for country in infected:
                 points = self.findPoints(country)
                 plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
                 self.figure.canvas.draw()
                 self.figure.canvas.flush_events()
                 #time.sleep(0.1)
+
 
                 startNum += 1
 
