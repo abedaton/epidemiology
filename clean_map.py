@@ -86,7 +86,6 @@ class Map(QDialog):
                 else:
                     count += 1
 
-
             for country in infected:
                 points = self.findPoints(country)
                 plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())

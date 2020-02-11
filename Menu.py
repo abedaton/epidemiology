@@ -13,8 +13,9 @@ from PyQt5.QtGui import QBrush, QPixmap, QPalette, QImage
 
 class Menu(QWidget):
 
-    def __init__(self):
+    def __init__(self, option=None):
         super().__init__()
+
         self.setBackground(QImage("Images/biohazard.jpg"), self.width(), self.height())
         self.combo = QComboBox(self)
         self.combo.addItem("SIR")
@@ -32,6 +33,7 @@ class Menu(QWidget):
         self.comboMap.addItem("EckertIII")
         self.comboMap.addItem("EuroPP")
         self.comboMap.hide()
+
 
         self.combo.currentIndexChanged.connect(lambda: self.showNewCombo() if self.combo.currentIndex() == 6 else self.comboMap.hide() if not self.comboMap.isHidden() else None)
 
@@ -54,8 +56,31 @@ class Menu(QWidget):
         
         #vbox.addLayout(hbox)
         self.setLayout(self.hbox)
+
+        if option is not None:
+            if option == "SIR":
+                self.choose_model(model_name="SIR")
+            elif option == "SEIRS":
+                self.choose_model(model_name="SEIRS")
+            elif option == "SEIHFR":
+                self.choose_model(model_name="SEIHFR")
+            elif option == "SEIHFBR":
+                self.choose_model(model_name="SEIHFBR")
+            elif option == "spa":
+                self.choose_model(model_name="Dispersion spatiale")
+            elif option == "vac":
+                self.choose_model(model_name="Effet du vaccin")
+            elif option == "map":
+                self.choose_model(model_name="Map")
+            else:
+                self.showMaximized()
+        else:
+            self.showMaximized()
+
+
+
         
-        self.showMaximized()
+
 
     def setBackground(self, aimage, width = None, height = None):
         image = aimage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
@@ -71,10 +96,14 @@ class Menu(QWidget):
             self.choose_model()
 
 
-    def choose_model(self):
+    def choose_model(self, notUsed = None, model_name = None):
         from GUI_pyqt import App
 
-        model_name = self.combo.currentText()
+        if model_name is None:
+            model_name = self.combo.currentText()
+
+        #sys.argv.pop(0)
+        self.close()
         if (model_name == "SIR"):
             from GUI_pyqt import SIR
             self.app2 = App(SIR())
@@ -95,9 +124,8 @@ class Menu(QWidget):
             self.app2 = PixelGridWindowVaccined()
         elif (model_name == "Map"):
             from clean_map import MapWindow
-            self.close()
             self.app2 = MapWindow("ccrs."+self.comboMap.currentText()+"()")
-        self.close()
+
 
 
     def showNewCombo(self):
@@ -106,5 +134,10 @@ class Menu(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    menu = Menu()
+    if len(sys.argv) > 1:
+        var = sys.argv[1]
+        sys.argv.pop(1)
+        menu = Menu(var)
+    else:
+        menu = Menu()
     sys.exit(app.exec_())
