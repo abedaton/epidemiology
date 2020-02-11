@@ -16,6 +16,7 @@ import country_converter as coco
 
 import numpy as np
 import random
+import time
 import sys
 from Menu import Menu
 
@@ -46,7 +47,10 @@ class Map(QDialog):
 
     def launch(self):
         country = self.waitForStart()
-        #self.infect(0.0000001, 1000, coco.convert(names=country, to="ISO3"))
+        #plt.scatter(100, 100, color="red", marker="o", transform=ccrs.Geodetic())
+        #print("scatter done !")
+
+        self.infect(0.0000001, 100000, coco.convert(names=country, to="ISO3"))
 
     def plot(self):
         data = [random.random() for i in range(10)]
@@ -69,8 +73,17 @@ class Map(QDialog):
                 points = self.findPoints(country)
                 x = points.x
                 y = points.y
-                plt.scatter(x, y, color="red", marker=".", transform=ccrs.Geodetic())
-                # plt.pause(timeInterval)
+                plt.scatter(x, y, color="red", marker="o", transform=ccrs.Geodetic())
+                print("plotted")
+                self.figure.canvas.draw()
+                self.figure.canvas.draw_idle()
+                self.figure.canvas.flush_events()
+
+                time.sleep(0.1)
+
+
+                #plt.pause(timeInterval)
+
 
     def findPoints(self, country):
         minx, miny, maxx, maxy = country.bounds
