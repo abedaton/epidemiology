@@ -13,14 +13,6 @@ from PyQt5.QtGui import QBrush, QPixmap, QPalette, QImage
 
 class Menu(QWidget):
 
-    def setBackground(self, aimage, width = None, height = None):
-        image = aimage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-        sImage = image.scaled(QSize(width, height))
-        palette = QPalette()
-        palette.setBrush(QPalette.Window, QBrush(sImage))
-        self.setPalette(palette)
-
-
     def __init__(self):
         super().__init__()
         self.setBackground(QImage("Images/biohazard.jpg"), self.width(), self.height())
@@ -65,6 +57,14 @@ class Menu(QWidget):
         
         self.showMaximized()
 
+    def setBackground(self, aimage, width = None, height = None):
+        image = aimage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        sImage = image.scaled(QSize(width, height))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
+
+
     def keyPressEvent(self, e):
         if e.key() == 16777220:
             print("hey")
@@ -72,29 +72,29 @@ class Menu(QWidget):
 
 
     def choose_model(self):
-        from GUI_pyqt import App,SIR,SEIRS,SEIHFR,SEIHFBR
-        from PixelGrid import PixelGridWindow
-        from VaccineGrid import PixelGridWindowVaccined
-        from clean_map import MapWindow
+        from GUI_pyqt import App
 
         model_name = self.combo.currentText()
         if (model_name == "SIR"):
-            model = SIR()
-            self.app2 = App(model)
+            from GUI_pyqt import SIR
+            self.app2 = App(SIR())
         elif (model_name == "SEIRS"):
-            model = SEIRS()
-            self.app2 = App(model)
+            from GUI_pyqt import SEIRS
+            self.app2 = App(SEIRS())
         elif (model_name == "SEIHFR"):
-            model = SEIHFR()
-            self.app2 = App(model)
+            from GUI_pyqt import SEIHFR
+            self.app2 = App(SEIHFR())
         elif (model_name == "SEIHFBR"):
-            model = SEIHFBR()
-            self.app2 = App(model)
+            from GUI_pyqt import SEIHFBR
+            self.app2 = App(SEIHFBR())
         elif (model_name == "Dispersion spatiale"):
+            from PixelGrid import PixelGridWindow
             self.app2 = PixelGridWindow()
         elif (model_name == "Effet du vaccin"):
+            from VaccineGrid import PixelGridWindowVaccined
             self.app2 = PixelGridWindowVaccined()
         elif (model_name == "Map"):
+            from clean_map import MapWindow
             self.close()
             self.app2 = MapWindow("ccrs."+self.comboMap.currentText()+"()")
         self.close()
