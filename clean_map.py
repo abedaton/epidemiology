@@ -55,7 +55,9 @@ class Map(QDialog):
         print("pouette")
 
     def infect(self, timeInterval, Thecountry, startNum=0, maxNum=False):
+        df = gp.read_file("myShapes.shp") # contient tous les voisins de chaques pays
         liste = [pyc.get_shape(Thecountry)]
+
         for i in itertools.count(startNum):
             rand = random.randint(0, 100)
             #if rand <= 5:
@@ -70,7 +72,6 @@ class Map(QDialog):
                 self.figure.canvas.flush_events()
 
                 #time.sleep(0.1)
-
 
                 #plt.pause(timeInterval)
 
