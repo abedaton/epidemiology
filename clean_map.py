@@ -82,6 +82,7 @@ class Map(QDialog):
                     susceptibles.remove(sus)
                     susceptibles = self.updateSusceptible(infected_names, susceptibles, sus, df)
                     print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
+                    plt.title(coco.convert(names=sus, to="short_name") + " IS NOW INFECTED", fontsize=50)
                 else:
                     count += 1
 
