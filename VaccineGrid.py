@@ -25,10 +25,15 @@ class PixelGridVaccined(FigureCanvas):
         self.figure = Figure()
         super().__init__(self.figure)
         self.modele=VaccineModel(parametres)
+        self.ani = None
+
+    def clear(self):
+        self.modele.clear()
+        self.ani.new_frame_seq()
 
 
     def startInfection(self, I0=1):
-        self.modele.startAnimation()
+        self.modele.buildFirstFrame()
         self.createGraph()
 
     def stepInfection(self):
@@ -71,10 +76,12 @@ class PixelGridVaccined(FigureCanvas):
         #mise a jour de la heatmap
         self.image.set_data(self.modele.population)
 
-    def animate(self, stepTimeInterval=10, nbSteps=50):
+    def animate(self, stepTimeInterval=10, nbSteps=51):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
         self.ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
-        interval=stepTimeInterval, frames=nbSteps, repeat=False)
+        interval=stepTimeInterval, frames=nbSteps, repeat=True)
+
+
 
 
 class PixelGridWindowVaccined(QWidget):
@@ -115,33 +122,40 @@ class PixelGridWindowVaccined(QWidget):
 
         self.layout_param_init.addLayout(self.layout_vaccin)
         self.layout_param_init.addLayout(self.layout_but)
-
-        self.canvas = PixelGridVaccined()
-
         self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
 
-        #Infecter des gens
+        self.canvas = PixelGridVaccined()
+        self.layout.addWidget(self.canvas)
+
         self.canvas.startInfection()
-        #Démarrer le temps (big bang)
         self.canvas.animate()
 
-        self.layout.addWidget(self.canvas)
         self.show()
 
     def valueChanged(self,value):
         self.text.setText("Pourcentage de vaccinés : "+ str(value))
         #effectue le changement de parametres
-        parametres = {'probVaccine' : value}
+        parametres = {'probVaccine' : value/100}
         self.canvas.modele.changeParam(parametres)
 
+    def getInputValue(self):
+        parametres = {}
+        parametres['probVaccine'] = self.vaccin.value()/100
+        #A rajouter : autres param
+        return parametres
+
     def new_plot(self):
-        self.canvas.modele.clear() #Reset la matrice
+        parametres = self.getInputValue()
+        self.canvas.modele.changeParam(parametres)
+        self.canvas.clear()
         self.canvas.startInfection()
         self.canvas.animate()
+
     def back_menu(self):
         self.menu = Menu()
         self.close()
+
 
 
 
