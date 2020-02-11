@@ -66,13 +66,11 @@ class PixelGridVaccined(FigureCanvas):
     def createProgressStamp(self):
         axtext = self.figure.add_axes([0,0.05,0.1,0.05])
         axtext.axis("off")
-        self.timeStep = axtext.text(0.5,0.5, str(0), ha="left", va="top")
 
     def refreshHeatmap(self, frame):
         #Mise a jour de la matrice
         self.stepInfection()
         #Mise a jour du t =
-        self.timeStep.set_text(str("t=") + str(frame))
         #mise a jour de la heatmap
         self.image.set_data(self.modele.population)
 
