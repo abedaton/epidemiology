@@ -17,7 +17,6 @@ import geopandas as gp
 
 import random
 import time
-import itertools
 
 from Menu import Menu
 
@@ -48,17 +47,20 @@ class Map(QDialog):
 
     def launch(self):
         country = self.waitForStart()
-
+        self.run = True
         self.infect(0.0000001, coco.convert(names=country, to="ISO3"), 100000)
+
+    def end(self):
+        self.run = False
+        plt.ioff()
 
     def plot(self):
         print("pouette")
 
-    def infect(self, timeInterval, Thecountry, startNum=0, maxNum=False):
+    def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):
         df = gp.read_file("myShapes.shp") # contient tous les voisins de chaques pays
         liste = [pyc.get_shape(Thecountry)]
-
-        for i in itertools.count(startNum):
+        while self.run  and startNum<endNum:
             rand = random.randint(0, 100)
             #if rand <= 5:
             #    liste += pyc.get_shape("France")
@@ -72,6 +74,8 @@ class Map(QDialog):
                 self.figure.canvas.flush_events()
 
                 #time.sleep(0.1)
+
+                startNum += 1
 
                 #plt.pause(timeInterval)
 
@@ -147,6 +151,7 @@ class MapWindow(QWidget):
         pass
 
     def back_menu(self):
+        self.canvas.end()
         self.menu = Menu()
         self.close()
 
