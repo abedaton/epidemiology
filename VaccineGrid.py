@@ -94,6 +94,7 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_but = QVBoxLayout(self)
         self.layout_param_init = QHBoxLayout(self)
         self.layout_vaccin = QVBoxLayout(self)
+        self.layout_transmission = QVBoxLayout(self)
 
 
         self.button = QPushButton('Lancer simulation', self)
@@ -104,21 +105,32 @@ class PixelGridWindowVaccined(QWidget):
         self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
         self.button2.clicked.connect(self.back_menu)
 
-        self.text = QLabel()
-        self.text.setText("Pourcentage de vaccinés : 50")
+        self.text_vaccin = QLabel("Pourcentage de vaccinés : 50")
+
+        self.text_transmission = QLabel("Pourcentage de transmission : 50")
 
         self.vaccin = QSlider(Qt.Horizontal)
         self.vaccin.setRange(0,100)
         self.vaccin.setValue(50)
-        self.vaccin.valueChanged.connect(self.valueChanged)
+        self.vaccin.valueChanged.connect(self.vaccineChanged)
+
+        self.transmission = QSlider(Qt.Horizontal)
+        self.transmission.setRange(0,100)
+        self.transmission.setValue(50)
+        self.transmission.valueChanged.connect(self.transmissionChanged)
 
         self.layout_but.addWidget(self.button)
         self.layout_but.addWidget(self.button2)
 
-        self.layout_vaccin.addWidget(self.text)
+        self.layout_vaccin.addWidget(self.text_vaccin)
         self.layout_vaccin.addWidget(self.vaccin)
 
+        self.layout_transmission.addWidget(self.text_transmission)
+        self.layout_transmission.addWidget(self.transmission)
+
+
         self.layout_param_init.addLayout(self.layout_vaccin)
+        self.layout_param_init.addLayout(self.layout_transmission)
         self.layout_param_init.addLayout(self.layout_but)
         self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
@@ -129,17 +141,24 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.startInfection()
         self.canvas.animate()
 
-        self.show()
+        self.showMaximized()
 
-    def valueChanged(self,value):
-        self.text.setText("Pourcentage de vaccinés : "+ str(value))
+    def vaccineChanged(self,value):
+        self.text_vaccin.setText("Pourcentage de vaccinés : "+ str(value))
         #effectue le changement de parametres
         parametres = {'probVaccine' : value/100}
+        self.canvas.modele.changeParam(parametres)
+    
+    def transmissionChanged(self,value):
+        self.text_transmission.setText("Pourcentage de transmission : "+ str(value))
+        #effectue le changement de parametres
+        parametres = {'probInfect' : value/100}
         self.canvas.modele.changeParam(parametres)
 
     def getInputValue(self):
         parametres = {}
         parametres['probVaccine'] = self.vaccin.value()/100
+        parametres['probInfect'] = self.transmission.value()/100
         #A rajouter : autres param
         return parametres
 
