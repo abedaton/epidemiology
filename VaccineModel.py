@@ -27,6 +27,7 @@ class VaccineModel(object):
 
     def createSets(self):
         self.susceptibles = set()
+        #Tout le monde est susceptible au départ
         for i in range(self.X):
             for j in range(self.Y):
                 self.susceptibles.add((i,j))
@@ -35,7 +36,7 @@ class VaccineModel(object):
         self.infected = set()
 
 
-    def startAnimation(self):
+    def buildFirstFrame(self):
         self.vaccinatePopulation()
         self.infectI0Susceptibles()
 
