@@ -3,7 +3,7 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel,QSpinBox
 from PyQt5.QtCore import Qt
 import sys
 
@@ -95,6 +95,7 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_param_init = QHBoxLayout(self)
         self.layout_vaccin = QVBoxLayout(self)
         self.layout_transmission = QVBoxLayout(self)
+        self.layout_I0 = QVBoxLayout(self)
 
 
         self.button = QPushButton('Lancer simulation', self)
@@ -119,6 +120,15 @@ class PixelGridWindowVaccined(QWidget):
         self.transmission.setValue(50)
         self.transmission.valueChanged.connect(self.transmissionChanged)
 
+        self.I0_but = QSpinBox()
+        self.I0_but.setRange(0,50)
+        self.I0_but.setValue(1)
+
+        self.I0_text = QLabel("Nombre d'infectés")
+
+        self.layout_I0.addWidget(self.I0_text)
+        self.layout_I0.addWidget(self.I0_but)
+
         self.layout_but.addWidget(self.button)
         self.layout_but.addWidget(self.button2)
 
@@ -131,6 +141,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.layout_param_init.addLayout(self.layout_vaccin)
         self.layout_param_init.addLayout(self.layout_transmission)
+        self.layout_param_init.addLayout(self.layout_I0)
         self.layout_param_init.addLayout(self.layout_but)
         self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
@@ -159,6 +170,7 @@ class PixelGridWindowVaccined(QWidget):
         parametres = {}
         parametres['probVaccine'] = self.vaccin.value()/100
         parametres['probInfect'] = self.transmission.value()/100
+        parametres['I0'] = self.I0_but.value() # faut check lui il change mais pas dans le modele
         #A rajouter : autres param
         return parametres
 
