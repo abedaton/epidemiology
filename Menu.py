@@ -46,6 +46,8 @@ class Menu(QWidget):
 
         self.button = QPushButton("GO",self)
         self.button.clicked.connect(self.choose_model)
+        self.button.keyPressEvent = self.keyPressEvent
+
         
         self.hbox = QHBoxLayout()
         #hbox.addStretch(1)
@@ -62,6 +64,11 @@ class Menu(QWidget):
         self.setLayout(self.hbox)
         
         self.showMaximized()
+
+    def keyPressEvent(self, e):
+        if e.key() == 16777220:
+            print("hey")
+            self.choose_model()
 
 
     def choose_model(self):
