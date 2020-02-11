@@ -13,11 +13,12 @@ import shapely.geometry as sgeom
 from shapely.prepared import prep
 import reverse_geocoder as rg
 import country_converter as coco
+import geopandas as gp
 
-import numpy as np
 import random
 import time
-import sys
+import itertools
+
 from Menu import Menu
 
 
@@ -47,28 +48,18 @@ class Map(QDialog):
 
     def launch(self):
         country = self.waitForStart()
-        #plt.scatter(100, 100, color="red", marker="o", transform=ccrs.Geodetic())
-        #print("scatter done !")
 
-        self.infect(0.0000001, 100000, coco.convert(names=country, to="ISO3"))
+        self.infect(0.0000001, coco.convert(names=country, to="ISO3"), 100000)
 
     def plot(self):
-        data = [random.random() for i in range(10)]
+        print("pouette")
 
-        self.figure.clear()
-
-        ax = self.figure.add_subplot(111)
-
-        ax.plot(data, '*-')
-
-        self.canvas.draw()
-
-    def infect(self, timeInterval, num, Thecountry):
+    def infect(self, timeInterval, Thecountry, startNum=0, maxNum=False):
         liste = [pyc.get_shape(Thecountry)]
-        for i in range(num):
+        for i in itertools.count(startNum):
             rand = random.randint(0, 100)
-            if rand <= 5:
-                liste += pyc.get_shape("France")
+            #if rand <= 5:
+            #    liste += pyc.get_shape("France")
             for country in liste:
                 points = self.findPoints(country)
                 x = points.x
@@ -76,10 +67,9 @@ class Map(QDialog):
                 plt.scatter(x, y, color="red", marker="o", transform=ccrs.Geodetic())
                 print("plotted")
                 self.figure.canvas.draw()
-                self.figure.canvas.draw_idle()
                 self.figure.canvas.flush_events()
 
-                time.sleep(0.1)
+                #time.sleep(0.1)
 
 
                 #plt.pause(timeInterval)
