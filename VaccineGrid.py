@@ -117,7 +117,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.transmission = QSlider(Qt.Horizontal)
         self.transmission.setRange(0,100)
-        self.transmission.setValue(50)
+        self.transmission.setValue(100)
         self.transmission.valueChanged.connect(self.transmissionChanged)
 
         self.I0_but = QSpinBox()
