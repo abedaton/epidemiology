@@ -10,8 +10,8 @@ class VaccineModel(object):
     """docstring for VaccineModel."""
 
     def __init__(self, parametres = {}, size = [50,50]):
+        self.printed = False
         self.X, self.Y = size
-        self.counter = 0
 
         self.parametres = parametres
 
@@ -21,7 +21,7 @@ class VaccineModel(object):
         self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
 
     def clear(self):
-        self.counter = 0
+        self.printed = False
         self.createSets()
         self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
 
@@ -88,10 +88,12 @@ class VaccineModel(object):
     def infectI0Susceptibles(self):
         susceptibles = tuple(self.susceptibles)
         #Infect un susceptible aléatoire
-        self.infect(susceptibles[random.randrange(0,len(susceptibles))])
+        for i in range(self.parametres['I0']):
+            self.infect(susceptibles[random.randrange(0,len(susceptibles))])
 
 
     def spread(self):
+        susceptiblesBefore = len(self.susceptibles)
         stack = []
         for iSus, jSus in self.susceptibles:
             for i,j in self.neighbours(iSus, jSus):
@@ -99,9 +101,10 @@ class VaccineModel(object):
                     stack.append((iSus, jSus))
         for futureinfected in stack:
             self.infect(futureinfected)
-        self.counter += 1
+        done = susceptiblesBefore == len(self.susceptibles)
+        
         #Fin du spreading, on affiche les résultats
-        if self.counter == self.parametres['maxTime']-1:
+        if done and not self.printed:
             nombreSainDépart = self.X*self.Y
             nombreVacciné = len(self.vaccinated)
             nombreInfecté = len(self.infected)
@@ -109,6 +112,7 @@ class VaccineModel(object):
             print(f"Pour une population vaccinée à {self.parametres['probVaccine']*100}%")
             print(f"Nous constatons que parmis les non vaccinés ( {nombreSain+nombreInfecté} cases blanches au départ), \
             seulement {100*nombreSain/(nombreSain+nombreInfecté)}% ont été épargnés du virus")
+            self.printed = True
 
     def neighbours(self, i,j):
         res = set()

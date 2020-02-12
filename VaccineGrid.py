@@ -111,7 +111,7 @@ class PixelGridWindowVaccined(QWidget):
         self.text_transmission = QLabel("Pourcentage de transmission : 50")
 
         self.vaccin = QSlider(Qt.Horizontal)
-        self.vaccin.setRange(0,100)
+        self.vaccin.setRange(0,99)
         self.vaccin.setValue(50)
         self.vaccin.valueChanged.connect(self.vaccineChanged)
 
