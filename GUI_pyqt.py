@@ -222,7 +222,7 @@ class tableau(object):
         t=len(model.timeVector)
         
         #Création matrice
-        self.m=[[None for j in range (t)] for i in range (len(self.names))]
+        temp=[[None for j in range (t)] for i in range (len(self.names))]
         
         #Remplissage matrice
         compteur=0
@@ -230,10 +230,34 @@ class tableau(object):
             var = model.get(elem[0])
 
             for c in range (len(var)):
-            	self.m[compteur][c]=int(var[c])
+            	temp[compteur][c]=int(var[c])
 
             compteur=compteur+1
 
+        #Supression a partir du moment ou c'est stable
+        stables_count=[(len(temp[0])) for i in range (len(temp))]
+        for i in range (len(temp)):
+        	stables_count[i]=self.find_stable(temp[i])
+
+        res=max(stables_count)
+        self.m=[None for i in range (len(self.names))]
+        for i in range (len(self.names)):
+        	self.m[i]=temp[i][:res]
+
+    def find_stable(self,liste):
+    	found=False
+    	i=0
+    	while i<len(liste) and not found:
+    		found=self.find_occur(liste,i)
+    		i=i+1
+    	return i
+
+    def find_occur(self,lst,ind):
+    	res=True
+    	for i in range (ind,len(lst)):
+    		if lst[ind]!=lst[i]:
+    			res=False
+    	return res
 
     def creer_wid(self):
         temp=QTableWidget()
