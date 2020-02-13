@@ -74,7 +74,7 @@ class PixelGridVaccined(FigureCanvas):
         #mise a jour de la heatmap
         self.image.set_data(self.modele.population)
 
-    def animate(self, stepTimeInterval=10, nbSteps=51):
+    def animate(self, stepTimeInterval=100, nbSteps=51):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
         self.ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
         interval=stepTimeInterval, frames=nbSteps, repeat=True)
@@ -181,7 +181,7 @@ class PixelGridWindowVaccined(QWidget):
         self.text_cured.setText("Pourcentage de chance de guérir : " + str(value))
         parametres = {'probCure' : value/100}
         self.canvas.modele.changeParam(parametres)
-    
+
     def transmissionChanged(self,value):
         self.text_transmission.setText("Pourcentage de transmission : "+ str(value))
         #effectue le changement de parametres
@@ -202,7 +202,7 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.modele.changeParam(parametres)
         self.canvas.clear()
         self.canvas.startInfection()
-        self.canvas.animate()
+
 
     def back_menu(self):
         self.menu = Menu()

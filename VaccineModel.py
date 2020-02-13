@@ -19,7 +19,7 @@ class VaccineModel(object):
         self.createSets()
         self.applyDefaultParametres()
 
-        self.population = [[SUSCEPTIBLE for i in range(self.X)] for j in range(self.Y)]
+        self.population = np.full((self.Y, self.X), SUSCEPTIBLE)
 
     def clear(self):
         self.printed = False
@@ -59,23 +59,30 @@ class VaccineModel(object):
                 self.parametres[elem] = defaults[elem]
 
     def vaccinatePopulation(self):
-        #Nombre total de gens vacciné
-        toVaccine = self.parametres['probVaccine']*(self.X*self.Y)
-        while toVaccine > 0:
-            #On vaccine la population au hasard
-            i, j = random.randrange(0, self.X), random.randrange(0, self.Y)
-            #Si vaccin réussi, on diminue
-            if self.vaccinate((i, j)):
-                toVaccine -= 1
+        susceptibles = list(self.susceptibles)
+        random.shuffle(susceptibles)
 
-    def vaccinate(self, indexPair):
+        #Nombre total de gens vacciné
+        toVaccine = int(self.parametres['probVaccine']*(self.X*self.Y))
+        for count in range(toVaccine):
+            self.vaccinate(susceptibles.pop())
+
+    def vaccinate(self, indexPair, force=False):
         i, j = indexPair
-        if indexPair in self.susceptibles: #Vaccine que les sus
+        if force or indexPair in self.susceptibles: #Vaccine que les sus
             self.susceptibles.remove(indexPair)
             self.vaccinated.add(indexPair)
             self.population[j][i] = VACCINATED
             return True
         return False
+
+    def infectI0Susceptibles(self):
+        susceptibles = list(self.susceptibles)
+        random.shuffle(susceptibles)
+
+        #Nombre total de gens vacciné
+        for count in range(self.parametres['I0']):
+            self.infect(susceptibles.pop())
 
     def infect(self, indexPair):
         i, j = indexPair
@@ -86,24 +93,26 @@ class VaccineModel(object):
             return True
         return False
 
-    def infectI0Susceptibles(self):
-        susceptibles = tuple(self.susceptibles)
-
-        #Infect un susceptible aléatoire
-        index = 0
-        while index < self.parametres['I0']:
-            i, j = random.randrange(0, self.X), random.randrange(0, self.Y)
-            if self.infect((i,j)):
-                index+=1
 
 
     def spread(self):
         susceptiblesBefore = len(self.susceptibles)
         stack = []
-        for iSus, jSus in self.susceptibles:
-            for i,j in self.neighbours(iSus, jSus):
-                if (i,j) in self.infected and RNG(self.parametres['probInfect']):
-                    stack.append((iSus, jSus))
+        if len(self.infected) > len(self.susceptibles):
+            for human in self.susceptibles:
+                for human2 in self.neighbours(human):
+                    if human2 in self.infected:
+                        if RNG(self.parametres['probInfect']):
+                            stack.append(human)
+                        if RNG(self.parametres['probCure']):
+                            self.vaccinate(human2, force=True)
+        else:
+            for human in self.infected:
+                for human2 in self.neighbours(human):
+                    if human2 in self.susceptibles and RNG(self.parametres['probInfect']):
+                        stack.append(human2)
+                if RNG(self.parametres['probCure']):
+                    self.vaccinate(human, force=True)
         for futureinfected in stack:
             self.infect(futureinfected)
         done = susceptiblesBefore == len(self.susceptibles)
@@ -119,25 +128,18 @@ class VaccineModel(object):
             seulement {100*nombreSain/(nombreSain+nombreInfecté)}% ont été épargnés du virus")
             self.printed = True
 
-    def neighbours(self, i,j):
+    def neighbours(self, ij):
+        i, j = ij
         res = set()
-        if 0 < i-1:
-            if 0 < j-1:
-                res.add((i-1,j-1))
+        if 0 <= i-1:
             res.add((i-1,j))
-            if j+1 < self.X:
-                res.add((i-1, j+1))
 
-        if 0 < j-1:
+        if 0 <= j-1:
             res.add((i,j-1))
         res.add((i,j))
         if j+1 < self.X:
             res.add((i, j+1))
 
         if i+1 < self.Y:
-            if 0 < j-1:
-                res.add((i+1,j-1))
             res.add((i+1,j))
-            if j+1 < self.X:
-                res.add((i+1, j+1))
         return res
