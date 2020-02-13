@@ -152,14 +152,14 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.startInfection()
         self.canvas.animate()
 
-        self.showMaximized()
+        self.show()#Maximized()
 
     def vaccineChanged(self,value):
         self.text_vaccin.setText("Pourcentage de vaccinés : "+ str(value))
         #effectue le changement de parametres
         parametres = {'probVaccine' : value/100}
         self.canvas.modele.changeParam(parametres)
-    
+
     def transmissionChanged(self,value):
         self.text_transmission.setText("Pourcentage de transmission : "+ str(value))
         #effectue le changement de parametres
