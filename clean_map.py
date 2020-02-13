@@ -22,9 +22,15 @@ import threading
 from Menu import Menu
 
 
+def uselessLoad():
+    rg.search((0, 0), verbose=False)
+
+
 class Map(QDialog):
     def __init__(self, parent=None):
         super(Map, self).__init__(parent)
+        thread = threading.Thread(target=uselessLoad)
+        thread.start()
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
 
@@ -45,6 +51,8 @@ class Map(QDialog):
         layout.addWidget(self.button)
         self.setLayout(layout)
         self.show()
+
+
 
     def launch(self):
         country = self.waitForStart()
@@ -120,7 +128,7 @@ class Map(QDialog):
         if x is not None and y is not None:
             on = land.contains(sgeom.Point(x, y))
             if on:
-                result = rg.search((y, x)) ##################################################
+                result = rg.search((y, x)) 
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
                 plt.title("Starting in " + str(country), fontsize=50)
