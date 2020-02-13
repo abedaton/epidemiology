@@ -1,4 +1,5 @@
 import random
+import numpy as np
 SUSCEPTIBLE = 0
 INFECTED = 1
 VACCINATED = 2
@@ -18,12 +19,12 @@ class VaccineModel(object):
         self.createSets()
         self.applyDefaultParametres()
 
-        self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
+        self.population = [[SUSCEPTIBLE for i in range(self.X)] for j in range(self.Y)]
 
     def clear(self):
         self.printed = False
         self.createSets()
-        self.population = [[SUSCEPTIBLE for j in range(self.X)] for i in range(self.Y)]
+        self.population = [[SUSCEPTIBLE for i in range(self.X)] for j in range(self.Y)]
 
     def createSets(self):
         self.susceptibles = set()
@@ -62,7 +63,7 @@ class VaccineModel(object):
         toVaccine = self.parametres['probVaccine']*(self.X*self.Y)
         while toVaccine > 0:
             #On vaccine la population au hasard
-            i, j = random.randrange(0, self.Y), random.randrange(0, self.X)
+            i, j = random.randrange(0, self.X), random.randrange(0, self.Y)
             #Si vaccin réussi, on diminue
             if self.vaccinate((i, j)):
                 toVaccine -= 1
@@ -72,7 +73,7 @@ class VaccineModel(object):
         if indexPair in self.susceptibles: #Vaccine que les sus
             self.susceptibles.remove(indexPair)
             self.vaccinated.add(indexPair)
-            self.population[i][j] = VACCINATED
+            self.population[j][i] = VACCINATED
             return True
         return False
 
@@ -81,15 +82,19 @@ class VaccineModel(object):
         if indexPair in self.susceptibles: #infecte que le sus
             self.susceptibles.remove(indexPair)
             self.infected.add(indexPair)
-            self.population[i][j] = INFECTED
+            self.population[j][i] = INFECTED
             return True
         return False
 
     def infectI0Susceptibles(self):
         susceptibles = tuple(self.susceptibles)
+
         #Infect un susceptible aléatoire
-        for i in range(self.parametres['I0']):
-            self.infect(susceptibles[random.randrange(0,len(susceptibles))])
+        index = 0
+        while index < self.parametres['I0']:
+            i, j = random.randrange(0, self.X), random.randrange(0, self.Y)
+            if self.infect((i,j)):
+                index+=1
 
 
     def spread(self):
@@ -102,7 +107,7 @@ class VaccineModel(object):
         for futureinfected in stack:
             self.infect(futureinfected)
         done = susceptiblesBefore == len(self.susceptibles)
-        
+
         #Fin du spreading, on affiche les résultats
         if done and not self.printed:
             nombreSainDépart = self.X*self.Y
