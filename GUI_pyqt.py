@@ -88,7 +88,7 @@ class App(QWidget):
 
 
         self.button = QPushButton('Lancer simulation', self)
-        self.button.setToolTip('créer les nouveaux graphiques aves les nouvelles valeurs')
+        self.button.setToolTip('créer les nouveaux graphiques et tableaux avec les nouvelles valeurs')
         self.button.clicked.connect(self.new_plot)
 
         self.button2 = QPushButton('Menu', self)
@@ -152,6 +152,12 @@ class App(QWidget):
         self.showMaximized()
 
     def new_plot(self):
+        #actualiser tableau
+       
+        self.tableau.get_m(self.model)
+        self.tableau.actualiser()
+
+        #actualiser graph
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot(self.time)
@@ -207,7 +213,7 @@ class tableau(object):
         Qcol=QVBoxLayout(colonne)
         Horizontal.addWidget(colonne)
         self.temp=self.creer_wid()
-        self.actualiser(self.m)
+        self.actualiser()
         Qcol.addWidget(self.temp)
         
     def get_m(self,model):
@@ -244,6 +250,7 @@ class tableau(object):
         for i in range (len(self.names)):
         	self.m[i]=temp[i][:res]
 
+
     def find_stable(self,liste):
     	found=False
     	i=0
@@ -266,10 +273,10 @@ class tableau(object):
         temp.setVerticalHeaderLabels(self.names)
         return temp
 
-    def actualiser(self,mat):
-        for i in range (self.n_states):
-            for j in range (self.t):
-                self.temp.setItem(i,j,QTableWidgetItem(str(mat[i][j])))
+    def actualiser(self):
+        for i in range (len(self.m)):
+            for j in range (len(self.m[0])):
+                self.temp.setItem(i,j,QTableWidgetItem(str(self.m[i][j])))
 
 
 if __name__ == '__main__':
