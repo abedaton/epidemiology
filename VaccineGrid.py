@@ -3,7 +3,7 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel,QSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel,QSpinBox,QMessageBox
 from PyQt5.QtCore import Qt
 import sys
 
@@ -148,11 +148,17 @@ class PixelGridWindowVaccined(QWidget):
 
         self.canvas = PixelGridVaccined()
         self.layout.addWidget(self.canvas)
+        self.PopUpEnd()
 
         self.canvas.startInfection()
         self.canvas.animate()
 
-        self.show()#Maximized()
+        self.showMaximized()
+    def PopUpEnd(self):
+        self.text_fin = QMessageBox()
+        self.text_fin.setWindowTitle("Simulation finie")
+        self.text_fin.setText("Bob") # mettre le bon texte d'une canvas
+        self.text_fin.show()
 
     def vaccineChanged(self,value):
         self.text_vaccin.setText("Pourcentage de vaccinés : "+ str(value))
