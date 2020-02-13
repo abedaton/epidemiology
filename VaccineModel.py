@@ -51,6 +51,7 @@ class VaccineModel(object):
         defaults =\
         {'probVaccine' : 0.5,\
          'probInfect' : 1,\
+         'probCure' : 0,\
           'maxTime' : 50,\
           'I0' : 1\
         }
@@ -70,7 +71,9 @@ class VaccineModel(object):
     def vaccinate(self, indexPair, force=False):
         i, j = indexPair
         if force or indexPair in self.susceptibles: #Vaccine que les sus
-            self.susceptibles.remove(indexPair)
+            if indexPair in self.susceptibles :
+                #on peut pas le retirer si il est pas dedans
+                self.susceptibles.remove(indexPair)
             self.vaccinated.add(indexPair)
             self.population[j][i] = VACCINATED
             return True
