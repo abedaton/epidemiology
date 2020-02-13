@@ -17,6 +17,7 @@ import geopandas as gp
 
 import random
 import time
+import threading
 
 from Menu import Menu
 
@@ -58,13 +59,16 @@ class Map(QDialog):
         print("pouette")
 
     def updateSusceptible(self, infected_names, susceptibles, country, df):
-        neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0].split(", ")
-        for neighbors in neighborsList:
-            if neighbors not in infected_names:
-                susceptibles.append(neighbors)
+        neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0]
+        if neighborsList is not None:
+            neighborsList = neighborsList.split(", ")
+            for neighbors in neighborsList:
+                if neighbors not in infected_names:
+                    susceptibles.append(neighbors)
         return list(set(susceptibles))
 
     def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
+        print("fonction infect")
         df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
         infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
         infected_names = [Thecountry]
@@ -78,7 +82,8 @@ class Map(QDialog):
                 prob = random.randint(0, 100)
                 if prob >= 90:
                     infected_names.append(sus)
-                    infected.append(pyc.get_shape(sus))
+                    infected.append(df.loc[df["ISO3"] == sus]["geometry"].tolist()[0])
+                    #infected.append(pyc.get_shape(sus))
                     susceptibles.remove(sus)
                     susceptibles = self.updateSusceptible(infected_names, susceptibles, sus, df)
                     print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
@@ -89,12 +94,10 @@ class Map(QDialog):
             for country in infected:
                 points = self.findPoints(country)
                 plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
-                self.figure.canvas.draw()
-                self.figure.canvas.flush_events()
                 #time.sleep(0.1)
-
-
                 startNum += 1
+            self.figure.canvas.draw()
+            self.figure.canvas.flush_events()
 
 
     def findPoints(self, country):
@@ -109,14 +112,15 @@ class Map(QDialog):
             shpreader.natural_earth(resolution='50m',
                                     category='physical', name='land'))
 
+
         land_geom = sgeom.MultiPolygon([sgeom.shape(geom['geometry'])
                                         for geom in geoms])
 
         land = prep(land_geom)
-        if x != None and y != None:
+        if x is not None and y is not None:
             on = land.contains(sgeom.Point(x, y))
             if on:
-                result = rg.search((y, x))
+                result = rg.search((y, x)) ##################################################
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
                 plt.title("Starting in " + str(country), fontsize=50)
