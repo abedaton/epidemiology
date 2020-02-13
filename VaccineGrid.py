@@ -121,7 +121,7 @@ class PixelGridWindowVaccined(QWidget):
         self.transmission.valueChanged.connect(self.transmissionChanged)
 
         self.I0_but = QSpinBox()
-        self.I0_but.setRange(0,50)
+        self.I0_but.setRange(0,25)
         self.I0_but.setValue(1)
 
         self.I0_text = QLabel("Nombre d'infectés")
