@@ -96,6 +96,7 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_vaccin = QVBoxLayout(self)
         self.layout_transmission = QVBoxLayout(self)
         self.layout_I0 = QVBoxLayout(self)
+        self.layout_cured = QVBoxLayout(self)
 
 
         self.button = QPushButton('Lancer simulation', self)
@@ -110,6 +111,8 @@ class PixelGridWindowVaccined(QWidget):
 
         self.text_transmission = QLabel("Pourcentage de transmission : 100")
 
+        self.text_cured = QLabel("Pourcentage de chance de guérir : 0")
+
         self.vaccin = QSlider(Qt.Horizontal)
         self.vaccin.setRange(0,99)
         self.vaccin.setValue(50)
@@ -119,6 +122,11 @@ class PixelGridWindowVaccined(QWidget):
         self.transmission.setRange(0,100)
         self.transmission.setValue(100)
         self.transmission.valueChanged.connect(self.transmissionChanged)
+
+        self.cured = QSlider(Qt.Horizontal)
+        self.cured.setRange(0,100)
+        self.cured.setValue(0)
+        self.cured.valueChanged.connect(self.curedChanged)
 
         self.I0_but = QSpinBox()
         self.I0_but.setRange(0,25)
@@ -138,8 +146,12 @@ class PixelGridWindowVaccined(QWidget):
         self.layout_transmission.addWidget(self.text_transmission)
         self.layout_transmission.addWidget(self.transmission)
 
+        self.layout_cured.addWidget(self.text_cured)
+        self.layout_cured.addWidget(self.cured)
+
 
         self.layout_param_init.addLayout(self.layout_vaccin)
+        self.layout_param_init.addLayout(self.layout_cured)
         self.layout_param_init.addLayout(self.layout_transmission)
         self.layout_param_init.addLayout(self.layout_I0)
         self.layout_param_init.addLayout(self.layout_but)
@@ -165,6 +177,10 @@ class PixelGridWindowVaccined(QWidget):
         #effectue le changement de parametres
         parametres = {'probVaccine' : value/100}
         self.canvas.modele.changeParam(parametres)
+    def curedChanged(self,value):
+        self.text_cured.setText("Pourcentage de chance de guérir : " + str(value))
+        parametres = {'probCure' : value/100}
+        self.canvas.modele.changeParam(parametres)
     
     def transmissionChanged(self,value):
         self.text_transmission.setText("Pourcentage de transmission : "+ str(value))
@@ -177,6 +193,7 @@ class PixelGridWindowVaccined(QWidget):
         parametres['probVaccine'] = self.vaccin.value()/100
         parametres['probInfect'] = self.transmission.value()/100
         parametres['I0'] = self.I0_but.value() # faut check lui il change mais pas dans le modele
+        parametres['probCure'] = self.cured.value()/100
         #A rajouter : autres param
         return parametres
 
