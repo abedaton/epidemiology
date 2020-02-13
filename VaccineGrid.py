@@ -166,6 +166,7 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.animate()
 
         self.showMaximized()
+        
     def PopUpEnd(self):
         self.text_fin = QMessageBox()
         self.text_fin.setWindowTitle("Simulation finie")
@@ -177,6 +178,7 @@ class PixelGridWindowVaccined(QWidget):
         #effectue le changement de parametres
         parametres = {'probVaccine' : value/100}
         self.canvas.modele.changeParam(parametres)
+
     def curedChanged(self,value):
         self.text_cured.setText("Pourcentage de chance de guérir : " + str(value))
         parametres = {'probCure' : value/100}
