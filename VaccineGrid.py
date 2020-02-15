@@ -89,75 +89,23 @@ class PixelGridWindowVaccined(QWidget):
     def __init__(self, parent=None):
         super(PixelGridWindowVaccined, self).__init__(parent)
 
-        self.title = "Evolution d'une maladie avec vaccin"
+        self.title = "Évolution d'une maladie dans une population vacciné à un certain pourcentage"
 
         self.layout = QVBoxLayout(self)
-        self.layout_but = QVBoxLayout()
-        self.layout_param_init = QHBoxLayout()
-        self.layout_vaccin = QVBoxLayout()
-        self.layout_transmission = QVBoxLayout()
-        self.layout_I0 = QVBoxLayout()
-        self.layout_cured = QVBoxLayout()
 
+        buttonsLayout = self.createButtons()
 
-        self.button = QPushButton('Lancer simulation', self)
-        self.button.setToolTip('Relance la simulation')
-        self.button.clicked.connect(self.new_plot)
+        vaccLayout = self.createVaccLayout()
+        tranLayout = self.createTranLayout()
+        initLayout = self.createInitLayout()
+        cureLayout = self.createCureLayout()
 
-        self.button2 = QPushButton('Menu', self)
-        self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
-        self.button2.clicked.connect(self.back_menu)
+        paramLayout = self.createParamLayout([vaccLayout, cureLayout, tranLayout, initLayout, buttonsLayout])
+        self.layout.addLayout(paramLayout)
 
-        self.text_vaccin = QLabel("Pourcentage de vaccinés : 50")
-
-        self.text_transmission = QLabel("Pourcentage de transmission : 100")
-
-        self.text_cured = QLabel("Pourcentage de chance de guérir : 13")
-
-        self.vaccin = QSlider(Qt.Horizontal)
-        self.vaccin.setRange(0,99)
-        self.vaccin.setValue(50)
-        self.vaccin.valueChanged.connect(self.vaccineChanged)
-
-        self.transmission = QSlider(Qt.Horizontal)
-        self.transmission.setRange(0,100)
-        self.transmission.setValue(100)
-        self.transmission.valueChanged.connect(self.transmissionChanged)
-
-        self.cured = QSlider(Qt.Horizontal)
-        self.cured.setRange(0,100)
-        self.cured.setValue(13)
-        self.cured.valueChanged.connect(self.curedChanged)
-
-        self.I0_but = QSpinBox()
-        self.I0_but.setRange(0,25)
-        self.I0_but.setValue(1)
-
-        self.I0_text = QLabel("Nombre d'infectés")
-
-        self.layout_I0.addWidget(self.I0_text)
-        self.layout_I0.addWidget(self.I0_but)
-
-        self.layout_but.addWidget(self.button)
-        self.layout_but.addWidget(self.button2)
-
-        self.layout_vaccin.addWidget(self.text_vaccin)
-        self.layout_vaccin.addWidget(self.vaccin)
-
-        self.layout_transmission.addWidget(self.text_transmission)
-        self.layout_transmission.addWidget(self.transmission)
-
-        self.layout_cured.addWidget(self.text_cured)
-        self.layout_cured.addWidget(self.cured)
-
-
-        self.layout_param_init.addLayout(self.layout_vaccin)
-        self.layout_param_init.addLayout(self.layout_cured)
-        self.layout_param_init.addLayout(self.layout_transmission)
-        self.layout_param_init.addLayout(self.layout_I0)
-        self.layout_param_init.addLayout(self.layout_but)
-        self.layout.addLayout(self.layout_param_init)
         self.setLayout(self.layout)
+
+
 
         self.canvas = PixelGridVaccined()
         self.layout.addWidget(self.canvas)
@@ -168,6 +116,91 @@ class PixelGridWindowVaccined(QWidget):
 
         self.showMaximized()
 
+
+################################################################################
+#Méthodes de créations des layout, bouttons, sliders, etc                      #
+################################################################################
+    def createButtons(self):
+        layout = QVBoxLayout()
+
+        startButton = QPushButton('Démarrer', self)
+        startButton.setToolTip('Relancer la simulation')
+        startButton.clicked.connect(self.new_plot)
+        layout.addWidget(startButton)
+
+        menuButton = QPushButton('Menu', self)
+        menuButton.setToolTip('Retourner au menu')
+        menuButton.clicked.connect(self.back_menu)
+        layout.addWidget(menuButton)
+
+        return layout
+
+    def createVaccLayout(self):
+        layout = QVBoxLayout()
+
+        self.vaccinLabel = QLabel("50 % de la population est vaccinée")
+        layout.addWidget(self.vaccinLabel)
+
+        self.vaccinSlider = QSlider(Qt.Horizontal)
+        self.vaccinSlider.setRange(0,99)
+        self.vaccinSlider.setValue(50)
+        self.vaccinSlider.valueChanged.connect(self.vaccineChanged)
+        layout.addWidget(self.vaccinSlider)
+
+        return layout
+
+    def createTranLayout(self):
+        layout = QVBoxLayout()
+
+        self.transmissionLabel = QLabel("100 % de chance d'infecter 1 de ses 8 voisins")
+        layout.addWidget(self.transmissionLabel)
+
+        self.transmissionSlider = QSlider(Qt.Horizontal)
+        self.transmissionSlider.setRange(0,100)
+        self.transmissionSlider.setValue(100)
+        self.transmissionSlider.valueChanged.connect(self.transmissionChanged)
+        layout.addWidget(self.transmissionSlider)
+
+        return layout
+
+    def createInitLayout(self):
+        layout = QVBoxLayout()
+
+        I0Text = QLabel("Nombre d'infectés au temps 0")
+        layout.addWidget(I0Text)
+
+        self.I0SpinBox = QSpinBox()
+        self.I0SpinBox.setRange(0,25)
+        self.I0SpinBox.setValue(1)
+        layout.addWidget(self.I0SpinBox)
+
+        return layout
+
+    def createCureLayout(self):
+        layout = QVBoxLayout()
+
+        self.cureLabel = QLabel("13 % de chance de devenir immunisé")
+        layout.addWidget(self.cureLabel)
+
+        self.cureSlider = QSlider(Qt.Horizontal)
+        self.cureSlider.setRange(0,100)
+        self.cureSlider.setValue(13)
+        self.cureSlider.valueChanged.connect(self.curedChanged)
+        layout.addWidget(self.cureSlider)
+
+        return layout
+
+
+
+
+    def createParamLayout(self, layoutList):
+        returnLayout = QHBoxLayout()
+
+        for layout in layoutList:
+            returnLayout.addLayout(layout)
+
+        return returnLayout
+
     def PopUpEnd(self):
         self.text_fin = QMessageBox()
         self.text_fin.setWindowTitle("Simulation finie")
@@ -175,28 +208,28 @@ class PixelGridWindowVaccined(QWidget):
         self.text_fin.show()
 
     def vaccineChanged(self,value):
-        self.text_vaccin.setText("Pourcentage de vaccinés : "+ str(value))
+        self.vaccinLabel.setText(str(value) + " % de la population est vaccinée")
         #effectue le changement de parametres
         parametres = {'probVaccine' : value/100}
         self.canvas.modele.changeParam(parametres)
 
     def curedChanged(self,value):
-        self.text_cured.setText("Pourcentage de chance de guérir : " + str(value))
+        self.cureLabel.setText(str(value) + " % de chance de devenir immunisé")
         parametres = {'probCure' : value/100}
         self.canvas.modele.changeParam(parametres)
 
     def transmissionChanged(self,value):
-        self.text_transmission.setText("Pourcentage de transmission : "+ str(value))
+        self.transmissionLabel.setText(str(value) + " % de chance d'infecter 1 de ses 8 voisins")
         #effectue le changement de parametres
         parametres = {'probInfect' : value/100}
         self.canvas.modele.changeParam(parametres)
 
     def getInputValue(self):
         parametres = {}
-        parametres['probVaccine'] = self.vaccin.value()/100
-        parametres['probInfect'] = self.transmission.value()/100
-        parametres['I0'] = self.I0_but.value() # faut check lui il change mais pas dans le modele
-        parametres['probCure'] = self.cured.value()/100
+        parametres['probVaccine'] = self.vaccinSlider.value()/100
+        parametres['probInfect'] = self.transmissionSlider.value()/100
+        parametres['I0'] = self.I0SpinBox.value()
+        parametres['probCure'] = self.cureSlider.value()/100
         #A rajouter : autres param
         return parametres
 
