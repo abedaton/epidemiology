@@ -3,6 +3,7 @@ import numpy as np
 SUSCEPTIBLE = 0
 INFECTED = 1
 VACCINATED = 2
+CURED = 3
 
 def RNG(probability):
     return random.random() < probability
@@ -68,14 +69,17 @@ class VaccineModel(object):
         for count in range(toVaccine):
             self.vaccinate(susceptibles.pop())
 
-    def vaccinate(self, indexPair, force=False):
+    def vaccinate(self, indexPair, force=False, cured = False):
         i, j = indexPair
         if force or indexPair in self.susceptibles: #Vaccine que les sus
             if indexPair in self.susceptibles :
                 #on peut pas le retirer si il est pas dedans
                 self.susceptibles.remove(indexPair)
             self.vaccinated.add(indexPair)
-            self.population[j][i] = VACCINATED
+            if not cured:
+                self.population[j][i] = VACCINATED
+            else:
+                self.population[j][i] = CURED
             return True
         return False
 
@@ -108,14 +112,14 @@ class VaccineModel(object):
                         if RNG(self.parametres['probInfect']):
                             stack.append(human)
                         if RNG(self.parametres['probCure']):
-                            self.vaccinate(human2, force=True)
+                            self.vaccinate(human2, force=True,cured=True)
         else:
             for human in self.infected:
                 for human2 in self.neighbours(human):
                     if human2 in self.susceptibles and RNG(self.parametres['probInfect']):
                         stack.append(human2)
                 if RNG(self.parametres['probCure']):
-                    self.vaccinate(human, force=True)
+                    self.vaccinate(human, force=True,cured=True)
         for futureinfected in stack:
             self.infect(futureinfected)
         done = susceptiblesBefore == len(self.susceptibles)

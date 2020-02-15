@@ -14,7 +14,7 @@ from VaccineModel import VaccineModel
 SUSCEPTIBLE = 0
 INFECTED = 1
 VACCINATED = 2
-statesName = ['Susceptible', 'Infecté', 'Vacciné']
+statesName = ['Susceptible', 'Infecté', 'Vacciné',"Guéri"]
 nbStates = len(statesName)
 
 
@@ -52,7 +52,7 @@ class PixelGridVaccined(FigureCanvas):
         self.hm.set_title("Modélisation d'une infection.")
         self.hm.clear()
         #création colormap
-        cmap = mpl.colors.ListedColormap(['white', 'red', 'blue'])
+        cmap = mpl.colors.ListedColormap(['white', 'red', 'blue','lime'])
         #création heatmap avec colorbar
         self.image = self.hm.imshow(self.modele.population, cmap=cmap, vmin=0,vmax=nbStates)
         cbar = self.createColorBar()
