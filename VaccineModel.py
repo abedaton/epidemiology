@@ -11,8 +11,9 @@ def RNG(probability):
 class VaccineModel(object):
     """docstring for VaccineModel."""
 
-    def __init__(self, parametres = {}, size = [50,50]):
+    def __init__(self, parametres = {}, size = [50,50], parent=None):
         self.printed = False
+        self.parent = parent
         self.X, self.Y = size
 
         self.parametres = parametres
@@ -126,6 +127,7 @@ class VaccineModel(object):
 
         #Fin du spreading, on affiche les résultats
         if len(self.infected) == 0 and not self.printed:
+            self.parent.spreadingIsRunning = False
             self.printEnd()
 
 

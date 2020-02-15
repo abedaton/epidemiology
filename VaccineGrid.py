@@ -22,7 +22,8 @@ class PixelGridVaccined(FigureCanvas):
     def __init__(self, parametres={}):
         self.figure = Figure()
         super().__init__(self.figure)
-        self.modele=VaccineModel(parametres)
+        self.modele=VaccineModel(parametres, parent=self)
+        self.spreadingIsRunning = True
         self.ani = None
 
     def clear(self):
