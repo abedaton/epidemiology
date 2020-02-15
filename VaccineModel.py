@@ -52,7 +52,7 @@ class VaccineModel(object):
         defaults =\
         {'probVaccine' : 0.5,\
          'probInfect' : 1,\
-         'probCure' : 0,\
+         'probCure' : 0.13,\
           'maxTime' : 50,\
           'I0' : 1\
         }
