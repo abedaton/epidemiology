@@ -187,7 +187,7 @@ if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
     for vaccineProb in range(100):
         print(vaccineProb)
         average = 0
-        for i in range(10):
+        for i in range(100):
             print("",i)
             simulation = VaccineModel({'probVaccine' : vaccineProb/100})
             simulation.buildFirstFrame()
@@ -195,4 +195,4 @@ if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
                 pass
             average += simulation.trueResults
         with open(outputFileName, 'a+') as fichier:
-            fichier.write(str(average/10) + '\n')
+            fichier.write(str(average/100) + '\n')
