@@ -105,16 +105,21 @@ class PixelGridWindowVaccined(QWidget):
 
         self.setLayout(self.layout)
 
-
-
         self.canvas = PixelGridVaccined()
+        self.resetParam()
         self.layout.addWidget(self.canvas)
-        #self.PopUpEnd()
 
         self.canvas.startInfection()
         self.canvas.animate()
 
         self.showMaximized()
+
+    def setInputsToDefault(self):
+        #Pour modifier les valeurs par défaut plus facilement
+        self.vaccinSlider.setValue(50)
+        self.transmissionSlider.setValue(100)
+        self.I0SpinBox.setValue(1)
+        self.cureSlider.setValue(13)
 
 
 ################################################################################
@@ -123,17 +128,36 @@ class PixelGridWindowVaccined(QWidget):
     def createButtons(self):
         layout = QVBoxLayout()
 
+        #Boutton "Démarrer"
         startButton = QPushButton('Démarrer', self)
         startButton.setToolTip('Relancer la simulation')
         startButton.clicked.connect(self.new_plot)
         layout.addWidget(startButton)
 
+        #Boutton "Appliquer les paramètres"
+        self.applyButton = QPushButton('Appliquer les paramètres', self)
+        self.applyButton.setDisabled(True)
+        self.applyButton.setToolTip('Après avoir modifier les paramètres, cliquer ici pour les sauvegarder')
+        self.applyButton.clicked.connect(self.changeParam)
+        layout.addWidget(self.applyButton)
+
+        #Button "Reset les paramètres"
+        self.resetButton = QPushButton('Appliquer paramètres par défaut', self)
+        self.applyButton.setDisabled(True)
+        self.resetButton.setToolTip('Réinisitalise les paramètres à leur valeur d\'origine')
+        self.resetButton.clicked.connect(self.resetParam)
+        layout.addWidget(self.resetButton)
+
+
+        #Button "Retour au Menu"
         menuButton = QPushButton('Menu', self)
         menuButton.setToolTip('Retourner au menu')
         menuButton.clicked.connect(self.back_menu)
         layout.addWidget(menuButton)
 
         return layout
+
+
 
     def createVaccLayout(self):
         layout = QVBoxLayout()
@@ -143,11 +167,12 @@ class PixelGridWindowVaccined(QWidget):
 
         self.vaccinSlider = QSlider(Qt.Horizontal)
         self.vaccinSlider.setRange(0,99)
-        self.vaccinSlider.setValue(50)
         self.vaccinSlider.valueChanged.connect(self.vaccineChanged)
         layout.addWidget(self.vaccinSlider)
 
         return layout
+
+
 
     def createTranLayout(self):
         layout = QVBoxLayout()
@@ -157,11 +182,12 @@ class PixelGridWindowVaccined(QWidget):
 
         self.transmissionSlider = QSlider(Qt.Horizontal)
         self.transmissionSlider.setRange(0,100)
-        self.transmissionSlider.setValue(100)
         self.transmissionSlider.valueChanged.connect(self.transmissionChanged)
         layout.addWidget(self.transmissionSlider)
 
         return layout
+
+
 
     def createInitLayout(self):
         layout = QVBoxLayout()
@@ -171,10 +197,11 @@ class PixelGridWindowVaccined(QWidget):
 
         self.I0SpinBox = QSpinBox()
         self.I0SpinBox.setRange(0,25)
-        self.I0SpinBox.setValue(1)
         layout.addWidget(self.I0SpinBox)
 
         return layout
+
+
 
     def createCureLayout(self):
         layout = QVBoxLayout()
@@ -184,14 +211,10 @@ class PixelGridWindowVaccined(QWidget):
 
         self.cureSlider = QSlider(Qt.Horizontal)
         self.cureSlider.setRange(0,100)
-        self.cureSlider.setValue(13)
         self.cureSlider.valueChanged.connect(self.curedChanged)
         layout.addWidget(self.cureSlider)
 
         return layout
-
-
-
 
     def createParamLayout(self, layoutList):
         returnLayout = QHBoxLayout()
@@ -201,6 +224,26 @@ class PixelGridWindowVaccined(QWidget):
 
         return returnLayout
 
+
+
+    def changeParam(self):
+        parametres = {}
+        parametres['probVaccine'] = self.vaccinSlider.value()/100
+        parametres['probInfect'] = self.transmissionSlider.value()/100
+        parametres['probCure'] = self.cureSlider.value()/100
+        parametres['I0'] = self.I0SpinBox.value()
+        #A rajouter : autres param
+        self.canvas.modele.changeParam(parametres)
+        #Les paramètres viennent d'être appliqués donc on peut bloquer appliquer
+        self.applyButton.setDisabled(True)
+        self.resetButton.setDisabled(False)
+
+    def resetParam(self):
+        self.setInputsToDefault()
+        self.canvas.modele.changeParam()
+        self.resetButton.setDisabled(True)
+        self.applyButton.setDisabled(True)
+
     def PopUpEnd(self):
         self.text_fin = QMessageBox()
         self.text_fin.setWindowTitle("Simulation finie")
@@ -208,34 +251,23 @@ class PixelGridWindowVaccined(QWidget):
         self.text_fin.show()
 
     def vaccineChanged(self,value):
+        self.applyButton.setDisabled(False)
+        self.resetButton.setDisabled(False)
         self.vaccinLabel.setText(str(value) + " % de la population est vaccinée")
-        #effectue le changement de parametres
-        parametres = {'probVaccine' : value/100}
-        self.canvas.modele.changeParam(parametres)
 
     def curedChanged(self,value):
+        self.applyButton.setDisabled(False)
+        self.resetButton.setDisabled(False)
         self.cureLabel.setText(str(value) + " % de chance de devenir immunisé")
-        parametres = {'probCure' : value/100}
-        self.canvas.modele.changeParam(parametres)
 
     def transmissionChanged(self,value):
+        self.applyButton.setDisabled(False)
+        self.resetButton.setDisabled(False)
         self.transmissionLabel.setText(str(value) + " % de chance d'infecter 1 de ses 8 voisins")
-        #effectue le changement de parametres
-        parametres = {'probInfect' : value/100}
-        self.canvas.modele.changeParam(parametres)
 
-    def getInputValue(self):
-        parametres = {}
-        parametres['probVaccine'] = self.vaccinSlider.value()/100
-        parametres['probInfect'] = self.transmissionSlider.value()/100
-        parametres['I0'] = self.I0SpinBox.value()
-        parametres['probCure'] = self.cureSlider.value()/100
-        #A rajouter : autres param
-        return parametres
 
     def new_plot(self):
-        parametres = self.getInputValue()
-        self.canvas.modele.changeParam(parametres)
+        self.changeParam()
         self.canvas.clear()
         self.canvas.ani.event_source.start()
         self.canvas.startInfection()

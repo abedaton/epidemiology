@@ -54,7 +54,7 @@ class VaccineModel(object):
         self.vaccinatePopulation()
         self.infectI0Susceptibles()
 
-    def changeParam(self, parametres):
+    def changeParam(self, parametres = {}):
         #prend un dictionnaire en parametres et change les valeurs de prob
         self.parametres = parametres
         self.applyDefaultParametres()
