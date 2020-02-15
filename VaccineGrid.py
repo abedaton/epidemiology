@@ -11,10 +11,8 @@ from Menu import Menu
 
 from VaccineModel import VaccineModel
 
-SUSCEPTIBLE = 0
-INFECTED = 1
-VACCINATED = 2
-statesName = ['Susceptible', 'Infecté', 'Vacciné',"Guéri"]
+
+statesName = ['Susceptible', 'Infecté', 'Vacciné', 'Guéri']
 nbStates = len(statesName)
 
 
@@ -74,7 +72,7 @@ class PixelGridVaccined(FigureCanvas):
         #mise a jour de la heatmap
         self.image.set_data(self.modele.population)
 
-    def animate(self, stepTimeInterval=100, nbSteps=51):
+    def animate(self, stepTimeInterval=10, nbSteps=51):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
         self.ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
         interval=stepTimeInterval, frames=nbSteps, repeat=True)
@@ -166,7 +164,7 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.animate()
 
         self.showMaximized()
-        
+
     def PopUpEnd(self):
         self.text_fin = QMessageBox()
         self.text_fin.setWindowTitle("Simulation finie")

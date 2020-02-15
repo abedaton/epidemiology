@@ -21,8 +21,19 @@ class VaccineModel(object):
         self.applyDefaultParametres()
 
         self.population = np.full((self.Y, self.X), SUSCEPTIBLE)
+        self.maxInfected = 0
+
+    def setIndexState(self, index, state):
+        self.population[index[0]][index[1]] = state
+
+    def getIndexState(self, index):
+        return self.population[index[0]][index[1]]
+
+    def checkIndexState(self, index, state):
+        return self.population[index[0]][index[1]] == state
 
     def clear(self):
+        self.maxInfected = 0
         self.printed = False
         self.createSets()
         self.population = [[SUSCEPTIBLE for i in range(self.X)] for j in range(self.Y)]
@@ -60,6 +71,28 @@ class VaccineModel(object):
             if elem not in self.parametres:
                 self.parametres[elem] = defaults[elem]
 
+
+    def cure(self, ij):
+        self.infected.remove(ij)
+        self.vaccinated.add(ij)
+        self.setIndexState(ij, CURED)
+        return True
+
+    def vaccinate(self, ij):
+        self.vaccinated.add(ij)
+        self.susceptibles.remove(ij)
+        self.setIndexState(ij, VACCINATED)
+        return True
+
+    def infect(self, ij):
+        if self.checkIndexState(ij, SUSCEPTIBLE): #infecte que le sus
+            self.susceptibles.remove(ij)
+            self.infected.add(ij)
+            self.setIndexState(ij, INFECTED)
+            self.maxInfected += 1
+            return True
+        return False
+
     def vaccinatePopulation(self):
         susceptibles = list(self.susceptibles)
         random.shuffle(susceptibles)
@@ -69,20 +102,6 @@ class VaccineModel(object):
         for count in range(toVaccine):
             self.vaccinate(susceptibles.pop())
 
-    def vaccinate(self, indexPair, force=False, cured = False):
-        i, j = indexPair
-        if force or indexPair in self.susceptibles: #Vaccine que les sus
-            if indexPair in self.susceptibles :
-                #on peut pas le retirer si il est pas dedans
-                self.susceptibles.remove(indexPair)
-            self.vaccinated.add(indexPair)
-            if not cured:
-                self.population[j][i] = VACCINATED
-            else:
-                self.population[j][i] = CURED
-            return True
-        return False
-
     def infectI0Susceptibles(self):
         susceptibles = list(self.susceptibles)
         random.shuffle(susceptibles)
@@ -91,62 +110,67 @@ class VaccineModel(object):
         for count in range(self.parametres['I0']):
             self.infect(susceptibles.pop())
 
-    def infect(self, indexPair):
-        i, j = indexPair
-        if indexPair in self.susceptibles: #infecte que le sus
-            self.susceptibles.remove(indexPair)
-            self.infected.add(indexPair)
-            self.population[j][i] = INFECTED
-            return True
-        return False
-
-
 
     def spread(self):
         susceptiblesBefore = len(self.susceptibles)
-        stack = []
-        if len(self.infected) > len(self.susceptibles):
-            for human in self.susceptibles:
-                for human2 in self.neighbours(human):
-                    if human2 in self.infected:
-                        if RNG(self.parametres['probInfect']):
-                            stack.append(human)
-                        if RNG(self.parametres['probCure']):
-                            self.vaccinate(human2, force=True,cured=True)
+
+        if len(self.infected) >= len(self.susceptibles):
+            stack = self.spreadFromSus()
         else:
-            for human in self.infected:
-                for human2 in self.neighbours(human):
-                    if human2 in self.susceptibles and RNG(self.parametres['probInfect']):
-                        stack.append(human2)
-                if RNG(self.parametres['probCure']):
-                    self.vaccinate(human, force=True,cured=True)
+            stack = self.spreadFromSus()
+
+        self.cureIteration()
+
         for futureinfected in stack:
             self.infect(futureinfected)
-        done = susceptiblesBefore == len(self.susceptibles)
 
         #Fin du spreading, on affiche les résultats
-        if done and not self.printed:
-            nombreSainDépart = self.X*self.Y
-            nombreVacciné = len(self.vaccinated)
-            nombreInfecté = len(self.infected)
-            nombreSain = len(self.susceptibles)
-            print(f"Pour une population vaccinée à {self.parametres['probVaccine']*100}%")
-            print(f"Nous constatons que parmis les non vaccinés ( {nombreSain+nombreInfecté} cases blanches au départ), \
-            seulement {100*nombreSain/(nombreSain+nombreInfecté)}% ont été épargnés du virus")
-            self.printed = True
+        if len(self.infected) == 0 and not self.printed:
+            self.printEnd()
+
+
+    def spreadFromSus(self):
+        stack = []
+        for cleanGuy in self.susceptibles:
+            for neighbour in self.neighbours(cleanGuy):
+                if self.getIndexState(neighbour) == INFECTED and RNG(self.parametres['probInfect']):
+                    stack.append(cleanGuy)
+        return stack
+
+    def spreadFromInf(self):
+        stack = []
+        for infected in self.infected:
+            for neighbour in self.neighbours(infected):
+                if RNG(self.parametres['probInfect']):
+                    stack.append(neighbour)
+        return stack
+
+
+    def cureIteration(self):
+        stack = []
+        for infected in self.infected:
+            if RNG(self.parametres['probCure']):
+                stack.append(infected)
+
+        for infected in stack:
+            self.cure(infected)
+
+
+    def printEnd(self):
+        nombreSainDépart = self.X*self.Y
+        nombreVacciné = len(self.vaccinated)
+        nombreSain = len(self.susceptibles)
+        nombreGueri = self.maxInfected
+        print(f"Pour une population vaccinée à {self.parametres['probVaccine']*100}%")
+        print(f"Nous constatons que parmis les non vaccinés ( {nombreSain+nombreGueri} cases blanches au départ), \
+        seulement {100*nombreSain/(nombreSain+nombreGueri)}% ont été épargnés du virus")
+        self.printed = True
 
     def neighbours(self, ij):
-        i, j = ij
-        res = set()
-        if 0 <= i-1:
-            res.add((i-1,j))
-
-        if 0 <= j-1:
-            res.add((i,j-1))
-        res.add((i,j))
-        if j+1 < self.X:
-            res.add((i, j+1))
-
-        if i+1 < self.Y:
-            res.add((i+1,j))
-        return res
+        mostUp    = max(ij[0]-1, 0)
+        mostRight = min(ij[1]+1, self.X-1)
+        mostDown  = min(ij[0]+1, self.Y-1)
+        mostLeft  = max(ij[1]-1, 0)
+        return ( (mostUp, mostLeft)  ,  (mostUp, ij[1])  ,  (mostUp, mostRight),
+                 (ij[0], mostLeft)   ,  (ij[0], ij[1])   ,  (ij[0] , mostRight),
+                 (mostDown, mostLeft),  (mostDown, ij[1]),  (mostDown, mostRight))
