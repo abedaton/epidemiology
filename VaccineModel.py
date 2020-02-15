@@ -127,7 +127,8 @@ class VaccineModel(object):
 
         #Fin du spreading, on affiche les résultats
         if len(self.infected) == 0 and not self.printed:
-            self.parent.spreadingIsRunning = False
+            if self.parent != None:
+                self.parent.spreadingIsRunning = False
             self.printEnd()
 
 

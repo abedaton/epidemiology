@@ -32,6 +32,7 @@ class PixelGridVaccined(FigureCanvas):
 
 
     def startInfection(self, I0=1):
+        self.spreadingIsRunning = True
         self.modele.buildFirstFrame()
         self.createGraph()
 
@@ -68,10 +69,14 @@ class PixelGridVaccined(FigureCanvas):
 
     def refreshHeatmap(self, frame):
         #Mise a jour de la matrice
-        self.stepInfection()
+        if self.spreadingIsRunning:
+            self.stepInfection()
         #Mise a jour du t =
         #mise a jour de la heatmap
-        self.image.set_data(self.modele.population)
+            self.image.set_data(self.modele.population)
+        else:
+            print("END")
+            self.ani.event_source.stop()
 
     def animate(self, stepTimeInterval=10, nbSteps=51):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
@@ -202,6 +207,7 @@ class PixelGridWindowVaccined(QWidget):
         parametres = self.getInputValue()
         self.canvas.modele.changeParam(parametres)
         self.canvas.clear()
+        self.canvas.ani.event_source.start()
         self.canvas.startInfection()
 
 
