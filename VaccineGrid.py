@@ -19,7 +19,8 @@ nbStates = len(statesName)
 class PixelGridVaccined(FigureCanvas):
     """docstring for PixelGrid."""
 
-    def __init__(self, parametres={}):
+    def __init__(self, parametres={}, parent=None):
+        self.parent = parent
         self.figure = Figure()
         super().__init__(self.figure)
         self.modele=VaccineModel(parametres, parent=self)
@@ -105,7 +106,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.setLayout(self.layout)
 
-        self.canvas = PixelGridVaccined()
+        self.canvas = PixelGridVaccined(parent=self)
         self.resetParam()
         self.layout.addWidget(self.canvas)
 
@@ -244,10 +245,11 @@ class PixelGridWindowVaccined(QWidget):
         self.resetButton.setDisabled(True)
         self.applyButton.setDisabled(True)
 
-    def PopUpEnd(self):
+    def setEndMessage(self, message):
+        self.canvas.ani.event_source.stop()
         self.text_fin = QMessageBox()
         self.text_fin.setWindowTitle("Simulation finie")
-        self.text_fin.setText("Bob") # mettre le bon texte d'une canvas
+        self.text_fin.setText(message) # mettre le bon texte d'une canvas
         self.text_fin.show()
 
     def vaccineChanged(self,value):
@@ -275,7 +277,7 @@ class PixelGridWindowVaccined(QWidget):
 
     def back_menu(self):
         self.menu = Menu()
-        self.ani.event_source.stop()
+        self.canvas.ani.event_source.stop()
         self.close()
 
 
