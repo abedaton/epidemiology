@@ -111,7 +111,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.text_transmission = QLabel("Pourcentage de transmission : 100")
 
-        self.text_cured = QLabel("Pourcentage de chance de guérir : 0")
+        self.text_cured = QLabel("Pourcentage de chance de guérir : 13")
 
         self.vaccin = QSlider(Qt.Horizontal)
         self.vaccin.setRange(0,99)
@@ -125,7 +125,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.cured = QSlider(Qt.Horizontal)
         self.cured.setRange(0,100)
-        self.cured.setValue(0)
+        self.cured.setValue(13)
         self.cured.valueChanged.connect(self.curedChanged)
 
         self.I0_but = QSpinBox()
@@ -160,7 +160,7 @@ class PixelGridWindowVaccined(QWidget):
 
         self.canvas = PixelGridVaccined()
         self.layout.addWidget(self.canvas)
-        self.PopUpEnd()
+        #self.PopUpEnd()
 
         self.canvas.startInfection()
         self.canvas.animate()
