@@ -41,7 +41,6 @@ class PixelGridVaccined(FigureCanvas):
 
     def createGraph(self):
         self.createHeatmap()
-        self.createProgressStamp()
 
 
 
@@ -63,20 +62,18 @@ class PixelGridVaccined(FigureCanvas):
         cbar.ax.set_yticklabels(statesName)
         return cbar
 
-    def createProgressStamp(self):
-        axtext = self.figure.add_axes([0,0.05,0.1,0.05])
-        axtext.axis("off")
+
 
     def refreshHeatmap(self, frame):
-        #Mise a jour de la matrice
-        if self.spreadingIsRunning:
-            self.stepInfection()
-        #Mise a jour du t =
-        #mise a jour de la heatmap
-            self.image.set_data(self.modele.population)
-        else:
-            print("END")
+        #Si on a fini
+        if not self.spreadingIsRunning:
             self.ani.event_source.stop()
+
+        else:
+            self.stepInfection()
+            #mise a jour de la heatmap
+            self.image.set_data(self.modele.population)
+
 
     def animate(self, stepTimeInterval=10, nbSteps=51):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
@@ -95,12 +92,12 @@ class PixelGridWindowVaccined(QWidget):
         self.title = "Evolution d'une maladie avec vaccin"
 
         self.layout = QVBoxLayout(self)
-        self.layout_but = QVBoxLayout(self)
-        self.layout_param_init = QHBoxLayout(self)
-        self.layout_vaccin = QVBoxLayout(self)
-        self.layout_transmission = QVBoxLayout(self)
-        self.layout_I0 = QVBoxLayout(self)
-        self.layout_cured = QVBoxLayout(self)
+        self.layout_but = QVBoxLayout()
+        self.layout_param_init = QHBoxLayout()
+        self.layout_vaccin = QVBoxLayout()
+        self.layout_transmission = QVBoxLayout()
+        self.layout_I0 = QVBoxLayout()
+        self.layout_cured = QVBoxLayout()
 
 
         self.button = QPushButton('Lancer simulation', self)
@@ -213,6 +210,7 @@ class PixelGridWindowVaccined(QWidget):
 
     def back_menu(self):
         self.menu = Menu()
+        self.ani.event_source.stop()
         self.close()
 
 
