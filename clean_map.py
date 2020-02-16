@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
 # Geocoding / Map
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shpreader
-import pycristoforo as pyc
+#  import pycristoforo as pyc # Normalement plus besoin, tout est dans le DF
 import fiona
 from shapely.geometry import Point
 import shapely.geometry as sgeom
@@ -27,7 +27,7 @@ def uselessLoad():
 
 
 class Map(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, proj=ccrs.PlateCarree(), parent=None):
         super(Map, self).__init__(parent)
         thread = threading.Thread(target=uselessLoad)
         thread.start()
@@ -39,7 +39,7 @@ class Map(QDialog):
         self.cc = coco.CountryConverter()
 
         plt.ion()
-        self.ax = plt.axes(projection=ccrs.PlateCarree())
+        self.ax = plt.axes(projection=proj)
         self.ax.stock_img()
 
         self.button = QPushButton("Commencer l'épidemie")
@@ -78,7 +78,8 @@ class Map(QDialog):
     def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
         print("fonction infect")
         df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
-        infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+        #infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+        infected = df.loc[df["ISO3"] == Thecountry]["geometry"].tolist()[0]
         infected_names = [Thecountry]
         susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
 
@@ -128,7 +129,7 @@ class Map(QDialog):
         if x is not None and y is not None:
             on = land.contains(sgeom.Point(x, y))
             if on:
-                result = rg.search((y, x)) 
+                result = rg.search((y, x))
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
                 plt.title("Starting in " + str(country), fontsize=50)
@@ -165,10 +166,11 @@ class MapWindow(QWidget):
         self.layout_but.addWidget(self.button2)
 
         self.layout.addLayout(self.layout_but)
-        
+
         self.setLayout(self.layout)
 
         self.canvas = Map()
+
         self.layout.addWidget(self.canvas)
 
         
