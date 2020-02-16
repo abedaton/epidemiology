@@ -78,8 +78,9 @@ class Map(QDialog):
     def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
         print("fonction infect")
         df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
+        #df = gp.read_file("shapes/plagueShapes/plagueShapes.shp")
         #infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
-        infected = df.loc[df["ISO3"] == Thecountry]["geometry"].tolist()[0]
+        infected = df.loc[df["ISO3"] == Thecountry]["geometry"].tolist()
         infected_names = [Thecountry]
         susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
 
