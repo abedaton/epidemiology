@@ -57,7 +57,7 @@ class Map(QDialog):
     def launch(self):
         country = self.waitForStart()
         self.run = True
-        self.infect(0.0000001, coco.convert(names=country, to="ISO3"), 100000)
+        self.infect(0.0000001, coco.convert(names=country, to="ISO3"))
 
     def end(self):
         self.run = False
@@ -66,7 +66,7 @@ class Map(QDialog):
     def plot(self):
         print("pouette")
 
-    def updateSusceptible(self, infected_names, susceptibles, country, df):
+    def updateSusceptible(self, infected_names: list, susceptibles: list, country: str, df: gp.geodataframe.GeoDataFrame) -> list:
         neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0]
         if neighborsList is not None:
             neighborsList = neighborsList.split(", ")
@@ -75,7 +75,7 @@ class Map(QDialog):
                     susceptibles.append(neighbors)
         return list(set(susceptibles))
 
-    def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
+    def infect(self, timeInterval: (int, float), Thecountry: str, startNum: int = 0, endNum: float = float("inf")) -> None:  # The country in ISO3
         print("fonction infect")
         df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
         #df = gp.read_file("shapes/plagueShapes/plagueShapes.shp")
@@ -104,20 +104,19 @@ class Map(QDialog):
             for country in infected:
                 points = self.findPoints(country)
                 plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
-                #time.sleep(0.1)
+                #time.sleep(timeInterval)
                 startNum += 1
             self.figure.canvas.draw()
             self.figure.canvas.flush_events()
 
-
-    def findPoints(self, country):
+    def findPoints(self, country) -> Point:
         minx, miny, maxx, maxy = country.bounds
         while True:
             points = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
             if country.contains(points):
                 return points
 
-    def transformToCountry(self, x, y):
+    def transformToCountry(self, x: float, y: float) -> str:
         geoms = fiona.open(
             shpreader.natural_earth(resolution='50m',
                                     category='physical', name='land'))
@@ -139,8 +138,9 @@ class Map(QDialog):
             else:
                 print("Mer")
                 plt.title("Please choose a location on land !", fontsize=50)
+                return ""
 
-    def waitForStart(self):
+    def waitForStart(self) -> str:
         while not self.go:
             location = plt.ginput(1, timeout=0)
             country = self.transformToCountry(location[0][0], location[0][1])

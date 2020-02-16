@@ -100,10 +100,6 @@ def main():
     old = gp.read_file("shapes/myShape.shp")
     new, alone = filter_country(old)
 
-    print("Tanzania" in new["name"].to_string())
-
-
-
 
 
     for mini in to_merge:
