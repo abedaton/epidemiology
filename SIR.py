@@ -6,10 +6,10 @@ class SIR(SIS):
     """Docstring"""
     name = "SIR"
     initial = { "S0" : "Suceptible",
-                "I0" : "Infected",
-                "R0" : "Recovered"}
-    vars = {"beta"   : "infectiousRate",
-            "gamma"  : "recoveryRate"}
+                "I0" : "Infecté",
+                "R0" : "Rétabli"}
+    vars = {"beta"   : "taux d'infection",
+            "gamma"  : "taux de guérison"}
     
     def __init__(self, nbSscptbl0=999, nbInfctd0=1, nbRcvrd0=0,\
                  infectiousRate=0.2, recoveryRate=0.1,\

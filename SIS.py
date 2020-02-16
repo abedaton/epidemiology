@@ -6,9 +6,9 @@ class SIS(object):
     """docstring"""
     name = "SIS"
     initial = { "S0" : "Suceptible",
-                "I0" : "Infected"}
-    vars = {"beta"   : "infectiousRate",
-            "gamma"  : "recoveryRate"}
+                "I0" : "Infecté"}
+    vars = {"beta"   : "taux d'infection",
+            "gamma"  : "taux de guérison"}
 
     def get(self, var):
         try:
