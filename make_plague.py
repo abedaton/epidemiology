@@ -18,14 +18,18 @@ no_want = ["South Georgia South Sandwich Islands", "Jersey", "Guernsey", "Svalba
            "British Indian Ocean Territory", "French Southern and Antarctic Lands", "Heard Island and McDonald Islands",
            "Bouvet Island", "Cocos (Keeling) Islands", "Norfolk Island", "Isle of Man", "Isle of Man", "Anguilla",
            "Niue", "Malta", "Åland Islands", "Faroe Islands", "Northern Mariana Islands", "New Caledonia",
-           "Montserrat", "Maldives", "Saint Barthelemy", "Saint Martin", "Holy See (Vatican City)"]
+           "Montserrat", "Maldives", "Saint Barthelemy", "Saint Martin", "Holy See (Vatican City)", 'Brunei Darussalam',
+           "Djibouti", 'Andorra', "Qatar", 'Lebanon', "Gambia", "Taiwan", "Sri Lanka", "Trinidad and Tobago", "Timor-Leste", "Liechtenstein",
+           "Monaco", "San Marino", "Palestine", "Macau"]
 
-to_merge = ['Brunei Darussalam', 'Djibouti', 'Papua New Guinea', 'Andorra', 'Haiti', 'Qatar', 'Lebanon', 'El Salvador', 'Gambia']
+to_merge = []
 
-done = ['Taiwan', 'Sri Lanka', 'Trinidad and Tobago', 'Puerto Rico', 'Western Sahara', 'Timor-Leste', 'Oman', 'Burma', 'Luxembourg', 'United Arab Emirates', 'Belize', 'Bhutan', 'Swaziland', 'Hong Kong', 'Liechtenstein', 'Monaco', 'Kuwait', 'San Marino', 'Burundi', 'Palestine', 'Macau', "Israel", "Lesotho", 'Dominican Republic', 'Rwanda']
+done = []
 
 keep_alone = ["Australia", "Greenland", "New Zealand", "Iceland", "Philippines", "Madagascar", "Antarctica", "Japan"]
-want = ["Cuba", "Belgium", "Portugal", "Serbia", "United Kingdom", "Slovenia", "Montenegro", "Ireland", "Canada", "Denmark"]
+want = ["Cuba", "Belgium", "Portugal", "Serbia", "United Kingdom", "Slovenia", "Montenegro", "Ireland", "Canada", "Denmark", 'Papua New Guinea',
+        "Haiti", "El Salvador", "Puerto Rico", "Western Sahara", "Oman", "Burma", "Luxembourg", "United Arab Emirates", "Belize", "Bhutan",
+        "Swaziland", "Hong Kong", "Kuwait", "Burundi", "Israel", "Lesotho", "Dominican Republic", "Rwanda"]
 
 def filter_country(old):
     new = gp.GeoDataFrame(columns=columns)
@@ -94,13 +98,24 @@ def plotEntireCountry(geo: MultiPolygon) -> None:
         plt.plot(*i.exterior.xy)
     plt.show()
 
+def updateNeighbors(df: gp.geodataframe.GeoDataFrame) -> gp.geodataframe.GeoDataFrame:
+    for index, country in df.iterrows():   
+        neighbors = df[~df.geometry.disjoint(country.geometry)]["name"].tolist()
+        neighbors = [ name for name in neighbors if country["name"] != name ]
+        df.at[index, "neighbors"] = ", ".join(neighbors)
+    return df
 
 
 def main():
     old = gp.read_file("shapes/myShape.shp")
     new, alone = filter_country(old)
-
-
+    new["neighbors"] = None
+    
+    print(new)
+    new = updateNeighbors(new)
+    print(new)
+    new.to_file("shapes/useShape.shp")
+    return
 
     for mini in to_merge:
         try:

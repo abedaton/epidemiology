@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # GUI
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -6,7 +7,6 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
 # Geocoding / Map
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shpreader
-#  import pycristoforo as pyc # Normalement plus besoin, tout est dans le DF
 import fiona
 from shapely.geometry import Point
 import shapely.geometry as sgeom
@@ -67,45 +67,50 @@ class Map(QDialog):
         print("pouette")
 
     def updateSusceptible(self, infected_names: list, susceptibles: list, country: str, df: gp.geodataframe.GeoDataFrame) -> list:
-        neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0]
+        trash = ["Democratic People's Republic of"]
+        neighborsList = df.loc[df["ISO3"] == country]["neighbors"].tolist()
+        if len(neighborsList) == 0:
+            return []
+        else:
+            neighborsList = neighborsList[0]
         if neighborsList is not None:
             neighborsList = neighborsList.split(", ")
-            for neighbors in neighborsList:
-                if neighbors not in infected_names:
-                    susceptibles.append(neighbors)
+            for i in trash:
+                if i in neighborsList:
+                    neighborsList.remove(i)
+            for neighbor in neighborsList:
+                if neighbor not in infected_names:
+                    susceptibles.append(coco.convert(names=neighbor, to="ISO3"))
         return list(set(susceptibles))
 
     def infect(self, timeInterval: (int, float), Thecountry: str, startNum: int = 0, endNum: float = float("inf")) -> None:  # The country in ISO3
-        print("fonction infect")
-        df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
-        #df = gp.read_file("shapes/plagueShapes/plagueShapes.shp")
-        #infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+         #df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
+        df = gp.read_file("shapes/useShape/useShape.shp")
         infected = df.loc[df["ISO3"] == Thecountry]["geometry"].tolist()
         infected_names = [Thecountry]
         susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
 
         while self.run and startNum < endNum:
-            print(susceptibles)
+            print("sus = ", susceptibles)
             count = 0
             while count < len(susceptibles):
                 sus = susceptibles[count]
                 prob = random.randint(0, 100)
                 if prob >= 90:
+                    print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
                     infected_names.append(sus)
                     infected.append(df.loc[df["ISO3"] == sus]["geometry"].tolist()[0])
-                    #infected.append(pyc.get_shape(sus))
                     susceptibles.remove(sus)
                     susceptibles = self.updateSusceptible(infected_names, susceptibles, sus, df)
-                    print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
                     plt.title(coco.convert(names=sus, to="short_name") + " IS NOW INFECTED", fontsize=50)
                 else:
                     count += 1
 
             for country in infected:
                 points = self.findPoints(country)
-                plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
+                plt.scatter(points.x, points.y, color="red", marker=".", transform=ccrs.Geodetic()) ###
                 #time.sleep(timeInterval)
-                startNum += 1
+            startNum += 1
             self.figure.canvas.draw()
             self.figure.canvas.flush_events()
 
@@ -130,9 +135,11 @@ class Map(QDialog):
             on = land.contains(sgeom.Point(x, y))
             if on:
                 result = rg.search((y, x))
-                country = self.cc.convert(names=result[0]["cc"], to="name_short")
-                print("Starting in", country)
-                plt.title("Starting in " + str(country), fontsize=50)
+                country_full = self.cc.convert(names=result[0]["cc"], to="name_short")
+                country = self.cc.convert(names=result[0]["cc"], to="ISO3")
+                print("Starting in", country_full)
+                plt.title("Starting in " + str(country_full), fontsize=50)
+                plt.scatter(x, y, color="black", marker=".", transform=ccrs.Geodetic())
                 self.go = True
                 return country
             else:
