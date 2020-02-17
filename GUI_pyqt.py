@@ -29,6 +29,7 @@ class App(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout_param_init = QHBoxLayout(self)
         self.layout_proba = QHBoxLayout(self)
+        self.layout_proba2 = QHBoxLayout(self)
         self.layout_pop = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
         self.layout_time = QVBoxLayout(self)
@@ -64,7 +65,7 @@ class App(QWidget):
             layout_box.addWidget(but)
             self.box.append((i,but))
             self.layout_param_init.addLayout(layout_box)
-
+        box = 0
         for i in self.model.vars.keys():
             layout_box = QVBoxLayout()
 
@@ -81,7 +82,11 @@ class App(QWidget):
             layout_box.addWidget(text)
             layout_box.addWidget(but)
             self.box.append((i,but))
-            self.layout_proba.addLayout(layout_box)
+            if box < 6:
+                self.layout_proba.addLayout(layout_box)
+            else:
+                self.layout_proba2.addLayout(layout_box)
+            box += 1
 
 
 
@@ -108,6 +113,7 @@ class App(QWidget):
         self.layout.addLayout(self.layout_param_init)
 
         self.layout.addLayout(self.layout_proba)
+        self.layout.addLayout(self.layout_proba2)
 
 
         # Initialize tab screen
