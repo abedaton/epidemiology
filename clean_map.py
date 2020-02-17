@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
 # Geocoding / Map
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shpreader
-import pycristoforo as pyc
+#  import pycristoforo as pyc # Normalement plus besoin, tout est dans le DF
 import fiona
 from shapely.geometry import Point
 import shapely.geometry as sgeom
@@ -27,7 +27,7 @@ def uselessLoad():
 
 
 class Map(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, proj=ccrs.PlateCarree(), parent=None):
         super(Map, self).__init__(parent)
         thread = threading.Thread(target=uselessLoad)
         thread.start()
@@ -39,7 +39,7 @@ class Map(QDialog):
         self.cc = coco.CountryConverter()
 
         plt.ion()
-        self.ax = plt.axes(projection=ccrs.PlateCarree())
+        self.ax = plt.axes(projection=proj)
         self.ax.stock_img()
 
         self.button = QPushButton("Commencer l'épidemie")
@@ -57,7 +57,7 @@ class Map(QDialog):
     def launch(self):
         country = self.waitForStart()
         self.run = True
-        self.infect(0.0000001, coco.convert(names=country, to="ISO3"), 100000)
+        self.infect(0.0000001, coco.convert(names=country, to="ISO3"))
 
     def end(self):
         self.run = False
@@ -66,7 +66,7 @@ class Map(QDialog):
     def plot(self):
         print("pouette")
 
-    def updateSusceptible(self, infected_names, susceptibles, country, df):
+    def updateSusceptible(self, infected_names: list, susceptibles: list, country: str, df: gp.geodataframe.GeoDataFrame) -> list:
         neighborsList = df.loc[df["ISO3"] == country]["NEIGHBORS"].tolist()[0]
         if neighborsList is not None:
             neighborsList = neighborsList.split(", ")
@@ -75,10 +75,12 @@ class Map(QDialog):
                     susceptibles.append(neighbors)
         return list(set(susceptibles))
 
-    def infect(self, timeInterval, Thecountry, startNum=0, endNum=float("inf"), maxNum=False):  # The country in ISO3
+    def infect(self, timeInterval: (int, float), Thecountry: str, startNum: int = 0, endNum: float = float("inf")) -> None:  # The country in ISO3
         print("fonction infect")
         df = gp.read_file("shapes/myShapeISO.shp")  # contient tous les voisins de chaques pays
-        infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+        #df = gp.read_file("shapes/plagueShapes/plagueShapes.shp")
+        #infected = [pyc.get_shape(Thecountry)]  # liste des polygones des pays contaminé en ISO3
+        infected = df.loc[df["ISO3"] == Thecountry]["geometry"].tolist()
         infected_names = [Thecountry]
         susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
 
@@ -102,20 +104,19 @@ class Map(QDialog):
             for country in infected:
                 points = self.findPoints(country)
                 plt.scatter(points.x, points.y, color="red", marker="o", transform=ccrs.Geodetic())
-                #time.sleep(0.1)
+                #time.sleep(timeInterval)
                 startNum += 1
             self.figure.canvas.draw()
             self.figure.canvas.flush_events()
 
-
-    def findPoints(self, country):
+    def findPoints(self, country) -> Point:
         minx, miny, maxx, maxy = country.bounds
         while True:
             points = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
             if country.contains(points):
                 return points
 
-    def transformToCountry(self, x, y):
+    def transformToCountry(self, x: float, y: float) -> str:
         geoms = fiona.open(
             shpreader.natural_earth(resolution='50m',
                                     category='physical', name='land'))
@@ -128,7 +129,7 @@ class Map(QDialog):
         if x is not None and y is not None:
             on = land.contains(sgeom.Point(x, y))
             if on:
-                result = rg.search((y, x)) 
+                result = rg.search((y, x))
                 country = self.cc.convert(names=result[0]["cc"], to="name_short")
                 print("Starting in", country)
                 plt.title("Starting in " + str(country), fontsize=50)
@@ -137,8 +138,9 @@ class Map(QDialog):
             else:
                 print("Mer")
                 plt.title("Please choose a location on land !", fontsize=50)
+                return ""
 
-    def waitForStart(self):
+    def waitForStart(self) -> str:
         while not self.go:
             location = plt.ginput(1, timeout=0)
             country = self.transformToCountry(location[0][0], location[0][1])
@@ -165,10 +167,11 @@ class MapWindow(QWidget):
         self.layout_but.addWidget(self.button2)
 
         self.layout.addLayout(self.layout_but)
-        
+
         self.setLayout(self.layout)
 
         self.canvas = Map()
+
         self.layout.addWidget(self.canvas)
 
         

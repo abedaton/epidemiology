@@ -5,13 +5,13 @@ class SEIRS(SIS):
     """docstring for SEIRS."""
     name = "SEIRS"
     initial = { "S0" : "Suceptible",
-                "E0" : "Exposed",
-                "I0" : "Infected",
-                "R0" : "Recovered"}
-    vars = {"beta"   : "infectiousRate",
-            "sigma"  : "incubationRate",
-            "gamma"  : "recoveryRate",
-            "epsilon": "lossImunityRate"}
+                "E0" : "Exposé",
+                "I0" : "Infecté",
+                "R0" : "Rétabli"}
+    vars = {"beta"   : "taux d'infection",
+            "sigma"  : "taux d'incubation",
+            "gamma"  : "taux de guérison",
+            "epsilon": "taux de perte d'immunité"}
 
 
     def __init__(self, nbSscptbl0=999, nbExpsd0=0, nbInfctd0=1,\
@@ -46,88 +46,6 @@ class SEIRS(SIS):
         dRdt = (self.gamma * I ) - ( self.epsilon * R )
 
         return dSdt, dEdt, dIdt, dRdt
-
-    #def solveDifferential(self):
-    #    # vecteur initial
-    #    y0 = self.S0, self.E0, self.I0, self.R0
-    #    ret = odeint(self.differentialEq, y0, self.timeVector)
-    #    #S E I R = vecteurs de données
-    #    self.S, self.E, self.I, self.R = ret.T
-    #    return self.S, self.E, self.I, self.R
-
-    #def print(self, tStart=0, tStop=100, nbSteps=4):
-    #    self.solveDifferential()
-    #    valueVector = [["(S)usceptible"], ["(E)xposed"], ["(I)nfected"], ["(R)ecovered"]]
-    #    bigSteps = int(tStop/nbSteps)
-    #    for i in range(tStart, tStop, bigSteps):
-    #        valueVector[0].append(round(self.S[i], 2))
-    #        valueVector[1].append(round(self.I[i], 2))
-    #        valueVector[2].append(round(self.E[i], 2))
-    #        valueVector[3].append(round(self.R[i], 2))
-    #    valueVector[0].append(round(self.S[-1], 2))
-    #    valueVector[1].append(round(self.I[-1], 2))
-    #    valueVector[2].append(round(self.E[-1], 2))
-    #    valueVector[3].append(round(self.R[-1], 2))
-    #    #for list in valueVector:
-    #    #    print(f"{list[0]} : ")
-    #    #    for i, value in enumerate(list[1:]):
-    #    #        print(f"t = {bigSteps*i} | {value}")
-
-    #def createGraph(self, duration=None, \
-    #         SColor='b', EColor='y', IColor='r', RColor='g'):
-    #    """
-    #    Susceptible in blue, Exposed in yellow, Infected in red, recovered in
-    #    green
-    #    """
-    #    if duration == None:
-    #        duration = self.timeVector[-1]
-    #    self.solveDifferential()
-#
-    #    fig = plt.figure()
-    #    ax = fig.add_subplot()
-    #    ax.plot(self.timeVector, self.S, 'b', label='(S)usceptible')
-    #    ax.plot(self.timeVector, self.E, 'y', label='(E)xposed')
-    #    ax.plot(self.timeVector, self.I, 'r', label='(I)nfected')
-    #    ax.plot(self.timeVector, self.R, 'g', label='(R)ecovered')
-    #    ax.set_xlabel('Time (in days)')
-    #    ax.set_ylabel('Populaton (in person)')
-#
-    #    ax.set_xlim(0, duration)
-#
-    #    legend = ax.legend()
-
-
-
-    #def plot(self, duration=None):
-    #    self.createGraph(duration)
-    #    plt.show()
-
-    #def export(self, filename="Images/SEIRS", duration=None, d=":"):
-    #    if filename == "Images/SEIRS":
-    #        filename += str(self.S0) + d + str(self.E0) + d + str(self.I0) + \
-    #                    d + str(self.R0) + d +  str(self.beta) + d + \
-    #                    str(self.sigma) + d + str(self.gamma) + d + \
-    #                    str(self.epsilon) + d + str(self.timeParam[0]) + d + \
-    #                    str(self.timeParam[1]) + d + str(self.timeParam[2])
-    #        filename += ".png"
-    #    self.createGraph(duration)
-    #    plt.savefig(filename)
-
-#def importGraph(filename, d=":"):
-#    firstSlashIndex = filename.index('/')
-#    #Remove path
-#    while '/' in filename:
-#        filename = filename[filename.index('/')+1:]
-#        print(filename)
-#
-#    #Remove .png
-#    filename = filename[:filename.rindex('.')]
-#    paramList = []
-#    for param in filename.split(d):
-#        paramList.append(float(param))
-#    return SEIRS(*paramList)
-
-
 
 if __name__ == '__main__':
     printGraph = False

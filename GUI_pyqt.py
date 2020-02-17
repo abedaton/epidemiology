@@ -193,8 +193,8 @@ class PlotCanvas(FigureCanvas):
             name = '('+name[0].upper()+')'+name[1:]
             ax.plot(self.model.timeVector,var,Color[index],label=name)
         ax.set_title(self.model.name)
-        ax.set_xlabel('Time (in days)')
-        ax.set_ylabel('Populaton (in person)')
+        ax.set_xlabel('Temps (en jours)')
+        ax.set_ylabel('Population (en personne)')
 
         ax.set_xlim(0,time.value())
         legend = ax.legend()
