@@ -115,17 +115,20 @@ class VaccineModel(object):
 
     def spread(self):
         if self.running:
+            stackToCure = self.cureIteration()
+            
+            for futureCured in stackToCure:
+                self.cureSquare(futureCured)
+
             if len(self.infected) >= len(self.susceptibles):
                 stackToInfect = self.spreadFromSus()
             else:
                 stackToInfect = self.spreadFromSus()
 
-            stackToCure = self.cureIteration()
+
 
             for futureInfected in stackToInfect:
                 self.infectSquare(futureInfected)
-            for futureCured in stackToCure:
-                self.cureSquare(futureCured)
 
             self.running = (len(self.infected) > 0)
 

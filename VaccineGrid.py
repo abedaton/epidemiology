@@ -6,6 +6,7 @@ from matplotlib.figure import Figure #self.figure
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QHBoxLayout, QPushButton,QSlider,QLabel,QSpinBox,QMessageBox
 from PyQt5.QtCore import Qt
 import sys
+import random
 
 from Menu import Menu
 
@@ -122,6 +123,12 @@ class PixelGridWindowVaccined(QWidget):
         self.I0SpinBox.setValue(1)
         self.cureSlider.setValue(13)
 
+    def randomParam(self):
+        self.vaccinSlider.setValue(random.randrange(self.vaccinSlider.minimum(), self.vaccinSlider.maximum()))
+        self.transmissionSlider.setValue(random.randrange(self.transmissionSlider.minimum(), self.transmissionSlider.maximum()))
+        self.I0SpinBox.setValue(random.randrange(self.I0SpinBox.minimum(), self.I0SpinBox.maximum()))
+        self.cureSlider.setValue(random.randrange(self.cureSlider.minimum(), self.cureSlider.maximum()))
+
 
 ################################################################################
 #Méthodes de créations des layout, bouttons, sliders, etc                      #
@@ -136,15 +143,13 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(startButton)
 
         #Boutton "Appliquer les paramètres"
-        self.applyButton = QPushButton('Appliquer les paramètres', self)
-        self.applyButton.setDisabled(True)
-        self.applyButton.setToolTip('Après avoir modifier les paramètres, cliquer ici pour les sauvegarder')
-        self.applyButton.clicked.connect(self.changeParam)
-        layout.addWidget(self.applyButton)
+        self.randomButton = QPushButton('Paramètres aléatoires', self)
+        self.randomButton.setToolTip('Randomiser tous les paramètres')
+        self.randomButton.clicked.connect(self.randomParam)
+        layout.addWidget(self.randomButton)
 
         #Button "Reset les paramètres"
         self.resetButton = QPushButton('Appliquer paramètres par défaut', self)
-        self.applyButton.setDisabled(True)
         self.resetButton.setToolTip('Réinisitalise les paramètres à leur valeur d\'origine')
         self.resetButton.clicked.connect(self.resetParam)
         layout.addWidget(self.resetButton)
@@ -197,7 +202,7 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(I0Text)
 
         self.I0SpinBox = QSpinBox()
-        self.I0SpinBox.setRange(0,25)
+        self.I0SpinBox.setRange(1,25)
         layout.addWidget(self.I0SpinBox)
 
         return layout
@@ -236,14 +241,11 @@ class PixelGridWindowVaccined(QWidget):
         #A rajouter : autres param
         self.canvas.modele.changeParam(parametres)
         #Les paramètres viennent d'être appliqués donc on peut bloquer appliquer
-        self.applyButton.setDisabled(True)
         self.resetButton.setDisabled(False)
 
     def resetParam(self):
         self.setInputsToDefault()
         self.canvas.modele.changeParam()
-        self.resetButton.setDisabled(True)
-        self.applyButton.setDisabled(True)
 
     def setEndMessage(self, message):
         self.canvas.ani.event_source.stop()
@@ -253,17 +255,14 @@ class PixelGridWindowVaccined(QWidget):
         self.text_fin.show()
 
     def vaccineChanged(self,value):
-        self.applyButton.setDisabled(False)
         self.resetButton.setDisabled(False)
         self.vaccinLabel.setText(str(value) + " % de la population est vaccinée")
 
     def curedChanged(self,value):
-        self.applyButton.setDisabled(False)
         self.resetButton.setDisabled(False)
         self.cureLabel.setText(str(value) + " % de chance de devenir immunisé")
 
     def transmissionChanged(self,value):
-        self.applyButton.setDisabled(False)
         self.resetButton.setDisabled(False)
         self.transmissionLabel.setText(str(value) + " % de chance d'infecter 1 de ses 8 voisins")
 
