@@ -66,6 +66,7 @@ class VaccineModel(object):
         {'probVaccine' : 0.5,\
          'probInfect' : 1,\
          'probCure' : 0.13,\
+         'probGlobal': 1/(1000),\
           'maxTime' : 50,\
           'I0' : 1\
         }
@@ -112,21 +113,38 @@ class VaccineModel(object):
         for count in range(self.parametres['I0']):
             self.infectSquare(susceptibles.pop())
 
+    def spreadGlobal(self):
+        probGlobalDenominateur = self.parametres['probGlobal']**(-1)
+        probGlobal = len(self.infected)/probGlobalDenominateur
+
+        if RNG(probGlobal):
+            if len(self.susceptibles) >= 1:
+                #sample renvoie une list mais on sample que de 1 donc on prend le premier elem
+                return random.sample(self.susceptibles, 1)
+        return []
+
 
     def spread(self):
         if self.running:
+            #D'abord on soigne les infectés
+            stackToCure = []
             stackToCure = self.cureIteration()
             
             for futureCured in stackToCure:
                 self.cureSquare(futureCured)
 
+            #choisi les infectés
+            stackToInfect = []
             if len(self.infected) >= len(self.susceptibles):
                 stackToInfect = self.spreadFromSus()
             else:
                 stackToInfect = self.spreadFromSus()
+            #puis globalement
+
+            stackToInfect = stackToInfect + self.spreadGlobal()
 
 
-
+            #puis les choisi sont infectés
             for futureInfected in stackToInfect:
                 self.infectSquare(futureInfected)
 
