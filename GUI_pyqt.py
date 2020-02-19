@@ -124,11 +124,20 @@ class App(QWidget):
         self.tabs.addTab(self.tab1,"Graphe")
         self.tabs.addTab(self.tab2,"Tableau de valeurs")
 
-        # Create second tab
+        # Create second tab with class
+        '''
         self.tab2.layout = QVBoxLayout(self)
         self.tableau = tableau(model)
         self.tab2.layout.addWidget(self.tableau.Mat)
         self.tab2.setLayout(self.tab2.layout)
+        '''
+        # no class
+        self.tableau = QTableWidget()
+        self.layout_tab2 = QVBoxLayout(self)
+        self.tableau.setRowCount(len(self.model.initial))
+        self.tableau.setVerticalHeaderLabels(self.model.initial.values())
+        self.layout_tab2.addWidget(self.tableau)
+        self.tab2.setLayout(self.layout_tab2)
 
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
@@ -136,6 +145,8 @@ class App(QWidget):
 
         self.graph = PlotCanvas(self, self.model, width=5, height=4)
         self.graph.plot(self.time)
+
+        self.tableau_new_val()
 
 
         self.tab1.layout.addWidget(self.graph)
@@ -154,6 +165,13 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.showMaximized()
+    
+    def tableau_new_val(self):
+        self.tableau.setColumnCount(self.time.value()) 
+        for index, elem in enumerate(self.model.initial.keys()):
+            var = self.model.get(elem[0])
+            for time in range(self.time.value()):
+                self.tableau.setItem(index,time,QTableWidgetItem(str(int(var[time]))))
 
     def new_plot(self):
         #actualiser graph
@@ -161,9 +179,12 @@ class App(QWidget):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot(self.time)
 
-        #actualiser tableau
+        #actualiser tableau class
+        '''
         self.tableau.get_m(self.model)
         self.tableau.actualiser()
+        '''
+        self.tableau_new_val()
 
 
     def back_menu(self):
