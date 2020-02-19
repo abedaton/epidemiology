@@ -208,6 +208,7 @@ class PlotCanvas(FigureCanvas):
 
 class tableau(object):
     def __init__(self,model):
+        self.model=model
         self.get_m(model)
         self.t=len(self.m[0])
         self.n_states=len(self.m)
@@ -216,7 +217,7 @@ class tableau(object):
         colonne=QWidget(self.Mat)
         Qcol=QVBoxLayout(colonne)
         Horizontal.addWidget(colonne)
-        self.temp=self.creer_wid()
+        self.creer_wid()
         self.actualiser()
         Qcol.addWidget(self.temp)
         
@@ -271,13 +272,13 @@ class tableau(object):
     	return res
 
     def creer_wid(self):
-        temp=QTableWidget()
-        temp.setColumnCount(self.t)
-        temp.setRowCount(self.n_states)
-        temp.setVerticalHeaderLabels(self.names)
-        return temp
+        self.temp=QTableWidget()
+        
+        self.temp.setRowCount(self.n_states)
+        self.temp.setVerticalHeaderLabels(self.names)
 
     def actualiser(self):
+        self.temp.setColumnCount(len(self.m[0]))
         for i in range (len(self.m)):
             for j in range (len(self.m[0])):
                 self.temp.setItem(i,j,QTableWidgetItem(str(self.m[i][j])))
