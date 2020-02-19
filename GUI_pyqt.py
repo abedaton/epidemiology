@@ -158,15 +158,15 @@ class App(QWidget):
         self.showMaximized()
 
     def new_plot(self):
-        #actualiser tableau
-       
-        self.tableau.get_m(self.model)
-        self.tableau.actualiser()
-
         #actualiser graph
         for i in range (len(self.box)):
             self.model.set(self.box[i][0],self.box[i][1].value())
         self.graph.plot(self.time)
+
+        #actualiser tableau
+        self.tableau.get_m(self.model)
+        self.tableau.actualiser()
+
 
     def back_menu(self):
         self.menu = Menu()
