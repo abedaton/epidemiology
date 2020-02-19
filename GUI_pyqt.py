@@ -34,8 +34,6 @@ class App(QWidget):
         self.layout_but = QVBoxLayout(self)
         self.layout_time = QVBoxLayout(self)
 
-        print(self.model.initial)
-        print(self.model.vars)
         self.box = []
 
         # out of tab
