@@ -119,7 +119,7 @@ class Menu(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         var = sys.argv[1]
         sys.argv.pop(1)
         menu = Menu(var)
