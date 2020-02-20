@@ -5,6 +5,7 @@ SUSCEPTIBLE = 0
 INFECTED = 1
 VACCINATED = 2
 CURED = 3
+DEATH = 4
 
 def RNG(probability):
     return random.random() < probability
@@ -67,6 +68,7 @@ class VaccineModel(object):
          'probInfect' : 1,\
          'probCure' : 0.13,\
          'probGlobal': 1/(1000),\
+         'probDeath' : 0.05,\
           'maxTime' : 50,\
           'I0' : 1\
         }
@@ -79,6 +81,12 @@ class VaccineModel(object):
         self.infected.remove(ij)
         self.vaccinated.add(ij)
         self.setIndexState(ij, CURED)
+        return True
+    
+    def deathSquare(self,ij):
+        self.infected.remove(ij)
+        self.setIndexState(ij, DEATH)
+
         return True
 
     def vaccinateSquare(self, ij):
@@ -133,12 +141,17 @@ class VaccineModel(object):
             for futureCured in stackToCure:
                 self.cureSquare(futureCured)
 
+            stackToDeath = self.deathIteration()
+
+            for futureDeath in stackToDeath:
+                self.deathSquare(futureDeath)
+
             #choisi les infectés
             stackToInfect = []
             if len(self.infected) >= len(self.susceptibles):
                 stackToInfect = self.spreadFromSus()
             else:
-                stackToInfect = self.spreadFromSus()
+                stackToInfect = self.spreadFromInf()
             #puis globalement
 
             stackToInfect = stackToInfect + self.spreadGlobal()
@@ -177,6 +190,13 @@ class VaccineModel(object):
         stack = []
         for infected in self.infected:
             if RNG(self.parametres['probCure']):
+                stack.append(infected)
+        return stack
+    
+    def deathIteration(self):
+        stack = []
+        for infected in self.infected:
+            if RNG(self.parametres['probDeath']):
                 stack.append(infected)
         return stack
 
