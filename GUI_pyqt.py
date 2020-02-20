@@ -226,7 +226,7 @@ class PlotCanvas(FigureCanvas):
         ax.grid(True)
         self.draw()
 
-
+'''
 class tableau(object):
     def __init__(self,model):
         self.model=model
@@ -303,7 +303,7 @@ class tableau(object):
         for i in range (len(self.m)):
             for j in range (len(self.m[0])):
                 self.temp.setItem(i,j,QTableWidgetItem(str(self.m[i][j])))
-
+'''
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -101,8 +101,9 @@ class PixelGridWindowVaccined(QWidget):
         tranLayout = self.createTranLayout()
         initLayout = self.createInitLayout()
         cureLayout = self.createCureLayout()
+        globLayout = self.createGlobLayout()
 
-        paramLayout = self.createParamLayout([vaccLayout, cureLayout, tranLayout, initLayout, buttonsLayout])
+        paramLayout = self.createParamLayout([vaccLayout, cureLayout, tranLayout,globLayout, initLayout, buttonsLayout])
         self.layout.addLayout(paramLayout)
 
         self.setLayout(self.layout)
@@ -128,6 +129,7 @@ class PixelGridWindowVaccined(QWidget):
         self.transmissionSlider.setValue(random.randrange(self.transmissionSlider.minimum(), self.transmissionSlider.maximum()))
         self.I0SpinBox.setValue(random.randrange(self.I0SpinBox.minimum(), self.I0SpinBox.maximum()))
         self.cureSlider.setValue(random.randrange(self.cureSlider.minimum(), self.cureSlider.maximum()))
+        self.glob_slider.setValue(random.randrange(self.glob_slider.minimum(),self.glob_slider.maximum()))
 
 
 ################################################################################
@@ -192,6 +194,20 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(self.transmissionSlider)
 
         return layout
+    
+    def createGlobLayout(self):
+        layout = QVBoxLayout()
+
+        self.glob_label = QLabel(" 1/2000 que la maladie se propage dans l'air")
+        layout.addWidget(self.glob_label)
+
+        self.glob_slider = QSlider(Qt.Horizontal)
+        self.glob_slider.setRange(1000,2000)
+        self.glob_slider.setValue(2000)
+        self.glob_slider.valueChanged.connect(self.globChanged)
+        layout.addWidget(self.glob_slider)
+
+        return layout
 
 
 
@@ -238,6 +254,7 @@ class PixelGridWindowVaccined(QWidget):
         parametres['probInfect'] = self.transmissionSlider.value()/100
         parametres['probCure'] = self.cureSlider.value()/100
         parametres['I0'] = self.I0SpinBox.value()
+        parametres['probGlobal'] = 1/self.glob_slider.value()
         #A rajouter : autres param
         self.canvas.modele.changeParam(parametres)
         #Les paramètres viennent d'être appliqués donc on peut bloquer appliquer
@@ -265,6 +282,10 @@ class PixelGridWindowVaccined(QWidget):
     def transmissionChanged(self,value):
         self.resetButton.setDisabled(False)
         self.transmissionLabel.setText(str(value) + " % de chance d'infecter 1 de ses 8 voisins")
+
+    def globChanged(self,value):
+        self.resetButton.setDisabled(False)
+        self.glob_label.setText("1/" + str(value) + "de chance que la maladie se propage dans l'air" )
 
 
     def new_plot(self):
