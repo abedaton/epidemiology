@@ -102,8 +102,9 @@ class PixelGridWindowVaccined(QWidget):
         initLayout = self.createInitLayout()
         cureLayout = self.createCureLayout()
         globLayout = self.createGlobLayout()
+        deathLayout = self.createDeathLayout()
 
-        paramLayout = self.createParamLayout([vaccLayout, cureLayout, tranLayout,globLayout, initLayout, buttonsLayout])
+        paramLayout = self.createParamLayout([vaccLayout, cureLayout, tranLayout,deathLayout,globLayout, initLayout, buttonsLayout])
         self.layout.addLayout(paramLayout)
 
         self.setLayout(self.layout)
@@ -123,6 +124,8 @@ class PixelGridWindowVaccined(QWidget):
         self.transmissionSlider.setValue(100)
         self.I0SpinBox.setValue(1)
         self.cureSlider.setValue(13)
+        self.glob_slider.setValue(2000)
+        self.deathSlider.setValue(5)
 
     def randomParam(self):
         self.vaccinSlider.setValue(random.randrange(self.vaccinSlider.minimum(), self.vaccinSlider.maximum()))
@@ -130,6 +133,7 @@ class PixelGridWindowVaccined(QWidget):
         self.I0SpinBox.setValue(random.randrange(self.I0SpinBox.minimum(), self.I0SpinBox.maximum()))
         self.cureSlider.setValue(random.randrange(self.cureSlider.minimum(), self.cureSlider.maximum()))
         self.glob_slider.setValue(random.randrange(self.glob_slider.minimum(),self.glob_slider.maximum()))
+        self.deathSlider.setValue(random.randrange(self.deathSlider.minimum(),self.deathSlider.maximum()))
 
 
 ################################################################################
@@ -202,13 +206,24 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(self.glob_label)
 
         self.glob_slider = QSlider(Qt.Horizontal)
-        self.glob_slider.setRange(1000,2000)
-        self.glob_slider.setValue(2000)
+        self.glob_slider.setRange(1000,3000)
         self.glob_slider.valueChanged.connect(self.globChanged)
         layout.addWidget(self.glob_slider)
 
         return layout
+    
+    def createDeathLayout(self):
+        layout = QVBoxLayout()
 
+        self.deathLabel = QLabel("5 % qu'un malade meurt")
+        layout.addWidget(self.deathLabel)
+
+        self.deathSlider = QSlider(Qt.Horizontal)
+        self.deathSlider.setRange(0,100)
+        self.deathSlider.valueChanged.connect(self.deathChanged)
+        layout.addWidget(self.deathSlider)
+        
+        return layout
 
 
     def createInitLayout(self):
@@ -255,6 +270,7 @@ class PixelGridWindowVaccined(QWidget):
         parametres['probCure'] = self.cureSlider.value()/100
         parametres['I0'] = self.I0SpinBox.value()
         parametres['probGlobal'] = 1/self.glob_slider.value()
+        parametres['probDeath'] = self.deathSlider.value()/100
         #A rajouter : autres param
         self.canvas.modele.changeParam(parametres)
         #Les paramètres viennent d'être appliqués donc on peut bloquer appliquer
@@ -285,7 +301,11 @@ class PixelGridWindowVaccined(QWidget):
 
     def globChanged(self,value):
         self.resetButton.setDisabled(False)
-        self.glob_label.setText("1/" + str(value) + "de chance que la maladie se propage dans l'air" )
+        self.glob_label.setText("1/" + str(value) + " de chance que la maladie se propage dans l'air" )
+
+    def deathChanged(self,value):
+        self.resetButton.setDisabled(False)
+        self.deathLabel.setText(str(value) + " % de chance qu'un malade meurt")
 
 
     def new_plot(self):
