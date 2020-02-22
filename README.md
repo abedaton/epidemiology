@@ -2,6 +2,10 @@
 
 Projet d'année 3 transdisciplinaire du groupe 1.
 
+## Usage:
+- pip3 install -r requirements.txt
+- python3 Menu.py
+
 ### sujet de modélisation [Spatial evolutionary epidemiology of spreading epidemics](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2016.1170?fbclid=IwAR2HIu-M-aqCi4ADAkfhgLfhL_8ITrNUumEZyI2Lc-iZibYz_SKKcZalV-E)
 
 # Références
