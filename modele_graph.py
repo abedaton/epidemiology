@@ -49,9 +49,9 @@ class modele(object):
 				self.heatmap()
 				self.spread()
 				time.sleep(1)
-  	def restart(self):
-   		# ajouter le fait de changer des parametres ?
-  		self.mat=[[0 for i in range (L)] for j in range (H)]
+	def restart(self):
+		# ajouter le fait de changer des parametres ?
+		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
 	
 	def gen_bool(self,prob):
 		res=False

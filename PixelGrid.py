@@ -33,6 +33,7 @@ class PixelGrid(FigureCanvas):
             self.modele=modele()
 
     def startInfection(self, I0=1):
+        self.modele.restart()
         self.createGraph()
 
     def stepInfection(self):
