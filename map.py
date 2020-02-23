@@ -167,11 +167,12 @@ class Propagation():
 
         self.initAll()
         
+
         self.succeptible = [startCountry]
         self.done = []
 
         self.infect = Infection()
-        self.update(self.finde(startCountry, self.healthy))
+        self.update(self.finde(startCountry))
         self.run = True
         thread = threading.Thread(target=self.spreading)
         thread.start()
@@ -188,24 +189,30 @@ class Propagation():
         shape = self.df.loc[self.df["ISO3"] == name]["geometry"].tolist()[0]
         return Country(coco.convert(names=name, to="short_name"), name, shape)
 
-    @staticmethod
-    def finde(obj, list):
-        for o in list:
-            if o.name == obj:
-                return o
+    def finde(self, name : str):
+        for country in self.healthy:
+            if country.name == name:
+                return country
 
     def spreading(self):
         #exemple
         while self.run:
-            if random.randint(1,15) == 1:
+            if random.randint(1,30) == 1:
                 #global
-                pass
+                if len(self.healthy) != 0: 
+                    newInfected = random.choice(self.healthy)
+                    #navion
+                    if newInfected.name not in self.succeptible:
+                        self.succeptible.append(newInfected.name)
+                    self.update(newInfected)
             else:
                 #local
                 if len(self.succeptible) != 0: 
                     newInfected = random.choice(self.succeptible)
-                    print(newInfected)
-                    self.update(self.finde(newInfected, self.healthy))
+                    self.update(self.finde(newInfected))
+            if len(self.succeptible) == 0 and len(self.healthy) == 0:
+                break
+                self.infect.__del__()
 
     def update(self, country = Country):
         self.healthy.remove(country)
@@ -213,7 +220,7 @@ class Propagation():
         self.succeptible.remove(country.name)
         self.done.append(country.name)
  
-        trash = ["Democratic People's Republic of"]
+        trash = ["Democratic People's Republic of", "Republic of"]
         neighborsList = self.df.loc[self.df["ISO3"] == country.name]["neighbors"].tolist()
         if len(neighborsList) != 0:
             neighborsList = neighborsList[0]
@@ -265,7 +272,7 @@ class MapWindow(QWidget):
         pass
 
     def back_menu(self):
-        self.canvas.end()
+        #self.canvas.end()
         self.menu = Menu()
         self.close()
 

@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
-#from GUI_pyqt import *
+from GUI_pyqt import *
 from PyQt5.QtGui import QBrush, QPixmap, QPalette, QImage
 
 
@@ -118,7 +118,6 @@ class Menu(QWidget):
             from VaccineGrid import PixelGridWindowVaccined
             self.app2 = PixelGridWindowVaccined()
         elif model_name == "Map":
-            #from clean_map import MapWindow
             from map import MapWindow
 
             self.app2 = MapWindow("ccrs."+self.comboMap.currentText()+"()")
