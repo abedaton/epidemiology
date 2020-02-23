@@ -1,3 +1,4 @@
+"""
 # -*- coding: utf-8 -*-
 # GUI
 import matplotlib.pyplot as plt
@@ -8,19 +9,21 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shpreader
 import fiona
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString
 import shapely.geometry as sgeom
 from shapely.prepared import prep
 import reverse_geocoder as rg
 import country_converter as coco
 import geopandas as gp
+from cython.parallel import prange
 
 import random
 import time
 import threading
-from cython.parallel import prange
+
 
 from Menu import Menu
+"""
 
 
 def uselessLoad():
@@ -93,13 +96,13 @@ class Map(QDialog):
         susceptibles = self.updateSusceptible(infected_names, [], Thecountry, df)
 
         while self.run and startNum < endNum:
-            print("sus = ", susceptibles)
+            #print("sus = ", susceptibles)
             count = 0
             while count < len(susceptibles):
                 sus = susceptibles[count]
                 prob = random.randint(0, 100)
                 if prob >= 90:
-                    print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
+                    #print(coco.convert(names=sus, to="short_name"), "IS NOW INFECTED")
                     infected_names.append(sus)
                     infected.append(df.loc[df["ISO3"] == sus]["geometry"].tolist()[0])
                     susceptibles.remove(sus)
@@ -110,7 +113,10 @@ class Map(QDialog):
 
             for i in prange(len(infected)):
                 points = self.findPoints(infected[i])
+                #if dico_point[infected[i]][0] < dico_point[infected[i]][1]:
                 plt.scatter(points.x, points.y, color="red", marker=".", transform=ccrs.Geodetic())
+                #else:
+                    #infected.remove(country)
                 #time.sleep(timeInterval)
             startNum += 1
             self.figure.canvas.draw()
@@ -156,6 +162,7 @@ class Map(QDialog):
         return country
 
 
+"""
 class MapWindow(QWidget):
     def __init__(self, argMap, parent=None):
         super(MapWindow, self).__init__(parent)
@@ -196,7 +203,7 @@ class MapWindow(QWidget):
         self.menu = Menu()
         self.close()
 
-
+"""
 
 
 
