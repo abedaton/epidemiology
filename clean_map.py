@@ -18,6 +18,7 @@ import geopandas as gp
 import random
 import time
 import threading
+from cython.parallel import prange
 
 from Menu import Menu
 
@@ -70,7 +71,7 @@ class Map(QDialog):
         trash = ["Democratic People's Republic of"]
         neighborsList = df.loc[df["ISO3"] == country]["neighbors"].tolist()
         if len(neighborsList) == 0:
-            return []
+            return list(set(susceptibles))
         else:
             neighborsList = neighborsList[0]
         if neighborsList is not None:
@@ -79,8 +80,9 @@ class Map(QDialog):
                 if i in neighborsList:
                     neighborsList.remove(i)
             for neighbor in neighborsList:
+                neighbor = coco.convert(names=neighbor, to="ISO3")
                 if neighbor not in infected_names:
-                    susceptibles.append(coco.convert(names=neighbor, to="ISO3"))
+                    susceptibles.append(neighbor)
         return list(set(susceptibles))
 
     def infect(self, timeInterval: (int, float), Thecountry: str, startNum: int = 0, endNum: float = float("inf")) -> None:  # The country in ISO3
@@ -106,9 +108,9 @@ class Map(QDialog):
                 else:
                     count += 1
 
-            for country in infected:
-                points = self.findPoints(country)
-                plt.scatter(points.x, points.y, color="red", marker=".", transform=ccrs.Geodetic()) ###
+            for i in prange(len(infected)):
+                points = self.findPoints(infected[i])
+                plt.scatter(points.x, points.y, color="red", marker=".", transform=ccrs.Geodetic())
                 #time.sleep(timeInterval)
             startNum += 1
             self.figure.canvas.draw()
