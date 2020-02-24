@@ -3,7 +3,7 @@
 # GUI
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel, QTabWidget
 
 # Geocoding / Map
 import cartopy.crs as ccrs
@@ -211,8 +211,9 @@ class Propagation():
                     newInfected = random.choice(self.succeptible)
                     self.update(self.finde(newInfected))
             if len(self.succeptible) == 0 and len(self.healthy) == 0:
-                break
                 self.infect.__del__()
+                print("END")
+                break
 
     def update(self, country = Country):
         self.healthy.remove(country)
@@ -240,6 +241,13 @@ class MapWindow(QWidget):
     def __init__(self, argMap, parent=None):
         super(MapWindow, self).__init__(parent)
 
+        self.tab = QTabWidget(self)
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+
+
+
+
         self.title = "Map Game"
         self.layout = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
@@ -257,11 +265,14 @@ class MapWindow(QWidget):
 
         self.layout.addLayout(self.layout_but)
 
+        self.layout.addWidget(self.tab)
         self.setLayout(self.layout)
 
-        self.canvas = Map()
 
-        self.layout.addWidget(self.canvas)
+        self.canvas = Map()
+        self.tab.addTab(self.canvas, "Map")
+        self.tab.addTab(self.tab2, "World Information")
+
 
         
         
