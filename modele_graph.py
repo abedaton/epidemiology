@@ -52,6 +52,7 @@ class modele(object):
 	def restart(self):
 		# ajouter le fait de changer des parametres ?
 		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
+		self.mat[random.randrange(0,self.H)][random.randrange(0,self.L)] = 1 #random place
 	
 	def gen_bool(self,prob):
 		res=False
