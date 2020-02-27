@@ -52,7 +52,7 @@ class modele(object):
 		while ((self.square_min)**2)<n:
 			self.square_min=self.square_min+1
 
-		self.re_init()
+		self.init()
 
 		if showMe:
 			for t in range (T):
@@ -60,7 +60,7 @@ class modele(object):
 				self.spread()
 				time.sleep(1)
 
-	def re_init(self):
+	def init(self):
 		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
 		i=0
 		while i<self.I0:
