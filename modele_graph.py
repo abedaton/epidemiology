@@ -61,19 +61,16 @@ class modele(object):
 				time.sleep(1)
 
 	def re_init(self):
-		#self.mat[random.randrange(0,self.H)][random.randrange(0,self.L)] = 1 #random place
 		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
-		lc=int(self.I0**0.5)
+		i=0
+		while i<self.I0:
+			i_temp=random.randrange(0,self.H)
+			j_temp=random.randrange(0,self.L)
+			if self.mat[i_temp][j_temp]==0:
+				self.mat[i_temp][j_temp] = 1
+				i=i+1
 
-		i0=int(self.H/2)-int(lc/2)
-		j0=int(self.L/2)-int(lc/2)
 
-		for i in range (self.I0):
-			self.mat[i0][j0]=1
-			j0=j0+1
-			if j0>int(self.H/2)+int(lc/2):
-				j0=int(self.H/2)-int(lc/2)
-				i0=i0+1
 
 	def gen_bool(self,prob):
 		res=False
