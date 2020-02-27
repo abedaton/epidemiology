@@ -10,23 +10,25 @@ from copy import copy, deepcopy
 class modele(object):
 	initial = {"I0" : "Infectés"}
 
-	vars = {"H" : "hauteur quadrillage",
-				"L" : "longeur quadrillage",
-				"n" : "nombre de voisins par personne",
-				"mwm" : "probabilité de mutation de wild vers virulent",
+	vars = {"mwm" : "probabilité de mutation de wild vers virulent",
 				"mww" : "probabilité de mutation de wild vers wild",
 				"mmw" : "probabilité de mutation de virulent vers wild",
 				"mmm" : "probabilité de mutation de virulent vers virulent",
 				"bw" : "taux de transmission du virus wild",
 				"aw" : "taux de virulence du virus wild",
-				"R0w" : "bw divisé par aw mais jsp a quoi ça sert",
 				"bm" : "taux de transmission du virus virulent",
-				"am" : "taux de virulence du virus virulent",
-				"R0m" : "bm divisé par am mais jsp a quoi ça sert",
-				"gl" : "transmission globale",
-				"loc" : "transmission locale", 
-				"showMe" : "afficher",
-				"T" : "temps"}
+				"am" : "taux de virulence du virus virulent" }
+
+
+				# "H" : "hauteur quadrillage",
+				#"L" : "longeur quadrillage",
+				#"n" : "nombre de voisins par personne",
+				#"R0w" : "bw divisé par aw mais jsp a quoi ça sert",
+				#"R0m" : "bm divisé par am mais jsp a quoi ça sert",
+				#"showMe" : "afficher",
+				#"T" : "temps"
+				#"gl" : "transmission globale",
+				#"loc" : "transmission locale"}
 
 	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False,T=100):
 
@@ -48,6 +50,7 @@ class modele(object):
 		self.loc=loc
 		self.giveupafter=10
 		self.square_min=0
+		self.T = T
 
 		while ((self.square_min)**2)<n:
 			self.square_min=self.square_min+1
@@ -69,6 +72,15 @@ class modele(object):
 			if self.mat[i_temp][j_temp]==0:
 				self.mat[i_temp][j_temp] = 1
 				i=i+1
+	
+	def get(self, var):
+		try:
+			return eval("self."+var)
+		except:
+			return None
+
+	def set(self, var, val):
+		exec("self."+var+" = "+str(val))
 
 
 
