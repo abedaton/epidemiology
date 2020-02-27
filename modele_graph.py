@@ -8,6 +8,26 @@ from copy import copy, deepcopy
 
 
 class modele(object):
+	initial = {"I0" : "Infectés"}
+
+	vars = {"H" : "hauteur quadrillage",
+				"L" : "longeur quadrillage",
+				"n" : "nombre de voisins par personne",
+				"mwm" : "probabilité de mutation de wild vers virulent",
+				"mww" : "probabilité de mutation de wild vers wild",
+				"mmw" : "probabilité de mutation de virulent vers wild",
+				"mmm" : "probabilité de mutation de virulent vers virulent",
+				"bw" : "taux de transmission du virus wild",
+				"aw" : "taux de virulence du virus wild",
+				"R0w" : "bw divisé par aw mais jsp a quoi ça sert",
+				"bm" : "taux de transmission du virus virulent",
+				"am" : "taux de virulence du virus virulent",
+				"R0m" : "bm divisé par am mais jsp a quoi ça sert",
+				"gl" : "transmission globale",
+				"loc" : "transmission locale", 
+				"showMe" : "afficher",
+				"T" : "temps"}
+
 	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False,T=100):
 		self.mat=[[0 for i in range (L)] for j in range (H)]
 
