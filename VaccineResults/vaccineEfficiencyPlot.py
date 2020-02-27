@@ -9,12 +9,11 @@ def importData(filename):
             ligne = file.readline()[:-1]
             if ligne == '':
                 break
-            data[i] = float(ligne)
+            data[i] = 100*float(ligne)/(2500-i*25)
             i += 1
     return data
 
-data = importData('100prob10iter-results.txt')
-data = (100/2500)*data
+data = importData('100iter100prob-resultsBIS.txt')
 
 f, ax = plt.subplots()
 ax.set_yticks(np.linspace(0, 100, 21))

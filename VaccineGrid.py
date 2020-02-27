@@ -116,7 +116,7 @@ class PixelGridWindowVaccined(QWidget):
         self.canvas.startInfection()
         self.canvas.animate()
 
-        self.showMaximized()
+        self.show()
 
     def setInputsToDefault(self):
         #Pour modifier les valeurs par défaut plus facilement
@@ -198,7 +198,7 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(self.transmissionSlider)
 
         return layout
-    
+
     def createGlobLayout(self):
         layout = QVBoxLayout()
 
@@ -211,7 +211,7 @@ class PixelGridWindowVaccined(QWidget):
         layout.addWidget(self.glob_slider)
 
         return layout
-    
+
     def createDeathLayout(self):
         layout = QVBoxLayout()
 
@@ -222,7 +222,7 @@ class PixelGridWindowVaccined(QWidget):
         self.deathSlider.setRange(0,100)
         self.deathSlider.valueChanged.connect(self.deathChanged)
         layout.addWidget(self.deathSlider)
-        
+
         return layout
 
 
