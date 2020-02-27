@@ -29,11 +29,11 @@ class modele(object):
 				"T" : "temps"}
 
 	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False,T=100):
-		self.mat=[[0 for i in range (L)] for j in range (H)]
 
 		self.n=n
 		self.H=H
 		self.L=L
+		self.I0=I0
 		self.mwm=mwm
 		self.mmw=mmw
 		self.mww=mww
@@ -51,29 +51,30 @@ class modele(object):
 
 		while ((self.square_min)**2)<n:
 			self.square_min=self.square_min+1
-		print(self.square_min)
 
-		lc=int(I0**0.5)
+		self.re_init()
 
-		i0=int(H/2)-int(lc/2)
-		j0=int(L/2)-int(lc/2)
-
-		for i in range (I0):
-			self.mat[i0][j0]=1
-			j0=j0+1
-			if j0>int(H/2)+int(lc/2):
-				j0=int(H/2)-int(lc/2)
-				i0=i0+1
 		if showMe:
 			for t in range (T):
 				self.heatmap()
 				self.spread()
 				time.sleep(1)
-	def restart(self):
-		# ajouter le fait de changer des parametres ?
+
+	def re_init(self):
+		#self.mat[random.randrange(0,self.H)][random.randrange(0,self.L)] = 1 #random place
 		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
-		self.mat[random.randrange(0,self.H)][random.randrange(0,self.L)] = 1 #random place
-	
+		lc=int(self.I0**0.5)
+
+		i0=int(self.H/2)-int(lc/2)
+		j0=int(self.L/2)-int(lc/2)
+
+		for i in range (self.I0):
+			self.mat[i0][j0]=1
+			j0=j0+1
+			if j0>int(self.H/2)+int(lc/2):
+				j0=int(self.H/2)-int(lc/2)
+				i0=i0+1
+
 	def gen_bool(self,prob):
 		res=False
 		temp=random.randint(0,10000)/100
