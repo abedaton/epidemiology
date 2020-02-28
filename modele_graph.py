@@ -11,9 +11,7 @@ class modele(object):
 	initial = {"I0" : "Infectés"}
 
 	vars = {"mwm" : "probabilité de mutation de wild vers virulent",
-				"mww" : "probabilité de mutation de wild vers wild",
 				"mmw" : "probabilité de mutation de virulent vers wild",
-				"mmm" : "probabilité de mutation de virulent vers virulent",
 				"bw" : "taux de transmission du virus wild",
 				"aw" : "taux de virulence du virus wild",
 				"bm" : "taux de transmission du virus virulent",

@@ -3,7 +3,7 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QPushButton,QLabel,QDoubleSpinBox,QHBoxLayout,QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QPushButton,QLabel,QDoubleSpinBox,QHBoxLayout,QCheckBox,QSpinBox
 import sys
 
 
@@ -119,8 +119,37 @@ class PixelGridWindow(QWidget):
             layout_box.addWidget(text)
             layout_box.addWidget(but)
             self.box.append((i,but))
-            if box < 4:
+            if box < 2:
                 self.layout_proba.addLayout(layout_box)
+            
+            elif box == 2:
+                layout_box = QVBoxLayout(self)
+                textI = QLabel()
+                textI.setText("Nombre d'infécté de depart")
+                self.initI = QSpinBox(self)
+                self.initI.setValue(self.canvas.modele.get("I0"))
+                self.initI.setRange(0,25)
+
+                layout_box.addWidget(textI)
+                layout_box.addWidget(self.initI)
+
+                layout_boxT = QVBoxLayout(self)
+                textT = QLabel()
+                textT.setText("Temps")
+                self.initT = QSpinBox(self)
+                self.initT.setValue(self.canvas.modele.get("T"))
+                self.initT.setRange(0,200)
+
+                layout_boxT.addWidget(textT)
+                layout_boxT.addWidget(self.initT)
+
+                self.layout_proba.addLayout(layout_box)
+                self.layout_proba.addLayout(layout_boxT)
+
+                self.box.append(("I0",self.initI))
+                self.box.append(("T",self.initT))
+
+                box +=2
             else:
                 self.layout_proba2.addLayout(layout_box)
             box += 1
