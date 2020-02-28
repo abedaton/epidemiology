@@ -25,6 +25,8 @@ class Menu(QWidget):
     def __init__(self, option=None):
         super().__init__()
 
+        self.setBackground(QImage("Images/menu/biohazard.jpg"), self.width(), self.height())
+
         self.combo = QComboBox(self)
         self.combo.addItem("SIR")
         self.combo.addItem("SEIHFR")

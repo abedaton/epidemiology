@@ -140,14 +140,14 @@ class Infection():
         thread = threading.Thread(target=self.infect)
         thread.start()
     
-    def __del__(self):
+    def end(self):
         self.on = False
     
     def add(self, country : Country):
         self.infected.append(country)
         
     def infect(self):
-        while self.on:
+        while self.on or len(self.infected)!=0 :
             i = 0
             while i < len(self.infected):
                 if random.randint(1,10) < 4:
@@ -155,6 +155,7 @@ class Infection():
                         self.infected.pop(i)
                         i -= 1
                     i += 1
+        print("done")
 
     def plotAvion(self, country : Country):
         infect = random.choice(self.infected)
@@ -220,8 +221,8 @@ class Propagation():
                     plt.title(coco.convert(names=newInfected, to="short_name") + " IS NOW INFECTED", fontsize=50)
                     self.update(self.finde(newInfected))
             if len(self.succeptible) == 0 and len(self.healthy) == 0:
-                self.infect.__del__()
-                print("END")
+                self.infect.end()
+                print("Every contry are infected")
                 break
 
     def update(self, country = Country):
@@ -254,14 +255,11 @@ class MapWindow(QWidget):
         self.tab1 = QWidget()
         self.tab2 = QWidget()
 
-
-
-
         self.title = "Map Game"
         self.layout = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
 
-        self.button = QPushButton('Lancer simulation', self)
+        self.button = QPushButton('Relancé la simulation', self)
         self.button.setToolTip('Relance la simulation')
         self.button.clicked.connect(self.new_plot)
 
@@ -281,18 +279,16 @@ class MapWindow(QWidget):
         self.canvas = Map()
         self.tab.addTab(self.canvas, "Map")
         self.tab.addTab(self.tab2, "World Information")
-
-
-        
         
         self.showMaximized()
         self.canvas.launch()
     
     def new_plot(self):
-        pass
+        #self.canvas.__del__()
+        self.canvas = Map()
 
     def back_menu(self):
-        #self.canvas.end()
+        #self.canvas.__del__()
         self.menu = Menu()
         self.close()
 
