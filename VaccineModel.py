@@ -82,7 +82,7 @@ class VaccineModel(object):
         self.vaccinated.add(ij)
         self.setIndexState(ij, CURED)
         return True
-    
+
     def deathSquare(self,ij):
         self.infected.remove(ij)
         self.setIndexState(ij, DEATH)
@@ -134,20 +134,22 @@ class VaccineModel(object):
 
     def spread(self):
         if self.running:
+            susBefore = len(self.susceptibles)
             #D'abord on soigne les infectés
             stackToCure = []
+            stackToKill = []
+            stackToInfect = []
             stackToCure = self.cureIteration()
-            
+
             for futureCured in stackToCure:
                 self.cureSquare(futureCured)
 
-            stackToDeath = self.deathIteration()
+            stackToKill = self.deathIteration()
 
-            for futureDeath in stackToDeath:
+            for futureDeath in stackToKill:
                 self.deathSquare(futureDeath)
 
             #choisi les infectés
-            stackToInfect = []
             if len(self.infected) >= len(self.susceptibles):
                 stackToInfect = self.spreadFromSus()
             else:
@@ -161,7 +163,7 @@ class VaccineModel(object):
             for futureInfected in stackToInfect:
                 self.infectSquare(futureInfected)
 
-            self.running = (len(self.infected) > 0)
+            self.running = (len(self.infected) > 0)# and len(self.susceptibles) != susBefore
 
             #Si fin du spreading, on affiche les résultats
             if not self.running:
@@ -192,7 +194,7 @@ class VaccineModel(object):
             if RNG(self.parametres['probCure']):
                 stack.append(infected)
         return stack
-    
+
     def deathIteration(self):
         stack = []
         for infected in self.infected:
@@ -206,7 +208,7 @@ class VaccineModel(object):
         nombreVacciné = int(self.parametres['probVaccine']*(self.X*self.Y))
         nombreSain = len(self.susceptibles)
         nombreGueri = self.maxInfected
-        self.trueResults = nombreSain+nombreVacciné
+        self.trueResults = nombreSain
         self.results  = f"Dans une population vaccinée à {self.parametres['probVaccine']*100}%\n"
         self.results += f"Parmis les {nombreSain+nombreGueri} personnes susceptibles d'être touchées au départ \n"
         self.results += f"{100-100*nombreSain/(nombreSain+nombreGueri)}% ont été touchés par l'infection\n"
@@ -225,15 +227,16 @@ class VaccineModel(object):
 
 if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
     outputFileName = sys.argv[2]
+    nbIter = 100
     for vaccineProb in range(100):
         print(vaccineProb)
         average = 0
-        for i in range(100):
+        for i in range(nbIter):
             print("",i)
-            simulation = VaccineModel({'probVaccine' : vaccineProb/100})
+            simulation = VaccineModel({'probVaccine' : vaccineProb/100, 'probDeath' : 0, 'probCure' : 0})
             simulation.buildFirstFrame()
             while simulation.spread():
                 pass
             average += simulation.trueResults
         with open(outputFileName, 'a+') as fichier:
-            fichier.write(str(average/100) + '\n')
+            fichier.write(str(average/nbIter) + '\n')

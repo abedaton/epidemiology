@@ -3,7 +3,7 @@ import matplotlib as mpl #Couleurs
 from matplotlib.backends.backend_qt5agg import FigureCanvas #Parent de PixelGrid
 
 from matplotlib.figure import Figure #self.figure
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout,QPushButton,QLabel,QDoubleSpinBox,QHBoxLayout,QCheckBox,QSpinBox
 import sys
 
 
@@ -24,6 +24,7 @@ class PixelGrid(FigureCanvas):
 
     def __init__(self):
         self.figure = Figure()
+        self.time = 0
         super().__init__(self.figure)
         if len(sys.argv) > 1 :
             loca='1' in str(sys.argv[1])
@@ -33,7 +34,7 @@ class PixelGrid(FigureCanvas):
             self.modele=modele()
 
     def startInfection(self, I0=1):
-        self.modele.restart()
+        self.modele.init()
         self.createGraph()
 
     def stepInfection(self):
@@ -67,17 +68,21 @@ class PixelGrid(FigureCanvas):
         self.timeStep = axtext.text(0.5,0.5, str(0), ha="left", va="top")
 
     def refreshHeatmap(self, frame):
+        if self.time == self.modele.get("T"):
+            self.ani.event_source.stop()
         #Mise a jour de la matrice
+
         self.stepInfection()
         #Mise a jour du t =
-        self.timeStep.set_text(str("t=") + str(frame))
+        self.timeStep.set_text(str("t=") + str(self.time))
         #mise a jour de la heatmap
         self.image.set_data(self.modele.mat)
+        self.time += 1
 
     def animate(self, stepTimeInterval=20, nbSteps=150):
         #Création de l'objet qui va appeller refreshmap tous les stepTimeInterval ms
         self.ani = animation.FuncAnimation(self.figure, self.refreshHeatmap,\
-        interval=stepTimeInterval, frames=nbSteps, repeat=False)
+        interval=stepTimeInterval, frames=nbSteps, repeat=True)
 
 
 class PixelGridWindow(QWidget):
@@ -88,8 +93,66 @@ class PixelGridWindow(QWidget):
 
         self.title = "Distribution spatiale d'une maladie"
 
+        self.canvas = PixelGrid()
+
         self.layout = QVBoxLayout(self)
         self.layout_but = QVBoxLayout(self)
+        self.layout_proba = QHBoxLayout(self)
+        self.layout_proba2 = QHBoxLayout(self)
+
+        self.box = []
+
+        box = 0
+        for i in self.canvas.modele.vars.keys():
+            layout_box = QVBoxLayout()
+
+            text = QLabel()
+            text.setText(self.canvas.modele.vars[i])
+
+            but = QDoubleSpinBox()
+            but.setRange(0,1)
+            but.setSingleStep(0.01)
+            print(i)
+            print(self.canvas.modele.get(i))
+            but.setValue(self.canvas.modele.get(i))
+
+            layout_box.addWidget(text)
+            layout_box.addWidget(but)
+            self.box.append((i,but))
+            if box < 2:
+                self.layout_proba.addLayout(layout_box)
+            
+            elif box == 2:
+                layout_box = QVBoxLayout(self)
+                textI = QLabel()
+                textI.setText("Nombre d'infécté de depart")
+                self.initI = QSpinBox(self)
+                self.initI.setValue(self.canvas.modele.get("I0"))
+                self.initI.setRange(0,25)
+
+                layout_box.addWidget(textI)
+                layout_box.addWidget(self.initI)
+
+                layout_boxT = QVBoxLayout(self)
+                textT = QLabel()
+                textT.setText("Temps")
+                self.initT = QSpinBox(self)
+                self.initT.setValue(self.canvas.modele.get("T"))
+                self.initT.setRange(0,200)
+
+                layout_boxT.addWidget(textT)
+                layout_boxT.addWidget(self.initT)
+
+                self.layout_proba.addLayout(layout_box)
+                self.layout_proba.addLayout(layout_boxT)
+
+                self.box.append(("I0",self.initI))
+                self.box.append(("T",self.initT))
+
+                box +=2
+            else:
+                self.layout_proba2.addLayout(layout_box)
+            box += 1
         
 
         self.button = QPushButton('Lancer simulation', self)
@@ -100,12 +163,32 @@ class PixelGridWindow(QWidget):
         self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
         self.button2.clicked.connect(self.back_menu)
 
+        self.local = QCheckBox("Local")
+        self.local.setChecked(True)
+
+        self.globall = QCheckBox("Global")
+
+        self.layout_locglob = QVBoxLayout(self)
+        self.layout_locglob.addWidget(self.local)
+        self.layout_locglob.addWidget(self.globall) 
+
         self.layout_but.addWidget(self.button)
         self.layout_but.addWidget(self.button2)
-
-        self.canvas = PixelGrid()
         
-        self.layout.addLayout(self.layout_but)
+        self.layout_h=QHBoxLayout(self)
+
+        self.layout_v = QVBoxLayout(self)
+
+        self.layout_v.addLayout(self.layout_proba)
+        self.layout_v.addLayout(self.layout_proba2)
+
+        
+        
+        self.layout_h.addLayout(self.layout_v)
+        self.layout_h.addLayout(self.layout_locglob)
+        self.layout_h.addLayout(self.layout_but)
+        
+
         self.setLayout(self.layout)
 
         #Infecter des gens
@@ -113,13 +196,21 @@ class PixelGridWindow(QWidget):
         #Démarrer le temps (big bang)
         self.canvas.animate()
 
+        self.layout.addLayout(self.layout_h)
         self.layout.addWidget(self.canvas)
         self.show()
 
 
     def new_plot(self):
+        for i in range (len(self.box)):
+            self.canvas.modele.set(self.box[i][0],self.box[i][1].value())
+        
+        self.canvas.modele.loc = self.local.isChecked()
+        self.canvas.modele.gl = self.globall.isChecked()
+
+        self.canvas.time = 0
+        self.canvas.ani.event_source.start()
         self.canvas.startInfection()
-        self.canvas.animate()
     def back_menu(self):
         self.menu = Menu()
         self.close()

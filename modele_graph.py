@@ -8,12 +8,32 @@ from copy import copy, deepcopy
 
 
 class modele(object):
+	initial = {"I0" : "Infectés"}
+
+	vars = {"mwm" : "probabilité de mutation de wild vers virulent",
+				"mmw" : "probabilité de mutation de virulent vers wild",
+				"bw" : "taux de transmission du virus wild",
+				"aw" : "taux de virulence du virus wild",
+				"bm" : "taux de transmission du virus virulent",
+				"am" : "taux de virulence du virus virulent" }
+
+
+				# "H" : "hauteur quadrillage",
+				#"L" : "longeur quadrillage",
+				#"n" : "nombre de voisins par personne",
+				#"R0w" : "bw divisé par aw mais jsp a quoi ça sert",
+				#"R0m" : "bm divisé par am mais jsp a quoi ça sert",
+				#"showMe" : "afficher",
+				#"T" : "temps"
+				#"gl" : "transmission globale",
+				#"loc" : "transmission locale"}
+
 	def __init__(self,H=100,L=100,n=6,I0=37,mwm=1,mmw=1,mww=0,mmm=0,bw=1,aw=1,R0w=2,bm=1,am=1,R0m=1.8,gl=False,loc=True, showMe=False,T=100):
-		self.mat=[[0 for i in range (L)] for j in range (H)]
 
 		self.n=n
 		self.H=H
 		self.L=L
+		self.I0=I0
 		self.mwm=mwm
 		self.mmw=mmw
 		self.mww=mww
@@ -28,31 +48,40 @@ class modele(object):
 		self.loc=loc
 		self.giveupafter=10
 		self.square_min=0
+		self.T = T
 
 		while ((self.square_min)**2)<n:
 			self.square_min=self.square_min+1
-		print(self.square_min)
 
-		lc=int(I0**0.5)
+		self.init()
 
-		i0=int(H/2)-int(lc/2)
-		j0=int(L/2)-int(lc/2)
-
-		for i in range (I0):
-			self.mat[i0][j0]=1
-			j0=j0+1
-			if j0>int(H/2)+int(lc/2):
-				j0=int(H/2)-int(lc/2)
-				i0=i0+1
 		if showMe:
 			for t in range (T):
 				self.heatmap()
 				self.spread()
 				time.sleep(1)
-	def restart(self):
-		# ajouter le fait de changer des parametres ?
+
+	def init(self):
 		self.mat=[[0 for i in range (self.L)] for j in range (self.H)]
+		i=0
+		while i<self.I0:
+			i_temp=random.randrange(0,self.H)
+			j_temp=random.randrange(0,self.L)
+			if self.mat[i_temp][j_temp]==0:
+				self.mat[i_temp][j_temp] = 1
+				i=i+1
 	
+	def get(self, var):
+		try:
+			return eval("self."+var)
+		except:
+			return None
+
+	def set(self, var, val):
+		exec("self."+var+" = "+str(val))
+
+
+
 	def gen_bool(self,prob):
 		res=False
 		temp=random.randint(0,10000)/100
