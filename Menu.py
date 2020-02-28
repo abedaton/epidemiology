@@ -12,7 +12,7 @@ from SEIHFR import SEIHFR
 from SEIHFBR import SEIHFBR
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QSlider,QHBoxLayout,QVBoxLayout,QTabWidget,QSpinBox, QLabel,QDoubleSpinBox,QTableWidget, QTableWidgetItem
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 from PyQt5.QtCore import Qt
 
 from GUI_pyqt import *
@@ -25,7 +25,6 @@ class Menu(QWidget):
     def __init__(self, option=None):
         super().__init__()
 
-        self.setBackground(QImage("Images/biohazard.jpg"), self.width(), self.height())
         self.combo = QComboBox(self)
         self.combo.addItem("SIR")
         self.combo.addItem("SEIHFR")

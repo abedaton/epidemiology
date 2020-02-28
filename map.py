@@ -156,9 +156,16 @@ class Infection():
                         i -= 1
                     i += 1
 
-class Susceptible():
-    pass
-                        
+    def plotAvion(self, country : Country):
+        infect = random.choice(self.infected)
+        _from = infect.findPoints()
+        x1 = _from.x
+        y1 = _from.y
+        _to = country.findPoints()
+        x2 = _to.x
+        y2 = _to.y
+        plt.plot([x1,x2], [y1,y2],color="red")
+
 
 class Propagation():
     def __init__(self, df : gp.geodataframe.GeoDataFrame, startCountry : str): # StartCountry in ISO3
@@ -201,14 +208,16 @@ class Propagation():
                 #global
                 if len(self.healthy) != 0: 
                     newInfected = random.choice(self.healthy)
-                    #navion
+                    self.infect.plotAvion(newInfected)
                     if newInfected.name not in self.succeptible:
                         self.succeptible.append(newInfected.name)
+                    plt.title(coco.convert(names=newInfected.name, to="short_name") + " IS NOW INFECTED", fontsize=50)
                     self.update(newInfected)
             else:
                 #local
                 if len(self.succeptible) != 0: 
                     newInfected = random.choice(self.succeptible)
+                    plt.title(coco.convert(names=newInfected, to="short_name") + " IS NOW INFECTED", fontsize=50)
                     self.update(self.finde(newInfected))
             if len(self.succeptible) == 0 and len(self.healthy) == 0:
                 break
