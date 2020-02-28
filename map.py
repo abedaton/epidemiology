@@ -164,7 +164,7 @@ class Infection():
         _to = country.findPoints()
         x2 = _to.x
         y2 = _to.y
-        plt.plot([x1,x2], [y1,y2],color="red", linestyle="dashed")
+        plt.plot([x1,x2], [y1,y2],color="red", linestyle=':')
 
 
 class Propagation():
