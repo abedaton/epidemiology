@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import sys
+import time
 SUSCEPTIBLE = 0
 INFECTED = 1
 VACCINATED = 2
@@ -139,12 +140,15 @@ class VaccineModel(object):
             stackToCure = []
             stackToKill = []
             stackToInfect = []
-            stackToCure = self.cureIteration()
+            if self.parametres['probCure']:
+                stackToCure = self.cureIteration()
 
             for futureCured in stackToCure:
                 self.cureSquare(futureCured)
 
-            stackToKill = self.deathIteration()
+            if self.parametres['probDeath']:
+                stackToKill = self.deathIteration()
+
 
             for futureDeath in stackToKill:
                 self.deathSquare(futureDeath)
@@ -163,8 +167,10 @@ class VaccineModel(object):
             for futureInfected in stackToInfect:
                 self.infectSquare(futureInfected)
 
-            self.running = (len(self.infected) > 0)# and len(self.susceptibles) != susBefore
-
+            if len(sys.argv) >= 3 and sys.argv[1] == "testing":
+                self.running = (len(self.infected) > 0) and len(self.susceptibles) != susBefore
+            else:
+                self.running = (len(self.infected) > 0)
             #Si fin du spreading, on affiche les résultats
             if not self.running:
                 self.printEnd()
@@ -227,16 +233,21 @@ class VaccineModel(object):
 
 if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
     outputFileName = sys.argv[2]
-    nbIter = 100
+    nbIter = 100000
     for vaccineProb in range(100):
+        first = time.time()
         print(vaccineProb)
         average = 0
         for i in range(nbIter):
-            print("",i)
             simulation = VaccineModel({'probVaccine' : vaccineProb/100, 'probDeath' : 0, 'probCure' : 0})
             simulation.buildFirstFrame()
             while simulation.spread():
                 pass
             average += simulation.trueResults
+            if i%100 == 0:
+                print(i, time.time()-first)
         with open(outputFileName, 'a+') as fichier:
             fichier.write(str(average/nbIter) + '\n')
+
+        print(f"L'itération à pris {time.time()-first}")
+        print(f"Temps restant : {(100-vaccineProb)*(time.time()-first)}")
