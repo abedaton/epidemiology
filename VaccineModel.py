@@ -233,7 +233,7 @@ class VaccineModel(object):
 
 if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
     outputFileName = sys.argv[2]
-    nbIter = 100000
+    nbIter = 1000
     for vaccineProb in range(100):
         first = time.time()
         print(vaccineProb)
@@ -244,8 +244,7 @@ if __name__ == '__main__' and len(sys.argv) >= 3 and sys.argv[1] == "testing":
             while simulation.spread():
                 pass
             average += simulation.trueResults
-            if i%100 == 0:
-                print(i, time.time()-first)
+            print(i, time.time()-first)
         with open(outputFileName, 'a+') as fichier:
             fichier.write(str(average/nbIter) + '\n')
 
