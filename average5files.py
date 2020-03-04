@@ -16,15 +16,15 @@ with open("1000iter-result.txt", 'r') as file1:
                         average = ligne1 + ligne2 + ligne3 + ligne4 + ligne5
                         average = average/5
                         print(average)
-                        data[i] = 100*(float(average)+1)/(2500-i*25)
+                        data[i] = 100*(float(average))/(2500-i*25-1)
 
 print(len(data))
 f, ax = plt.subplots(figsize=(1, 1))
-ax.set_title("Efficacité de la couverture vaccinale dans une population carrée de 2500 individus\n(Moyenne sur 5000 itération par pourcentage)")
+#ax.set_title("Efficacité de la couverture vaccinale dans une population carrée de 2500 individus\n(Moyenne sur 5000 itération par pourcentage)")
 ax.set_yticks(np.linspace(0, 100, 21))
-ax.set_ylabel("Population épargnée de la maladie (en %)", rotation=360, wrap=True, ha="right")
+#ax.set_ylabel("Population épargnée de la maladie (en %)", rotation=360, wrap=True, ha="right")
 ax.set_xticks(np.linspace(0, 100, 21))
-ax.set_xlabel("Population vaccinée (en %)")
+#ax.set_xlabel("Population vaccinée (en %)")
 ax.grid(True)
 ax.plot(data)
 plt.show()
