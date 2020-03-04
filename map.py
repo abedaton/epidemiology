@@ -51,11 +51,18 @@ class Map(QDialog):
         layout.addWidget(self.button)
         self.setLayout(layout)
         self.show()
+
+    def __del__(self):
+        plt.ioff()
+        try:
+            self.prop.__del__()
+        except:
+            pass
         
     def launch(self):
         df = gp.read_file("shapes/useShape/useShape.shp")
         country = self.waitForStart()
-        Propagation(df, coco.convert(names=country, to="ISO3"))
+        self.prop = Propagation(df, coco.convert(names=country, to="ISO3"))
 
     def waitForStart(self) -> str:
         while not self.go:
@@ -251,19 +258,19 @@ class MapWindow(QWidget):
     def __init__(self, argMap, parent=None):
         super(MapWindow, self).__init__(parent)
 
-        self.tab = QTabWidget(self)
+        self.tab = QTabWidget()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
 
         self.title = "Map Game"
-        self.layout = QVBoxLayout(self)
-        self.layout_but = QVBoxLayout(self)
+        self.layout = QVBoxLayout()
+        self.layout_but = QVBoxLayout()
 
-        self.button = QPushButton('Relancé la simulation', self)
+        self.button = QPushButton('Relancé la simulation')
         self.button.setToolTip('Relance la simulation')
         self.button.clicked.connect(self.new_plot)
 
-        self.button2 = QPushButton('Menu', self)
+        self.button2 = QPushButton('Menu')
         self.button2.setToolTip('reviens au menu pour choisir un autre modèle')
         self.button2.clicked.connect(self.back_menu)
 
@@ -284,11 +291,11 @@ class MapWindow(QWidget):
         self.canvas.launch()
     
     def new_plot(self):
-        #self.canvas.__del__()
+        self.canvas.__del__()
         self.canvas = Map()
 
     def back_menu(self):
-        #self.canvas.__del__()
+        self.canvas.__del__()
         self.menu = Menu()
         self.close()
 

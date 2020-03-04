@@ -90,7 +90,6 @@ class Menu(QWidget):
 
     def keyPressEvent(self, e):
         if e.key() == 16777220:
-            print("hey")
             self.choose_model()
 
     def choose_model(self, notUsed=None, model_name=None):
