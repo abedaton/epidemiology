@@ -2,6 +2,7 @@ import numpy as np
 import random as rd
 import time
 from multiprocessing import Pool
+import sys
 SIZE = 50
 R_0 = 1
 susceptiblesStart = set((x,y) for x in range(SIZE) for y in range(SIZE))
@@ -34,7 +35,9 @@ class VaccineModel(object):
         self.infectPatientZero()
         while self.spread():
             pass
-        self.result = SIZE*SIZE - int(self.V*SIZE*SIZE) - len(self.infected)
+        self.result = \
+        100*(SIZE*SIZE - int(self.V*SIZE*SIZE) - len(self.infected))\
+        / (SIZE*SIZE - int(self.V*SIZE*SIZE))
 
     def infectPatientZero(self):
         for patient in rd.sample(self.susceptible, R_0):
@@ -78,9 +81,11 @@ def runIterTimes(V):
 
 if __name__ == '__main__':
     nbIter = 1000
+    outputFileName = sys.argv[1] if len(sys.argv) > 1 else "Result" + str(nbIter)
     start = time.time()
     with Pool(100) as p:
         result = p.map(runIterTimes, [x for x in range(100)])
         print(time.time()-start)
-    for i, elem in enumerate(result):
-        print(i, elem/nbIter)
+    with open(outputFileName, 'a+') as fichier:
+        for elem in result:
+            fichier.write(str(elem/nbIter) + '\n')
