@@ -78,7 +78,6 @@ class VaccineModel(object):
 
 def runIterTimes(V):
     result = 0
-    nbIter = 100000
     for i in range(nbIter):
         result += VaccineModel(V/100).result
     return result
@@ -106,8 +105,9 @@ def showResultInMPL(filename):
     ax.plot(data)
     plt.show()
 
+nbIter = 100
 if __name__ == '__main__':
-    nbIter = 100000
+
     print(nbIter)
     outputFileName = sys.argv[1] if len(sys.argv) > 1 else "Result" + str(nbIter)
     show = sys.argv[2] if len(sys.argv) > 2 else False
