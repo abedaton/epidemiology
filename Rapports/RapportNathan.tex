@@ -30,11 +30,11 @@ Lorsqu'un individu précédemment vacciné est infecté par un virus ou une bact
 
 \section{La façon dont une population vaccinée est protégée au delà de l'individu}
 \subsection{Introduction}
-En considérant une population de 2500 individus vaccinée à un certain pourcentage comme terrain de chasse d'une maladie très infectieuse ($R_0=8$), avec un taux de mortalité nul et un temps de guérison infini, nous pouvons simuler assez facilement la propagation de cette maladie avec un modèle SI et comparer le taux de vaccination de la population avec le nombre d'individu ayant été épargné de la maladie.
+En considérant une population de 2500 individus vaccinée à un certain pourcentage comme terrain de chasse d'une maladie très infectieuse ($R_0=8$), avec un taux de mortalité nul et un temps de guérison infini, nous pouvons simuler assez facilement la propagation de cette maladie avec un modèle SI et comparer le taux de vaccination de la population avec le nombre d'individu ayant été épargné de la maladie. Ces taux ont été choisi pour simplifier le modèle pour faire apparaître ce qui nous intéresse ici, la façon dont la maladie se propage dans la population et si elle peut être arrêtée par des personnes vaccinées.
 \subsection{Symboles et constantes}
-Nous utiliserons $V$ pour le taux de vaccination de la population. Ce taux est ensuite multiplié par le nombre d'individu afin d'avoir un nombre constant et déterministe de vacciné à chaque itération. $V \in [0,1]$
+Nous utiliserons $V$ pour la probabilité que chaque individu a d'être vacciné. Cette probabilité est ensuite multiplié par le nombre d'individu afin d'avoir un nombre exact de personnes à vacciner. $V \in [0,1]$
 La population sujette à l'infection est approximée par un carré de 50 individus de coté sans mouvement, mort d'individu, ou guérison de la maladie.
-La maladie que nous allons appellée Sissi suit un modèle SI avec comme nombre d'infecté au temps 0 $I_0 = 1$, le nombre de voisins susceptibles d'être infecté $R_0 = 8$ et la probabilité de transmission $\alpha = 1$
+La maladie que nous allons appellée Sissi suit un modèle SI avec comme nombre d'infecté au temps 0 $I_0 = 1$, le nombre de personne qu'un infecté peut infecter est $R_0 = 8$ (dans le cas ou les voisins ne sont pas déjà infecté, sinon il peut-être inférieur), la probabilité de transmission $\alpha = 1$, la probabilité de guérison $\beta = 0.00$, et la probabilité de mort $\delta = 0.00$.
 
 \subsection{Résultats}
 \label{sec:results}
@@ -51,6 +51,7 @@ Notre simulation se base sur un cas particulier du modèle SIR où la probabilit
 Les individus de notre simulation sont approximés par une matrice carrée de 50 lignes composée chacune de 50 entrées pour 2500 individus au total. Chaque entrée de la matrice correspond à l'état d'un individu. 0 pour susceptible (S), 1 pour infecté (I) et 2 pour vaccinné (R)
 \subsubsection{Propagation}
 Notre simulation tourne étape par étape. A chaque étape de la propagation, nous allons d'abord décider si il y a plus d'infecté que de susceptible, si c'est le cas, alors nous allons regarder les voisins de chaque individu susceptible. Si ce voisin est infecté, on tire un chiffre au hasard suivant une loi de probabilité uniforme et si ce chiffre est inférieur à $\alpha$, alors nous infectons l'individu susceptible. Si par contre il y a plus de susceptibles que d'infecté, alors nous allons parcourir les infecté, et pour chaque voisin susceptible, nous tirons un chiffre au hasard suivant la même loi de probabilité et on infecte ce voisin si le chiffre est inférieur à $\alpha$. Cette distinction de deux états du modèle (plus d'infecté, ou plus de susceptible) permet de réduire le nombre de calcul dans les cas déséquilibrés.
+La simulation s'arrête lorsqu'il n'y a plus de nouveaux infectés. Cette condition d'arrêt n'est bonne que dans le cas où $\alpha = 1$, sinon on peut s'arrêter soit après un certain nombre de jour, soit lorsque le nombre de personnes susceptibles dans le voisinage de tous les infectés est de 0, soit lorsque la maladie est éradiquée dans le cas où $\beta > 0$ ou $\delta > 0 $
 
 
 \subsubsection{Probabilité qu'un individu aie k voisins vaccinés}
@@ -90,6 +91,25 @@ Liza Gross
 Luke E.Taylor, Amy L.Swerdfeger, Guy D.Eslick
 \href{https://doi.org/10.1016/j.vaccine.2014.04.085}{Vaccines are not associated with autism: An evidence-based meta-analysis of case-control and cohort studies} (https://doi.org/10.1016/j.vaccine.2014.04.085)
 
+\bibitem{vaccines_do_not_cause_autism}
+Center for Diseases Control and Prevention (CDC) : The leading national public health institute of the United States of America
+\href{https://www.cdc.gov/vaccinesafety/concerns/autism.html}{Vaccines do not cause autism}
+
+\bibitem{Thimerosal}
+Julia R. Barret
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1280369/}{Thimerosal and Animal Brains: New Data for Assessing Human Ethylmercury Risk}
+
+\bibitem{Experimental infection of bacteria}
+R.A.Juste, J.F.García Marín,, B.Peris, C.Sáez de Ocáriz, J.J.Badiola
+\href{https://doi.org/10.1016/S0021-9975(08)80189-2}{Experimental infection of vaccinated and non-vaccinated lambs with Mycobacterium paratuberculosis}
+
+\bibitem{Immune response Sweden 2009}
+Isabelle Magalhaes, Mikael Eriksson, Charlotte Linde, Rashid Muhammad, Lalit Rane, Aditya Ambati, Rebecca Axelsson-Robertson, Bahareh Khalaj, Nancy Alvarez-Corrales, Giulia Lapini, Emanuele Montomoli, Annika Linde, Nancy L Pedersen, Markus Maeurer
+\href{https://doi.org/10.1186/1471-2334-14-319}{Difference in immune response in vaccinated and unvaccinated Swedish individuals after the 2009 influenza pandemic}
+
+\bibitem{vaccine-induced reduction in virus transmission}
+Mart C.M.De Jong, Tjeerd G.Kimman
+\href{https://doi.org/10.1016/0264-410X(94)90229-1}{Experimental quantification of vaccine-induced reduction in virus transmission}
 \end{thebibliography}
 
 
