@@ -1,6 +1,7 @@
 import numpy as np
 import random as rd
 import time
+import multiprocessing
 from multiprocessing import Pool
 import sys
 
@@ -10,6 +11,10 @@ import numpy as np
 SIZE = 50
 R_0 = 1
 susceptiblesStart = set((x,y) for x in range(SIZE) for y in range(SIZE))
+global globalI
+globalI = 0
+global result
+resultDict = {}
 
 def getNeighbours(ij):
     mostUp    = max(ij[0]-1, 0)
@@ -42,6 +47,9 @@ class VaccineModel(object):
         self.result = \
         100*(SIZE*SIZE - int(self.V*SIZE*SIZE) - len(self.infected))\
         / (SIZE*SIZE - int(self.V*SIZE*SIZE))
+        if self.V == 100:
+            print("itération",globalI,". Programme lancé il y a", time.time()-self.timeStart,"secondes")
+            print("Temps restant :", (time.time()-self.timeStart)/(globalI+1)*(nbIter-globalI-1))
 
     def infectPatientZero(self):
         for patient in rd.sample(self.susceptible, R_0):
@@ -77,10 +85,18 @@ class VaccineModel(object):
         return True
 
 def runIterTimes(V):
-    result = 0
-    for i in range(nbIter):
-        result += VaccineModel(V/100).result
-    return result
+    for j in range(10):
+        thisStart = time.time()
+
+        for i in range(nbIter):
+            if 10*V+j in resultDict:
+                resultDict[10*V+j] += VaccineModel((10*V+j)/100).result
+            else:
+                resultDict[10*V+j] = VaccineModel((10*V+j)/100).result
+        print("Itération",10*V+j,"à été effectuée",nbIter,"fois en", time.time()-thisStart,"secondes")
+        print("Temps total estimé :",(time.time()-thisStart)*10)
+        print(resultDict[10*V+j])
+    return resultDict
 
 def readFile(filename):
     with open(filename, 'r') as file:
@@ -105,18 +121,18 @@ def showResultInMPL(filename):
     ax.plot(data)
     plt.show()
 
-nbIter = 100
+nbIter = 100000
 if __name__ == '__main__':
-
-    print(nbIter)
     outputFileName = sys.argv[1] if len(sys.argv) > 1 else "Result" + str(nbIter)
     show = sys.argv[2] if len(sys.argv) > 2 else False
     start = time.time()
-    with Pool(100) as p:
-        result = p.map(runIterTimes, [x for x in range(100)])
-        print(time.time()-start)
+    with Pool(10) as p:
+        for dico in p.map(runIterTimes, [x for x in range(10)]):
+            for key in dico.keys():
+                resultDict[key] = dico[key]
+    print("Terminé en",time.time()-start)
     with open(outputFileName, 'a+') as fichier:
-        for elem in result:
-            fichier.write(str(elem/nbIter) + '\n')
+        for i in range(100):
+            fichier.write(str(resultDict[i]/nbIter) + '\n')
     if show:
         showResultInMPL(outputFileName)
