@@ -90,7 +90,7 @@ if __name__ == '__main__':
     print("Nombre d'infecté :", len(listOfAllInfected))
     i = 1
     done = False
-    with open('Covid19StatusFourth.txt', 'a+') as file:
+    with open('Covid19Status5.txt', 'a+') as file:
         file.write("Nombre d'infecte actuel;Nombre d'infecte totaux;N,H,I,D;")
         file.write("Fin : Pyramide des populations")
     while not done:
@@ -107,15 +107,16 @@ if __name__ == '__main__':
         print(statuSS["D"], "personnes qui ne survivront pas")
         print()
         i += 1
-        with open("Covid19StatusFourth.txt", 'a+') as file:
+        with open("Covid19Status5.txt", 'a+') as file:
             file.write(str(len(listOfAllInfected)) + ";" + str(nbTotalInfected) + ";" + str(statuSS["N"]) + "," + str(statuSS["H"]) + "," + str(statuSS["I"]) + "," + str(statuSS["D"]) + ";\n")
         if nbTotalInfected >= data.N:
             done = True
-    aDayPasses()
-    with open('Covid19StatusFourth.txt', 'a+') as file:
+    for infected in listOfAllInfected.copy():
+        infected.finishHim()
+    with open('Covid19Status5.txt', 'a+') as file:
         file.write("\n")
         file.write(str(data.agePyramid))
-    with open('Covid19StatusFourth.txt', 'a+') as file:
+    with open('Covid19Status5.txt', 'a+') as file:
         file.write("\n")
         file.write(str(deadPyramid))
     print(deadPyramid)
