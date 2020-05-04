@@ -180,7 +180,7 @@
 
 % Define document title and author
 	\title{Modélisation de la vaccination des individus et de la population dans le cadre d'une épidémie}
-	\author{Nathan Marotte,
+	\author{Nathan Marotte
 	\thanks{Superviseurs: Robin Petit}}
 	\markboth{INFO-F308}{}
 	\maketitle
@@ -194,7 +194,7 @@
 % Each section begins with a \section{title} command
 \section{Introduction}
 	% \PARstart{}{} creates a tall first letter for this first paragraph
-	\PARstart{L}{e} monde étant rempli de sceptiques, les vaccins ont reçu et reçoivent encore bon nombre de critiques sur leur efficacité et donc autant de personnes refusant de ce faire vacciner. Les taux d'exemptions non médicales des vaccins varient d'une population à l'autre mais aurait atteint jusque 26.67\%\cite{NME_vaccine} dans certaines populations. Comme nous le verrons plus loin, toutes ces personnes contribuent à une augmentation du risque d'épidémie, un anéantissement du phénomène d'immunité collective, et mettent en danger la vie des individus ne pouvant pas être vaccinés pour raisons médicales.\
+	\PARstart{L}{e} monde étant rempli de sceptiques, les vaccins ont reçu et reçoivent encore bon nombre de critiques sur leur efficacité et donc autant de personnes refusant de ce faire vacciner. Les taux d'exemptions non médicales des vaccins varient d'une population à l'autre mais aurait atteint jusque 26.67\% \cite{NME_vaccine} dans certaines populations. Comme nous le verrons plus loin, toutes ces personnes contribuent à une augmentation du risque d'épidémie, un anéantissement du phénomène d'immunité collective, et mettent en danger la vie des individus ne pouvant pas être vaccinés pour raisons médicales.\
 
 	Cet article aura donc pour but de défendre la vaccination en simulant la propagation d'une épidémie dans une population vaccinée à un certain pourcentage afin de voir comment le taux de vaccination dans une population influence de manière \emph{non linéaire} l'immunité de la maladie. Cette relation est aussi connue sous le nom d'immunité grégaire ou \emph{herd immunity, en anglais}.
 	Trouver le seuil de cette immunité, c'est-à-dire le taux de vaccination nécéssaire pour que la maladie se propage moins vite que l'on en guérit, permettra de déterminer quelles populations sont potentiellement en danger d'épidémies graves, et de pouvoir nous concentrer sur celles-ci afin d'éviter d'autres catastrophes. Ce seuil est appellé \emph{Herd Immunity Threshold}, ou \emph{HIT}
@@ -205,10 +205,10 @@
 
 % Main Part
 \section{Méthodologie}\label{sec:met}
-	Afin de démontrer notre hypoyhèse, les vaccins protègent au delà du système immunitaire, nous avons construit un modèle SIR simple où la population de départ est repartie dans les différents états pour une représentation compartimentale et nous avons aussi construit une modèle spatial se basant sur les 3 états et les transitions du modèle compartimental SIR.
+	Afin d'étayer notre hypothèse, les vaccins protègent au delà du système immunitaire, nous avons construit un modèle SIR simple où la population de départ est repartie dans les différents états pour une représentation compartimentale et nous avons aussi construit une modèle spatial se basant sur les 3 états et les transitions du modèle compartimental SIR.
 	Grâce à ces modèles, nous allons pouvoir déterminer le seuil d'immunité grégaire \emph{HIT} mais aussi voir l'évolution de la protection en fonction du nombre de vaccinés.
 	\subsection{Modèle SIR}
-	Notre modèle SIR  est composé de 3 états et de deux transitions disposée comme ceci
+	Notre modèle SIR est composé de 3 états et de une transition disposée comme dans la figure \ref{fig:MySIR}
 
 	\begin{figure}
 		\includegraphics[scale=0.4]{MySIR}
@@ -217,52 +217,53 @@
 	\end{figure}
 
 
-	Ces états, susceptibles, infectés, et retirés, représentent respectivement la population saine, la population malade et contagieuse, et la population vaccinée. $\alpha$ représente la probabilité qu'un individu soit infecté.
-	Ce modèle ne permettant pas de simuler de manière satisfaisante et représentative l'évolution dans une population, nous la présentons ici juste comme un modèle sur lequel nous avons basé notre modèle saptial.
+	Ces états, susceptibles, infectés, et retirés, représentent respectivement la population saine, la population malade et contagieuse, et la population vaccinée. $\alpha$ représente la probabilité qu'un individu sain se fasse infecté.
+	Ce modèle seul ne permet pas de simuler de manière satisfaisante et représentative l'évolution dans une population, nous l'avons donc adapté dans un modèle spatial décrit en \ref{sec:modele_spatial}
 
 	\subsection{Modèle spatial}
+	\label{sec:modele_spatial}
 	Ce modèle se base sur la représentation d'une population de 2500 individus sur un plan en 2 dimensions. Chaque individu est représenté par un point sur une matrice carrée de 50 points de côtés, ne peut être dans un état à la fois, et est voisin de 8 autres individus. Un individu ne peut infecter que quelqu'un dont il est voisin. Un malade contagieux ne pourra donc pas infecter plus de 8 individus ($R_0 = 8$)
-	D'abord tous les individus commencent susceptibles, puis, avant le début de l'infection, un pourcentage de la population est vacciné, puis, une personne au hasard est sélectionnée pour être l'infecté de départ \footnote{Le programme Python que nous avons écrit permet de faire varier ce paramètre}
-	\subsubsection{La vaccination}
-	L'étape de vaccination garanti un nombre exact de vacciné en procédant comme suit:
-	\begin{itemize}
-		\item multiplier le taux de vaccination par la taille de la population pour otbtenir un nombre de vacciné
-		\item échantilloner autant d'individus dans la population de manière aléatoire
-		\item vacciner tous ces individus
-	\end{itemize}
+	D'abord tous les individus commencent susceptibles, puis, avant le début de l'infection, une proportion fixée de la population est vacciné, puis, une personne au hasard est sélectionnée pour être l'infecté de départ (Le programme Python que nous avons écrit permet de faire varier ces paramètres)
 	\subsubsection{L'infection de départ}
 	Parmi les personnes saines dans la population, nous sélectionnons une personne au hasard pour démarrer l'épidémie
 	\subsubsection{La propagation}
-	Pour chaque voisin susceptible de chaque individu infecté, nous l'infectons avec une probabilité de $\alpha$. Dans le cadre de ce projet, nous avons choisi un $\alpha$ de $1$ car nous voulions voir l'évolution d'une maladie très infectieuse pour empêcher la chance d'intervenir dans le déroulement de l'épidémie.
+	Pour chaque voisin susceptible de chaque individu infecté, nous l'infectons avec une probabilité de $\alpha$. Dans le cadre de ce projet, nous avons choisi un $\alpha$ de $1$ car nous voulions voir l'évolution d'une maladie très infectieuse, évoluant donc rapidement avec le temps. Choisir une valeur de $\alpha < 1$ ne serait pas utile dans cette étude étant donné qu'il n'y a que une transition dans le modèle, diminuer le taux de transition revient donc simplement à ralentir la simulation.
 	\subsubsection{Probabilité de propagation et isolement}
-	Au vu de la construction de notre modèle spatiale, il existe des cas particuliers empêchant totalement la propagation de la maladie. En effet, dans une population vaccinée à 95\%, il n'existera alors que très peu d'individus vaccinés parsemé uniformément dans une population immunisée. Ces individus sont donc totalement protégés du fait qu'ils n'ont aucun voisins capable de leur transmettre la maladie. En fonction du pourcentage de vaccination de la population, le nombre d'individus isolé augmente.
-	Aussi, chaque voisin vacciné autour d'un individu susceptible diminue au final la probabilité de cet individu d'être infecté.
+	Au vu de la construction de notre modèle spatiale, il existe des cas particuliers empêchant totalement la propagation de la maladie, par exemple si un individu est entouré de 8 individus vacciné.
+	Ces individus sont donc totalement protégés du fait qu'ils n'ont aucun voisins capable de leur transmettre la maladie. En fonction du pourcentage de vaccination de la population, le nombre d'individus isolé augmente.
+	Aussi, chaque voisin vacciné autour d'un individu susceptible diminue au final la probabilité de cet individu d'être infecté. Si la maladie vient de la direction dans laquelle l'individu susceptible a son voisin vacciné, elle mettra plus de temps à l'atteindre, cette durée supplémentaire augmente les chances que la maladie s'arrête dû au fait que un des infecté guérisse ou meurt, épargnant alors de justesse l'individu susceptible.
 	La probabilité qu'un individu ai k voisins vaccinés est représentée en \ref{fig:probNeighbour}
+	Cette probabilité est calculée en utilisant une binomiale. En effet, la probabilité d'avoir k voisins vacciné lorsque la probabilité d'être vacciné est de p, est égale au fait de réussir k événement ``recevoir un vaccin'' en n (nombre de voisins) tentatives avec une probabilité de p de réussite de l'événement. Nous avons donc
+	\begin{equation}
+	\begin{aligned}
+		P(X = k) = B(n;p) = {n \choose k}\times p^k \times (1-p)^{n-k} = \\ \frac{n!}{k!(n-k)!}\times p^k \times (1-p)^{n-k}
+	\end{aligned}
+	\end{equation} où X est la variable aléatoire ``Nombre de voisins vaccinés'', k le nombre de voisins vaccinés (entre 1 et 8), p la probabilité pour un individu d'être vacciné, et n le nombre de voisins, 8 dans notre simulation. En calculant cette valeur pour tous les pourcentages de vaccination et pour tous les nombres de voisins vaccinés de 1 à 8, nous obtenons ce graphe
+
 	\begin{figure}
 		\caption{Probabilité d'avoir x voisins vaccinés en fonction du pourcentage de vaccinés}
 		\includegraphics[scale=0.2]{probNeighbour}
 		\label{fig:probNeighbour}
 	\end{figure}
-	Nous voyons donc que lorsque la population est vaccinée à 90\%, il y a déjà plus de 40\% des individus qui sont totalement isolés de la maladie.
+
+	Nous voyons donc que lorsque la population est vaccinée à 90\%, il y a déjà plus de 40\% des individus qui sont totalement isolés de la maladie. Il s'agit donc de 40\% d'individus qui n'attraperont jamais la maladie ce qui réduit automatiquement le taux de personnes infecté à la fin de l'épidémie. Cette immunité par isolement n'apporte malheureusement que trop peu de protection que pour être considéré comme un moyen efficace de protéger la population.
+
 	\subsubsection{Seuil d'Immunité Grégaire (HIT)}
 	Ce seuil d'immunité est dépend de $R_0$, le nombre d'individus qu'un malade infecte en moyenne. Si ce nombre est inférieur à 1, alors la maladie finira par s'éteindre, si il est supérieur à 1, la maladie infectera tout le monde si rien n'est fait pour l'arrêter.
-	Le taux de reproduction effectif, noté $R_t = R_0 \times (1-P)$ quant à lui est une mesure du nombre d'individu qu'un malade infecte au temps t, c'est-à-dire en tenant compte des "barrières"\footnote{vaccins}. $P$ est la proportion d'individus vaccinés. En prenant $1-\frac{1}{R_0}$ comme valeur pour P, nous obtenons $R_t = R_0 \times (1-1+\frac{1}{R_0}) = R_0 \times \frac{1}{R_0} = 1$. Pour que la maladie s'éteigne d'elle même, il suffit que le taux de reproduction au temps t\footnote{ainsi qu'a tous les temps suivants pour éviter une seconde vague} soit inférieur à 1. Un individu malade contaminera en moyenne moins d'une personne ce qui finira par faire tomber le nombre de malades à 0. Il faut donc vacciner $100*(1-\frac{1}{R_0})$\% de la population pour qu'un malade ne puisse plus infecter qu'en moyenne une personne dans son entourage.
-	Dans le cadre de notre modèle, ce taux est donc de $87.5\%$
+	Le taux de reproduction effectif, noté $R_t = R_0 \times (1-P)$ quant à lui est une mesure du nombre d'individu qu'un malade infecte au temps t, c'est-à-dire en tenant compte des ``barrières''(vaccins), mais aussi de la mortalité et de la virulence de la maladie. $P$ est la proportion d'individus vaccinés. Le taux de reproduction effectif $R_t$ sera inférieur à 1 pour autant que la valeur de P soit supérieure à $1-1/R_0$. Un individu malade contaminera alors en moyenne moins d'une personne ce qui finira par faire tomber le nombre de malades à 0 pour peu que les malades guérissent ou meurt. Il faut donc vacciner une proportion de la population égale à $1-\frac{1}{R_0}$ pour qu'un malade ne puisse plus infecter, en moyenne, qu'une personne dans son entourage.\\
+	Dans le cadre de notre modèle, ce taux est donc de $0.875$. Ce qui signifie que, en moyenne, dans une population infinie, si chaque individu est vacciné avec une probabilité de 0.875, la maladie se transmettrait un individu à la fois et ne s'arrêterait que lorsque toute la population aura été touchée. A $0.875+\epsilon$ de la population vaccinée, la maladie se hurterait à un moment sur une personne qui n'a aucun voisin susceptible et s'arrêtera donc là. Plus $\epsilon$ est grand, plus ce moment arrivera vite après l'infection du patient zéro
 
-	% Cette section doit décrire, en manière détaillée:
-	% \begin{itemize}
-	% \item Les hypothèses de base de votre approche
-	% \item Les fondements mathématiques
-	% \item La méthode proposée
-	% \item Les jeux de données utilisés (si nécessaire)
-	% \item Les instructions nécessaires pour pouvoir reproduire les expériences (par example pseudo-code),
-	% \end{itemize}
-
-
+	Afin de détecter une protection des vaccins au-delà de l'individu, nous avons donc écrit un programme Python qui va générer 500.000 populations de 2500 individus chacun. Chaque population aura un taux de vaccination de telle sorte qu'il y aura 5000 populations par pourcentage de vaccination (entre 0 et 99\%). Ensuite nous faisons la moyenne du nombre de personnes qui n'étaient pas vaccinés et qui n'ont pas été touchées par la maladie (en excluant des calculs le patient zéro), en regroupant les populations par taux de vaccination.
 
 % Main Part
 \section{Résultats}
-	TODO
+	Nous obtenons ainsi une courbe en S liant le taux de vaccination, sur l'axe des abscisses, au taux de protection des individus non-vaccinés, sur l'axe des ordonées sur la figure \ref{fig:results}.
+	\begin{figure}
+	\caption{Efficacité de la couverture vaccinale sur les individus non vaccinés}
+		\includegraphics[scale=0.2]{Results}
+		\label{fig:results}
+	\end{figure}
+	Cette courbe est assez remarquable. On remarque que vacciner une population à seulement environ 40\% est inneficace pour empêcher une maladie de se répandre. Par contre, entre 40 et 75\%, chaque personne vacciné compte au vu de la croissance ultra-rapide de la courbe entre ces deux valeurs. Enfin on peut aussi remarquer qu'à
 	% Cette section doit contenir les résultats que vous avez obtenu avec la méthodologie décrite dans la section \ref{sec:met}.
 	% Les résultats devront être présentés de préférence sous forme de tableau (cf. Table~\ref{tab:simParameters}) et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}), et correctement référencés.
 	% Le conditions d'expérimentation (c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
