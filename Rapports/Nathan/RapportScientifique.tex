@@ -222,6 +222,7 @@
 			\label{fig:pandemic_influenza_model}
 			\cite{pandemic_influenza}
 		\end{figure} \\
+		Ce modèle comporte en plus une approche transmission/guérison aléatoire. A tous les temps $t_i$, une transmission se produit à un taux de $\frac{\beta S(t_i)I(t_i)}{N}$ et une guérison à un taux de $\gamma I(t_i)$. Une particularité des résultats à noter est que le modèle présente certaines simulations avec une seconde vague d'infecté dans les simulations avec vaccins, malheureusement sans explications à pourquoi ce phénomène apparait.
 
 
 		 L'article \cite{influenza_HIT} quant à lui à pour objectif d'essayer de déterminer le taux de vaccination nécessaire pour que la population soit protégée par le phénomène d'immunité collective pour les différentes épidémies de 1918/19, 1957/58, 1968/69, 2008/09 et 2009/10. Ces taux de vaccinations sont calculés à partir de la formule \ref{eqn:influenza_formula}
@@ -233,18 +234,20 @@
 		 	\end{aligned}
 		 \end{equation}
 
-		 où $V_c$ est le taux de vaccination nécessaire, $I_c$ est le seuil d'immunité collective et $E$ le taux d'efficacité du vaccin. Nous utiliserons une formule similaire dans la section \ref{sec:met}, sans prendre en compte l'efficacité du vaccin
+		 où $V_c$ est le taux de vaccination nécessaire, $I_c$ est le seuil d'immunité collective (le taux de la population qui doit être protégée pour atteindre l'immunité collective) et $E$ le taux d'efficacité du vaccin. Nous utiliserons une formule similaire dans la section \ref{sec:met}, sans prendre en compte l'efficacité du vaccin. Le modèle se base sur des valeurs dans un certain interval de confiance pour $R_0$ et donc pour $I_c$. Les résultats sont repris dans la figure 1 de l'article \cite{influenza_HIT}
 
-	 \subsection{VIH}
-	 L'article \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993} utilise un modèle a 4 états (Susceptible, Vacciné, Infecté, et SIDA) pour représenter la transmission du SIDA dans la communauté homosexuelle masculine.
-	 Des nouvelles personnes peuvent entrer dans le modèle et en sortir, faisant de ce modèle un modèle très réaliste. Le modèle est résumé dans l'article par la figure \ref{fig:hiv_model}. Les transitions entrantes représentent les hommes entrants dans la communauté homosexuelle et les transitions sortantes, les sorties de la commuanuté ainsi que les morts pour les transitions sortantes de l'état SIDA.
+	\subsection{VIH}
+	L'article \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993} utilise un modèle a 4 états (Susceptible, Vacciné, Infecté, et SIDA) pour représenter la transmission du SIDA dans la communauté homosexuelle masculine.
+	Des nouvelles personnes peuvent entrer dans le modèle et en sortir, faisant de ce modèle un modèle très réaliste. Le modèle est résumé dans l'article par la figure \ref{fig:hiv_model}. Les transitions entrantes représentent les hommes entrants dans la communauté homosexuelle et les transitions sortantes, les sorties de la commuanuté ainsi que les morts pour les transitions sortantes de l'état SIDA. Le modèle prend en compte 3 niveaux d'échec du vaccin. Le vaccin peut fonctionner avec un taux de $\epsilon$, ne protèger que avec un taux de $\psi$, et s'atténuer avec le temps à un taux de $\omega$
 
-	 \begin{figure}[!hbt]
-		 \caption{Structure du modèle à SIDA}
-		 \includegraphics[width=\columnwidth]{Imperfect vaccines and herd immunity to hiv_model}
-		 \label{fig:hiv_model}
-		 \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993}
-	 \end{figure}
+	\begin{figure}[!hbt]
+	 \caption{Structure du modèle à SIDA}
+	 \includegraphics[width=\columnwidth]{Imperfect vaccines and herd immunity to hiv_model}
+	 \label{fig:hiv_model}
+	 \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993}
+	\end{figure}
+
+	Contre intuitivement, dans ce modèle, même un vaccin efficace à 95\%, qui fonctionne à 85\% avec une durée de demie-vie de 35 ans, n'est pas suffisant pour amener $R_0$ en dessous de 1 (impact vaccinal $\phi = 0.48$), pour tout $R_0 \geq 2$, même si administré à toute la population. Aussi, un vaccin parfait à durée de demie-vie de 10 ans est tout aussi efficace qu'un vaccin parfait permanent qui ne prend que dans 30\% des cas
 
 	 \subsection{Quarantaine et vaccination}
 	 Il existe aussi des expériences sur les effets de la prévention (vaccination) et de la quarantaine notamment \cite{Kato2011}. Leur modèle spatial introduit des sites (cases, dans notre simulation) qui sont protégés d'une quelconque infection, considérés donc vaccinés ainsi que des bords (maximum 4 par site non protégés) de cases permettant de bloquer la transmission par ce bord. Ces bordures représentent la quarantaine dans leur modèle. La figure \ref{fig:quarantine_model} tirée de leur article illustre leur modèle spatial
