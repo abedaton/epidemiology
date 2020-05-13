@@ -192,21 +192,22 @@
 
 % Each section begins with a \section{title} command
 \section{Introduction}
-	\PARstart{L}{e} monde étant rempli de sceptiques, les vaccins ont reçu et reçoivent encore bon nombre de critiques sur leur efficacité et donc autant de personnes refusant de ce faire vacciner. Les taux d'exemptions non médicales des vaccins varient d'une population à l'autre mais aurait atteint jusque 26.67\% \cite{NME_vaccine} dans certaines populations. Comme nous le verrons plus loin, toutes ces personnes contribuent à une augmentation du risque d'épidémie, un anéantissement du phénomène d'immunité collective, et mettent en danger la vie des individus ne pouvant pas être vaccinés pour raisons médicales (allergies, ...).\
+	\PARstart{L}{e} monde étant rempli de sceptiques, les vaccins ont reçu et reçoivent encore bon nombre de critiques sur leur efficacité et donc autant de personnes refusant de ce faire vacciner. Les taux d'exemptions non médicales des vaccins varient d'une population à l'autre mais aurait atteint jusque 26,67\% \cite{NME_vaccine} dans certaines populations. Comme nous le verrons plus loin, toutes ces personnes contribuent à une augmentation du risque d'épidémie, un anéantissement du phénomène d'immunité collective, et mettent en danger la vie des individus ne pouvant pas être vaccinés pour raisons médicales (allergies, ...).\
 
 	Cet article aura donc pour but de défendre la vaccination en simulant la propagation d'une épidémie dans une population vaccinée à un certain pourcentage afin de voir comment le taux de vaccination dans une population influence de manière \emph{non linéaire} l'immunité de la maladie. Cette relation est aussi connue sous le nom d'immunité grégaire ou \emph{herd immunity, en anglais}.
 	Trouver le seuil de cette immunité, c'est-à-dire le taux de vaccination nécessaire pour qu'un malade transmette la maladie à moins d'une personne en moyenne, permettra de déterminer quelles populations sont potentiellement en danger d'épidémies graves, et de pouvoir nous concentrer sur celles-ci afin d'éviter d'autres catastrophes. Ce seuil est appellé \emph{Herd Immunity Threshold}, ou \emph{HIT}
 	Notre approche fournira à la communauté scientifique des méthodes très simples et compréhensibles, mais correctes pour démontrer au public les raisons de la vaccination obligatoire.
 
 	\subsection{Lexique}
-	Nous allons ici définir les termes utilisés dans cet article
+	Nous allons ici définir les termes utilisés dans cet article. Il s'agit d'une liste non exhaustive de termes souvent employés en épidémiologie.
 	\begin{itemize}
-		\item Un modèle est un outil permettant de représenter la réalité de manière mathématique
-		\item Une simulation est l'exécution d'un programme informatique sur un modèle afin d'obtenir un résultat
-		\item Un état d'un modèle est une situation dans laquelle se trouve un individu du modèle
-		\item Une transition dans un modèle est le lien entre 2 états. Elle est souvent associée à une probabilité de suivre cette transition, c'est à dire de passer de l'état à la base de la transition vers l'état au bout de la transition
-		\item Un modèle est dit compartimental si il est uniquement représenté par le nombre d'individu dans chaque état du modèle
-		\item Un modèle est dit spatial si il est représentable schématiquement, sous forme matricielle par exemple. Chaque individu est donc modélisé à part entière
+		\item Un modèle est un outil permettant de représenter la réalité de manière mathématique.
+		\item Une simulation est l'exécution d'un programme informatique sur un modèle afin d'obtenir un résultat.
+		\item Un état d'un modèle est une situation dans laquelle se trouve un individu du modèle.
+		\item Une transition dans un modèle est le lien entre 2 états. Elle est souvent associée à une probabilité de suivre cette transition, c'est à dire de passer de l'état à la base de la transition vers l'état au bout de la transition.
+		\item Un modèle est dit compartimental si il est uniquement représenté par le nombre d'individu dans chaque état du modèle.
+		\item Un modèle est dit spatial si il est représentable schématiquement, sous forme matricielle par exemple. Chaque individu est donc modélisé à part entière.
+		\item $R_0$, est le nombre de reproduction de base (\emph{basic reproduction number} en anglais) d'une maladie. Il s'agit du nombre de cas secondaires générés à partir d'un cas, c'est-à-dire le nombre de personne qu'un malade va infecter pendant la durée de sa période de contagion.
 	\end{itemize}
 	Nous allons aussi expliquer ici comment le modèle compartimental SIR fonctionne. \\
 	SIR est un des modèles épidémiologique les plus simples. Il est composé de 3 états et de maximum 3 transitions (une entre chaque état). Chaque lettre représente un état, ici Susceptible (sain et infectable), Infecté (malade et contagieux), et Retiré (guéri ou mort). Les 3 transitions sont les probabilité d'être infecté (S->I), probabilité de mourir/guérir (I->R) et probabilité de perdre l'immunité (dans le cas où R est guéri et non mort) (R->S)
@@ -217,10 +218,10 @@
 		L'article \cite{pandemic_influenza} a pour but d'expliquer l'utilisation des modèles et de déterminer les conditions qui peuvent être utilisées pour évaluer l'efficacité des vaccins, entre autre. \\
 		Il présente un modèle $SI_{tr}I_uRV$ pour la modélisation de la grippe saisonnière. Un individu commence susceptible et peut être vacciné à un certain temps, ou bien infecté et traité, ou infecté et pas traité. Dans les deux cas, l'individu finira par être guéri au final (plus ou moins vite selon si il est traité ou pas). Le diagramme de transition est présenté en figure \ref{fig:pandemic_influenza_model}
 		\begin{figure}[!hbt]
-			\caption{Diagramme de transition entre les différents états du modèle}
+			\caption{Diagramme de transition entre les différents états du modèle (tiré de l'article \cite{pandemic_influenza})}
 			\includegraphics[width=\columnwidth]{pandemic_influenza_model}
 			\label{fig:pandemic_influenza_model}
-			\cite{pandemic_influenza}
+
 		\end{figure} \\
 		Ce modèle comporte en plus une approche transmission/guérison aléatoire. A tous les temps $t_i$, une transmission se produit à un taux de $\frac{\beta S(t_i)I(t_i)}{N}$ et une guérison à un taux de $\gamma I(t_i)$. Une particularité des résultats à noter est que le modèle présente certaines simulations avec une seconde vague d'infecté dans les simulations avec vaccins, malheureusement sans explications à pourquoi ce phénomène apparait.
 
@@ -241,22 +242,24 @@
 	Des nouvelles personnes peuvent entrer dans le modèle et en sortir, faisant de ce modèle un modèle très réaliste. Le modèle est résumé dans l'article par la figure \ref{fig:hiv_model}. Les transitions entrantes représentent les hommes entrants dans la communauté homosexuelle et les transitions sortantes, les sorties de la commuanuté ainsi que les morts pour les transitions sortantes de l'état SIDA. Le modèle prend en compte 3 niveaux d'échec du vaccin. Le vaccin peut fonctionner avec un taux de $\epsilon$, ne protèger que avec un taux de $\psi$, et s'atténuer avec le temps à un taux de $\omega$
 
 	\begin{figure}[!hbt]
-	 \caption{Structure du modèle à SIDA}
+	 \caption{Structure du modèle à SIDA (tiré de l'article \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993})}
 	 \includegraphics[width=\columnwidth]{Imperfect vaccines and herd immunity to hiv_model}
 	 \label{fig:hiv_model}
-	 \cite{Imperfect_vaccines_and_herd_immunity_to_HIV_1993}
+
 	\end{figure}
 
-	Contre intuitivement, dans ce modèle, même un vaccin efficace à 95\%, qui fonctionne à 85\% avec une durée de demie-vie de 35 ans, n'est pas suffisant pour amener $R_0$ en dessous de 1 (impact vaccinal $\phi = 0.48$), pour tout $R_0 \geq 2$, même si administré à toute la population. Aussi, un vaccin parfait à durée de demie-vie de 10 ans est tout aussi efficace qu'un vaccin parfait permanent qui ne prend que dans 30\% des cas
+	Contre intuitivement, dans ce modèle, même un vaccin efficace à 95\%, qui fonctionne à 85\% avec une durée de demie-vie de 35 ans, n'est pas suffisant pour amener $R_0$ en dessous de 1 (impact vaccinal $\phi = 0,48$), pour tout $R_0 \geq 2$, même si administré à toute la population. Aussi, un vaccin parfait à durée de demie-vie de 10 ans est tout aussi efficace qu'un vaccin parfait permanent qui ne prend que dans 30\% des cas
 
 	 \subsection{Quarantaine et vaccination}
 	 Il existe aussi des expériences sur les effets de la prévention (vaccination) et de la quarantaine notamment \cite{Kato2011}. Leur modèle spatial introduit des sites (cases, dans notre simulation) qui sont protégés d'une quelconque infection, considérés donc vaccinés ainsi que des bords (maximum 4 par site non protégés) de cases permettant de bloquer la transmission par ce bord. Ces bordures représentent la quarantaine dans leur modèle. La figure \ref{fig:quarantine_model} tirée de leur article illustre leur modèle spatial
 	 \begin{figure}[!hbt]
-		 \caption{Représentation du modèle spatial avec quarantaine et immunités}
+		 \caption{Représentation du modèle spatial avec quarantaine et immunités (tiré de l'article \cite{Kato2011})}
 		 \includegraphics[width=\columnwidth]{quarantine_model}
 		 \label{fig:quarantine_model}
-		 \cite{Kato2011}
+
 	 \end{figure}
+
+	 Leurs résultats sont assez simple, ils démontrent que, effectivement, la quarantaine et la vaccination permettent de réduire le nombre de personne touchées par la maladie et que ce phénomène est d'autant plus efficace si les deux sont combinés.
 
 
 
@@ -317,7 +320,7 @@
 	\subsubsection{Seuil d'Immunité Grégaire (HIT)}
 	Ce seuil d'immunité est dépend de $R_0$, le nombre d'individus qu'un malade infecte en moyenne. Si ce nombre est inférieur à 1, alors la maladie finira par s'éteindre, si il est supérieur à 1, la maladie infectera tout le monde si rien n'est fait pour l'arrêter.
 	Le taux de reproduction effectif, noté $R_t = R_0 \times (1-P)$ quant à lui est une mesure du nombre d'individu qu'un malade infecte au temps t, c'est-à-dire en tenant compte des ``barrières''(vaccins, quarantaine, etc...), mais aussi de la mortalité et de la contagion de la maladie. $P$ est la proportion d'individus vaccinés. Le taux de reproduction effectif $R_t$ sera inférieur à 1 pour autant que la valeur de P soit supérieure à $1-1/R_0$ \cite{herd_guide}. Un individu malade contaminera alors en moyenne moins d'une personne ce qui finira par faire tomber le nombre de malades à 0 pour peu que les malades guérissent ou meurt. Il faut donc vacciner une proportion de la population égale à $1-\frac{1}{R_0}$ pour qu'un malade ne puisse plus infecter, en moyenne, qu'une personne dans son entourage.\\
-	Dans le cadre de notre modèle, ce taux est donc de $0.875$. Ce qui signifie que, en moyenne, dans une population infinie, si chaque individu est vacciné avec une probabilité de 0.875, la maladie se transmettrait un individu à la fois et ne s'arrêterait que lorsque toute la population aura été touchée. A $0.875+\epsilon$ de la population vaccinée, la maladie se hurterait à un moment sur une personne qui n'a aucun voisin susceptible et s'arrêtera donc là. Plus $\epsilon$ est grand, plus ce moment arrivera vite après l'infection du patient zéro
+	Dans le cadre de notre modèle, ce taux est donc de $0,875$. Ce qui signifie que, en moyenne, dans une population infinie, si chaque individu est vacciné avec une probabilité de 0,875, la maladie se transmettrait un individu à la fois et ne s'arrêterait que lorsque toute la population aura été touchée. A $0,875+\epsilon$ de la population vaccinée, la maladie se hurterait à un moment sur une personne qui n'a aucun voisin susceptible et s'arrêtera donc là. Plus $\epsilon$ est grand, plus ce moment arrivera vite après l'infection du patient zéro
 
 
 
@@ -346,6 +349,9 @@ Un individu infecté n'est pas immédiatement contagieux dans un grand nombre de
 \subsection{Quarantaine}
 Pendant les périodes d'épidémie, il peut être intéressant d'utiliser la quarantaine comme \textit{moyen de vaccination}. En effet être en quarantaine à le même effet qu'être vacciné, du point de vue de notre modèle. Un individu en quarantaine c'est un individu qui ne peut ni transmettre, ni être infecté.
 Nous pourrions rajouter à notre modèle un état de quarantaine ainsi qu'une transition entre infecté et quarantaine. Un individu infecté possède une certaine probabilité d'être mis en quarantaine, un état duquel il ne peut plus infecter d'individus. La transition vers quarantaine pourrait aussi se faire depuis les individus susceptibles ou exposés qui se mettraient d'eux-même en quarantaine pour se protéger soi et pour protéger la population.
+
+\subsection{Déplacements}
+Implémenter des individus mobile sera sans doute ce qui cassera le plus rapidement notre courbe \ref{fig:results}. En effet un individu infecté pourra alors être en contact avec un nombre bien supérieur d'individus susceptible mais ceci est beaucoup trop irréaliste. Il n'existe que peu de maladies dont $R_0 \geq 8$, augmenter encore ce chiffre ne servirait pas à faire coller notre modèle à n'importe quelle épidémie, mais plutôt à le spécialiser à des maladies plus grave comme la rougeole dont $R_0$ serait compris entre 12 et 18 \cite{Guerra_Bolotin_Lim_Heffernan_Deeks_Li_Crowcroft_2017}. Il serait même judicieux de baisser le nombre de voisins de chaque individu, afin de coller aux maladies plus communes, ou dangereuses comme par exempls SARS-CoV-2 dont $R_0$ serait entre 3,8 et 8,9 \cite{Sanche_Lin_Xu_Romero-Severson_Hengartner_Ke_2020}
 
 % Cette section contient un rappel des contributions / de résultats importants de votre article et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
 
