@@ -1,6 +1,7 @@
 matplotlib==3.1.1
 reverse_geocoder==1.5.1
 geopandas==0.6.3
+geos==0.2.3
 Cartopy==0.17.0
 numpy==1.22.0
 networkx==2.4
